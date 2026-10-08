@@ -1,0 +1,14 @@
+# Generated output and dependencies
+node_modules/
+.next/
+out/
+build/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+
+# Package manager output
+package-lock.json
+
+# Imported assets
+assets/
