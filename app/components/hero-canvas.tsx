@@ -42,11 +42,13 @@ import {
   type LineBasicMaterial,
   type LineSegments,
 } from "three";
+import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
 
 type SceneProps = {
   active: boolean;
   reducedMotion: boolean;
   onReady: () => void;
+  settings: SceneSettings;
 };
 type PointerMotion = { yaw: number; inside: boolean; event: Event | null };
 type MarkGLTF = ReturnType<typeof useGLTF> & {
@@ -126,18 +128,33 @@ function StudioPanel({
   );
 }
 
-function StudioEnvironment() {
+function StudioEnvironment({
+  blur,
+  intensity,
+}: {
+  blur: number;
+  intensity: number;
+}) {
   const room = useMemo(() => new Scene(), []);
   const gl = useThree((state) => state.gl);
   const get = useThree((state) => state.get);
   const invalidate = useThree((state) => state.invalidate);
   useLayoutEffect(() => {
     const scene = get().scene;
+    const previous = scene.environmentIntensity;
+    scene.environmentIntensity = intensity;
+    invalidate();
+    return () => {
+      scene.environmentIntensity = previous;
+    };
+  }, [get, intensity, invalidate]);
+  useLayoutEffect(() => {
+    const scene = get().scene;
     // Drei Environment uses an unblurred cube capture. The reference uses
     // fromScene's initial sigma blur, which that helper does not expose.
     // Fiber owns the portal's panels; only this one-time PMREM target is manual.
     const generator = new PMREMGenerator(gl);
-    const environment = generator.fromScene(room, 0.025, 0.1, 100, {
+    const environment = generator.fromScene(room, blur, 0.1, 100, {
       position: new Vector3(0, 3.3, 0),
       size: 256,
     });
@@ -150,7 +167,7 @@ function StudioEnvironment() {
         scene.environment = previous;
       environment.dispose();
     };
-  }, [gl, get, room, invalidate]);
+  }, [gl, get, room, invalidate, blur]);
   return createPortal(
     <>
       <color attach="background" args={["#0c0e0d"]} />
@@ -359,6 +376,7 @@ function GlassBody({
   onOver,
   onMove,
   onOut,
+  settings,
 }: {
   geometry: BufferGeometry;
   name: string;
@@ -367,23 +385,30 @@ function GlassBody({
   onOver: (event: ThreeEvent<PointerEvent>) => void;
   onMove: (event: ThreeEvent<PointerEvent>) => void;
   onOut: () => void;
+  settings: SceneSettings;
 }) {
   const mesh = useRef<Mesh<BufferGeometry, MeshPhysicalMaterial>>(null);
   const projection = useBoxProjectedEnv([0, 3.3, 0], [14, 20, 18]);
   const amount = useRef(0);
   const invalidate = useThree((state) => state.invalidate);
   const tint = useMemo(
-    () => new Color(name.includes("Rear") ? "#07351b" : "#400e18"),
-    [name],
+    () =>
+      new Color(name.includes("Rear") ? settings.greenTint : settings.redTint),
+    [name, settings.greenTint, settings.redTint],
   );
   useEffect(() => {
     invalidate();
-  }, [hovered, reducedMotion, invalidate]);
+  }, [hovered, reducedMotion, invalidate, settings]);
   useFrame((_, delta) => {
     const target = hovered ? 1 : 0;
     const next = reducedMotion
       ? target
-      : MathUtils.damp(amount.current, target, 1.1, Math.min(delta, 0.1));
+      : MathUtils.damp(
+          amount.current,
+          target,
+          settings.hoverDamping,
+          Math.min(delta, 0.1),
+        );
     amount.current = Math.abs(next - target) < 0.001 ? target : next;
     const material = mesh.current?.material;
     if (material) {
@@ -446,11 +471,11 @@ function GlassBody({
         }
         color="white"
         attenuationColor="white"
-        transmission={1}
-        thickness={0.45}
-        ior={1.28}
-        attenuationDistance={8}
-        roughness={0.045}
+        transmission={settings.transmission}
+        thickness={settings.thickness}
+        ior={settings.ior}
+        attenuationDistance={settings.attenuationDistance}
+        roughness={settings.roughness}
         metalness={0}
         side={DoubleSide}
         dithering
@@ -458,7 +483,9 @@ function GlassBody({
         polygonOffsetFactor={1}
         polygonOffsetUnits={1}
       />
-      <GlassContours geometry={geometry} amount={amount} tint={tint} />
+      {settings.contours && (
+        <GlassContours geometry={geometry} amount={amount} tint={tint} />
+      )}
     </mesh>
   );
 }
@@ -468,6 +495,7 @@ function Sculpture({
   reducedMotion,
   onReady,
   motion,
+  settings,
 }: SceneProps & {
   motion: RefObject<PointerMotion>;
 }) {
@@ -478,6 +506,7 @@ function Sculpture({
   const size = useThree((state) => state.size);
   const events = useThree((state) => state.events);
   const invalidate = useThree((state) => state.invalidate);
+  const readyFrames = useRef(0);
   const framing = useMemo(() => {
     const bounds = new Box3();
     for (const node of [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front]) {
@@ -485,22 +514,20 @@ function Sculpture({
       bounds.union(node.geometry.boundingBox!);
     }
     const center = (bounds.min.y + bounds.max.y) / 2;
-    const tilt = MathUtils.degToRad(12);
+    const tilt = MathUtils.degToRad(settings.tilt);
     const matrix = new Matrix4()
       .makeTranslation(0, center, 0)
       .multiply(new Matrix4().makeRotationX(tilt))
       .multiply(new Matrix4().makeTranslation(0, -center, 0));
     const offset = Math.max(0, -bounds.clone().applyMatrix4(matrix).min.y);
     return { center, tilt, offset };
-  }, [nodes]);
-  const viewHeight = Math.max(
-    3.6,
-    (size.height / Math.max(size.width, 1)) * 4.7,
-  );
+  }, [nodes, settings.tilt]);
+  const viewHeight =
+    Math.max(
+      SCENE_FRAMING.minHeight,
+      (size.height / Math.max(size.width, 1)) * SCENE_FRAMING.minWidth,
+    ) / settings.zoom;
   const viewWidth = (viewHeight * size.width) / Math.max(size.height, 1);
-  useEffect(() => {
-    onReady();
-  }, [onReady]);
   useEffect(() => {
     const reset = () => {
       setHovered(null);
@@ -528,15 +555,26 @@ function Sculpture({
     };
   }, [invalidate, events.connected, motion]);
   useFrame((state, delta) => {
+    // Reveal only after the complete scene has produced its first frame.
+    if (readyFrames.current === 0) {
+      readyFrames.current = 1;
+      invalidate();
+    } else if (readyFrames.current === 1) {
+      readyFrames.current = 2;
+      onReady();
+    }
     if (!moving.current) return;
-    const target = reducedMotion || !active ? 0 : motion.current.yaw;
+    const target =
+      reducedMotion || !active || !settings.parallax
+        ? 0
+        : motion.current.yaw * (settings.parallaxStrength / 0.08);
     const previous = moving.current.rotation.y;
     const next = reducedMotion
       ? target
       : MathUtils.damp(
           moving.current.rotation.y,
           target,
-          2,
+          settings.rotationDamping,
           Math.min(delta, 0.1),
         );
     moving.current.rotation.y =
@@ -558,8 +596,14 @@ function Sculpture({
         bottom={-viewHeight / 2}
         near={0.1}
         far={200}
-        position={[4, 36 + framing.offset, 55]}
-        onUpdate={(camera) => camera.lookAt(0, 6.45 + framing.offset, 0)}
+        position={[
+          settings.cameraX,
+          settings.cameraY + framing.offset,
+          settings.cameraZ,
+        ]}
+        onUpdate={(camera) =>
+          camera.lookAt(0, settings.targetY + framing.offset, 0)
+        }
       />
       <group
         position={[0, framing.center + framing.offset, 0]}
@@ -571,8 +615,9 @@ function Sculpture({
               key={body.name}
               geometry={body.geometry}
               name={body.name}
-              hovered={active && hovered === body.name}
+              hovered={active && settings.hover && hovered === body.name}
               reducedMotion={reducedMotion}
+              settings={settings}
               onOver={(event) => {
                 if (
                   event.pointerType !== "mouse" &&
@@ -647,24 +692,47 @@ export default function HeroCanvas(props: SceneProps) {
       }}
       className="absolute inset-0 size-full"
       frameloop={props.active ? "demand" : "never"}
-      dpr={[1, 2]}
+      dpr={[1, props.settings.dprLimit]}
       gl={{
         antialias: true,
         alpha: false,
         powerPreference: "high-performance",
         toneMapping: NeutralToneMapping,
-        toneMappingExposure: 0.9,
-        transmissionResolutionScale: 1,
+        toneMappingExposure: props.settings.exposure,
+        transmissionResolutionScale: props.settings.transmissionResolution,
       }}
     >
       <HeroBackdrop />
-      <directionalLight color="white" intensity={2} position={[-1, 10, 12]} />
-      <directionalLight color="white" intensity={0.45} position={[5, 4, 1]} />
-      <directionalLight color="white" intensity={2} position={[1, 6, -5]} />
-      <directionalLight color="#80e650" intensity={2.2} position={[-6, 5, 2]} />
-      <directionalLight color="#ff2c4b" intensity={2} position={[6, 5, 2]} />
+      <directionalLight
+        color="white"
+        intensity={props.settings.keyLight}
+        position={[-1, 10, 12]}
+      />
+      <directionalLight
+        color="white"
+        intensity={props.settings.fillLight}
+        position={[5, 4, 1]}
+      />
+      <directionalLight
+        color="white"
+        intensity={props.settings.rimLight}
+        position={[1, 6, -5]}
+      />
+      <directionalLight
+        color="#80e650"
+        intensity={props.settings.greenLight}
+        position={[-6, 5, 2]}
+      />
+      <directionalLight
+        color="#ff2c4b"
+        intensity={props.settings.redLight}
+        position={[6, 5, 2]}
+      />
       <Suspense fallback={null}>
-        <StudioEnvironment />
+        <StudioEnvironment
+          blur={props.settings.environmentBlur}
+          intensity={props.settings.environmentIntensity}
+        />
         <Sculpture {...props} motion={motion} />
       </Suspense>
     </Canvas>

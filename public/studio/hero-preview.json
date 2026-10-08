@@ -1,0 +1,15 @@
+{
+  "captureWidth": 1410,
+  "captureHeight": 4800,
+  "worldWidth": 4.7,
+  "worldHeight": 16,
+  "left": 64,
+  "top": 1942,
+  "width": 1282,
+  "height": 2581,
+  "referenceViewports": {
+    "wide": [1440, 1000],
+    "portrait": [390, 844],
+    "compact": [390, 667]
+  }
+}

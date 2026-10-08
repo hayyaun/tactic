@@ -1,8 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import {
   Component,
+  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -10,6 +10,9 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { HeroDebugGate } from "./hero-debug-gate";
+import { HeroPreview } from "./hero-preview";
+import { DEFAULT_SCENE_SETTINGS, type SceneSettings } from "./hero-settings";
 const HeroCanvas = dynamic(() => import("./hero-canvas"), { ssr: false });
 function subscribeMotion(callback: () => void) {
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -41,7 +44,10 @@ class SceneBoundary extends Component<
   }
   componentDidCatch(error: Error) {
     this.props.onFailure();
-    console.warn("TACTIC 3D scene unavailable; showing the brand mark.", error);
+    console.warn(
+      "TACTIC 3D scene unavailable; showing the scene preview.",
+      error,
+    );
   }
   render() {
     return this.state.failed ? null : this.props.children;
@@ -56,6 +62,13 @@ export function HeroArt() {
   const stage = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [settings, setSettings] = useState<SceneSettings>(
+    DEFAULT_SCENE_SETTINGS,
+  );
+  const onSettingsChange = useCallback(
+    (settings: SceneSettings) => setSettings(settings),
+    [],
+  );
   const reducedMotion = useSyncExternalStore(
     subscribeMotion,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -78,31 +91,31 @@ export function HeroArt() {
     return () => observer.disconnect();
   }, []);
   return (
-    <div
-      ref={stage}
-      data-hero-art
-      data-ready={ready}
-      className="group/scene pointer-events-none absolute inset-x-0 top-113.75 bottom-0 min-[960px]:top-80 [@media(max-height:740px)_and_(max-width:700px)]:top-72.5 [@media(max-height:740px)_and_(max-width:700px)]:bottom-2"
-      aria-hidden="true"
-    >
-      <Image
-        src="/studio/mark.svg"
-        alt=""
-        width={40}
-        height={55}
-        className="absolute inset-0 size-full object-contain px-0 pt-12.5 pb-20 opacity-80 group-data-[ready=true]/scene:invisible"
-      />
-      <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-600 group-data-[ready=true]/scene:opacity-100 motion-reduce:transition-none">
-        {webGL && (
-          <SceneBoundary onFailure={onFailure}>
-            <HeroCanvas
-              active={visible && pageVisible}
-              reducedMotion={reducedMotion}
-              onReady={onReady}
-            />
-          </SceneBoundary>
-        )}
+    <>
+      <div
+        ref={stage}
+        data-hero-art
+        data-ready={ready}
+        className="group/scene @container-size pointer-events-none absolute inset-x-0 top-113.75 bottom-0 overflow-hidden min-[960px]:top-80 [@media(max-height:740px)_and_(max-width:700px)]:top-72.5 [@media(max-height:740px)_and_(max-width:700px)]:bottom-2"
+        aria-hidden="true"
+      >
+        <HeroPreview />
+        <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-600 group-data-[ready=true]/scene:opacity-100 motion-reduce:transition-none">
+          {webGL && (
+            <SceneBoundary onFailure={onFailure}>
+              <HeroCanvas
+                active={visible && pageVisible}
+                reducedMotion={reducedMotion}
+                onReady={onReady}
+                settings={settings}
+              />
+            </SceneBoundary>
+          )}
+        </div>
       </div>
-    </div>
+      <Suspense fallback={null}>
+        <HeroDebugGate onChange={onSettingsChange} />
+      </Suspense>
+    </>
   );
 }
