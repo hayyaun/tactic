@@ -32,7 +32,7 @@ async function createScene() {
   camera.position.set(4, 36, 55);
   camera.lookAt(0, 6.45, 0);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 4);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 2);
   keyLight.position.set(-1, 10, 12);
   scene.add(keyLight);
 

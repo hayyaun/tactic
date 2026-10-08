@@ -36,6 +36,29 @@
 - Preserve semantic HTML, accessible form labels, keyboard interaction, and stable server/client rendering. Avoid suppressing hydration errors instead of fixing their cause.
 - Use the official [production checklist](https://nextjs.org/docs/app/guides/production-checklist) when reviewing performance, accessibility, and deployment readiness.
 
+## React Three Fiber best practices
+
+### Documentation and compatibility
+
+- Before adding or changing 3D code, read the official [React Three Fiber documentation](https://r3f.docs.pmnd.rs/getting-started/introduction), [installation guide](https://r3f.docs.pmnd.rs/getting-started/installation), and relevant API pages. Check installed versions and peer dependencies for React, `three`, `@react-three/fiber`, and optional `@react-three/drei`; Fiber v9 pairs with React 19. These packages are not currently installed; this guidance does not authorize adding them unless the task needs 3D functionality.
+- Consult the [Three.js documentation](https://threejs.org/docs/) for underlying objects, materials, lights, cameras, and renderer APIs. Verify optional Drei helpers against their own documentation and installed version.
+
+### Components and Next.js integration
+
+- Isolate `Canvas`, scene hooks, and browser interactions in a focused Client Component; keep surrounding layouts and content server-rendered. If a dependency requires disabling SSR, use `next/dynamic` with `ssr: false` from a Client Component and check the installed Next.js lazy-loading guide first.
+- Give the canvas container explicit dimensions. Provide loading, asset-error, and unsupported-renderer fallbacks, plus accessible DOM content and controls for essential information. See the [Canvas API](https://r3f.docs.pmnd.rs/api/canvas).
+- Call `useFrame`, `useThree`, and other Fiber context hooks only in components rendered inside `Canvas`. Use `useThree` selectors for the state actually needed; nested Three.js object mutations are not reactive. See [hooks](https://r3f.docs.pmnd.rs/api/hooks).
+- Describe scene structure declaratively with meshes, geometry/material children, tuple props, and constructor `args`. Avoid creating new Three.js objects in JSX on each render. Use typed refs and the installed Fiber TypeScript types instead of `any`. See [objects and properties](https://r3f.docs.pmnd.rs/api/objects).
+
+### Animation, assets, and performance
+
+- Use `useFrame` and refs for transient animation; scale movement by `delta` and use frame-rate-independent damping. Keep React state for discrete UI changes; avoid `setState` or reactive store updates every frame or pointer move. Reuse scratch vectors and other objects instead of allocating in the frame loop. See [performance pitfalls](https://r3f.docs.pmnd.rs/advanced/pitfalls).
+- Load reusable assets with `useLoader` or compatible Drei helpers such as `useGLTF`, with appropriate Suspense boundaries. Loaded assets are cached by URL: avoid mutating or disposing shared resources while consumers still use them, and clone object hierarchies when separate instances are required.
+- Understand resource ownership and cleanup. Fiber normally disposes declaratively managed objects on unmount; objects passed through `primitive` need explicit ownership handling. Clean up manually owned GPU resources, listeners, and timers; use `dispose={null}` only when shared-resource lifetime is deliberately managed. See [objects and disposal](https://r3f.docs.pmnd.rs/api/objects).
+- Reuse geometries/materials and instance repeated meshes where useful. Avoid unnecessary remounts, and measure draw calls, resolution, shadows, and postprocessing costs on target devices. See [scaling performance](https://r3f.docs.pmnd.rs/advanced/scaling-performance).
+- For scenes that become idle, consider `frameloop="demand"`; call `invalidate()` after imperative changes and while animations need frames. Use continuous rendering when the scene requires it, and respect reduced-motion preferences.
+- Validate 3D changes in the browser: check sizing, camera controls, pointer/keyboard interactions, loading and failure states, console errors, and performance on mobile and desktop. Lint/build success alone does not verify a scene.
+
 ## Validation
 
 - For application code changes, run the repository's `npm run lint` and `npm run build` scripts, plus focused checks appropriate to the change. Report failures and any checks you could not run.

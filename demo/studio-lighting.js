@@ -43,17 +43,20 @@ export function createStudioEnvironment(renderer) {
     return 0.015 + 2.2 * spread * (1 - smooth(0.18, 0.48, v));
   });
   addPanel(18, 20, new THREE.Vector3(7, 3, 0), sideTarget, (u, v) => {
-    const spread = smooth(0.02, 0.2, u) * (1 - smooth(0.8, 0.98, u));
-    return 0.015 + 2 * spread * smooth(0.25, 0.58, v);
+    // Offset the card beyond the broad front-wall reflection; retain edge glints.
+    const strip = smooth(0.58, 0.62, u) * (1 - smooth(0.65, 0.69, u));
+    const lengthFade = smooth(0.12, 0.45, v) * (1 - smooth(0.8, 1, v));
+    return 0.005 + 5.5 * strip * lengthFade;
   });
   addPanel(14, 18, new THREE.Vector3(0, 13, 0), capturePosition, (u, v) => {
     const lengthFade = smooth(0.02, 0.18, v) * (1 - smooth(0.82, 0.98, v));
-    return 0.02 + 2.8 * smooth(0.4, 0.66, u) * lengthFade;
+    const strip = smooth(0.51, 0.56, u) * (1 - smooth(0.62, 0.69, u));
+    return 0.005 + 4.8 * strip * lengthFade;
   });
   // A high strip in front catches the bevels without washing out the side walls.
   addPanel(14, 20, new THREE.Vector3(0, 3, 9), sideTarget, (u, v) => {
-    const upperStrip = smooth(0.52, 0.72, v) * (1 - smooth(0.92, 1, v));
-    return 0.015 + 5 * upperStrip * (0.6 + 0.4 * smooth(0.3, 0.7, u));
+    const upperStrip = smooth(0.56, 0.63, v) * (1 - smooth(0.7, 0.77, v));
+    return 0.005 + 6.25 * upperStrip * (0.6 + 0.4 * smooth(0.3, 0.7, u));
   });
 
   const pmrem = new THREE.PMREMGenerator(renderer);
