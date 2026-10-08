@@ -1,9 +1,9 @@
 # TACTIC logo model
 
 `../assets/tactic-mark.glb` is a genuine indexed glTF 2.0 binary model with two
-beveled meshes. The six-corner footprints are traced from the two actual white
-shapes in the original `assets/1.jpg`; the demo SVG is not used. The vertical
-prisms echo the architecture in `assets/5.png` and the glass reference
+beveled meshes, each a solid closed prism. The six-corner footprints are traced
+from the two actual white shapes in the original `assets/1.jpg`; the demo SVG is
+not used. The vertical prisms echo the architecture in `assets/5.png` and the glass reference
 `assets/example-hero-object-from-logo.jpg`.
 
 The model uses Y-up coordinates. Image X maps to X; image Y maps to Z, so the upper
@@ -21,20 +21,31 @@ units: the front is only 0.47% smaller. Both have approximately 1.14-unit stroke
 and corresponding long outside edges of approximately 3.262 units. No perspective
 scaling is baked into the geometry.
 
-Each mesh has indexed triangles, positions and normals, and forms a closed,
-consistently wound volume. PBR materials are glass: metalness 0, roughness 0.045,
+The scene has two root meshes, `TACTIC_Green_Rear` and `TACTIC_Red_Front`, at
+mesh/node indices 0 and 1. Each prism has its own glass material for body-wide
+hover.
+The nodes have no individual transform that changes the original footprint.
+
+Each mesh has indexed triangles, positions, normals, and `TEXCOORD_0`, and is
+independently a closed, consistently wound manifold with positive signed volume.
+Normals point outward, with top caps facing +Y and bottom caps facing -Y.
+Wall UV U follows horizontal distance along each straight segment, normalized
+to that segment; V is Y/6.6 so face fades share a height coordinate. Cap UVs use
+the original footprint's planar XZ bounds. These UVs are available for the
+hero's separate white-to-transparent face overlay.
+
+PBR materials are glass: metalness 0, roughness 0.045,
 transmission 1, opacity 1, and IOR 1.28. `KHR_materials_transmission`,
 `KHR_materials_volume`, and `KHR_materials_ior` encode these properties in the GLB.
 The surface base color and volume attenuation are both neutral white, producing
 clear glass that preserves the color of incoming light. Original brand colors
 `#16913b` and `#d61932` remain in material extras for the hero's green/rear and
 red/front hover effect. Scene lights and reflections can tint the clear glass
-independently. Thickness 0.45 and attenuation distance 8 provide an optical approximation
-for the real-time renderer, rather than exact ray traversal through the tall
-geometry. `alphaMode` remains `OPAQUE`: transmission handles optical transparency,
-while opacity keeps the physical surface fully present. `doubleSided` lets the
-Three.js transmission pass draw the reverse glass boundary for visible interior
-edges. No textures or external buffers are required.
+independently. Thickness 0.45 and attenuation distance 8 provide an optical
+approximation for the real-time renderer, rather than exact ray traversal through
+the tall geometry. `alphaMode` remains `OPAQUE`: transmission handles optical transparency,
+while opacity keeps the physical surface fully present. `doubleSided` renders
+both sides of each surface. No textures or external buffers are required.
 
 The hero's scene background and reflection lighting influence glass appearance.
 Three.js screen-space transmission approximates glass viewed through another
@@ -60,11 +71,12 @@ the needed files. It does not install dependencies into the application.
 Vendor files remain unchanged and retain their MIT license.
 
 The validator checks binary structure, accessor bounds and alignment, indices,
-finite coordinates, unit normals, triangle winding, non-degenerate triangles,
-cap directions and heights, closed manifold edges, unchanged source footprint and
-gap, encoded/runtime glass properties, vendored source hashes, and parsing
-with the actual official GLTFLoader. It imports RoomEnvironment and Reflector to
-ensure their complete local dependency chains resolve. Browser rendering is
+finite coordinates and UVs, unit normals, triangle winding, non-degenerate
+triangles, cap directions and heights, two independently closed manifolds,
+positive signed volumes, unchanged source footprint and gap, encoded/runtime
+glass properties, vendored source hashes, and parsing with the actual official
+GLTFLoader. It imports RoomEnvironment and Reflector to ensure their complete
+local dependency chains resolve. Browser rendering is
 validated by the hero integration separately.
 
 ## Browser imports
