@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Preserve the byte-identical, licensed Three.js distribution.
+    "demo/vendor/**",
   ]),
 ]);
 

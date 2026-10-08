@@ -12,3 +12,4 @@ package-lock.json
 
 # Imported assets
 assets/
+demo/vendor/

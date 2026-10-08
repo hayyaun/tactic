@@ -274,21 +274,17 @@ img {
 }
 
 .hero {
-  --sculpture-size: clamp(840px, 100svh, 1080px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
   height: 100svh;
-  min-height: 800px;
+  min-height: 880px;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 132px 24px 0;
   text-align: center;
-  background:
-    radial-gradient(ellipse at 20% 80%, #a5c68758, transparent 48%),
-    radial-gradient(ellipse at 82% 80%, #e2ad9d68, transparent 49%),
-    linear-gradient(180deg, #f8f8f1 20%, #efefe5 100%);
+  background: var(--bg);
 }
 .hero-signature {
   position: absolute;
@@ -314,69 +310,35 @@ img {
 }
 .hero-art {
   position: absolute;
-  z-index: -1;
-  width: var(--sculpture-size);
-  height: calc(var(--sculpture-size) * 720 / 650);
+  z-index: 0;
+  width: min(100%, 1180px);
   left: 50%;
-  top: calc(460px - var(--sculpture-size) * 116 / 650);
+  top: 455px;
+  bottom: 0;
   transform: translateX(-50%);
   pointer-events: none;
 }
-.scene-aura {
-  position: absolute;
-  width: 90%;
-  height: 64%;
-  border-radius: 50%;
-  filter: blur(65px);
-  pointer-events: none;
-}
-.aura-green {
-  left: -33%;
-  top: -1%;
-  background: radial-gradient(
-    ellipse,
-    #dce6bda6,
-    #b2cb9480 24%,
-    #a5bc8745 48%,
-    transparent 73%
-  );
-}
-.aura-coral {
-  right: -30%;
-  top: 4%;
-  background: radial-gradient(
-    ellipse,
-    #f7dbc5a3,
-    #e5b49b77 25%,
-    #ca91864a 49%,
-    transparent 73%
-  );
-}
-.scene-orbit {
-  position: absolute;
-  left: -8%;
-  right: -8%;
-  top: 18%;
-  height: 47%;
-  border-radius: 50%;
-  border: 1px solid #66755412;
-  transform: rotate(-24deg);
-  mask-image: linear-gradient(90deg, transparent, #0009, transparent);
-}
-.sculpture-wrap {
+.hero-canvas,
+.hero-model-fallback {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-}
-.sculpture {
   width: 100%;
   height: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: visible;
-  filter: drop-shadow(0 25px 35px #4f634126);
-  animation: scene-float 20s ease-in-out infinite;
+}
+.hero-canvas {
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.hero-model-fallback {
+  object-fit: contain;
+  padding: 50px 0 80px;
+  opacity: 0.8;
+}
+.hero-art[data-state="ready"] .hero-canvas {
+  opacity: 1;
+}
+.hero-art[data-state="ready"] .hero-model-fallback {
+  visibility: hidden;
 }
 .hero-copy {
   position: relative;
@@ -404,7 +366,7 @@ h1 {
   color: #6a895d;
 }
 .hero-description {
-  margin-top: 23px;
+  margin-top: 17px;
   font-size: 12px;
   line-height: 1.85;
   color: #637065;
@@ -416,7 +378,7 @@ h1 {
   background: #334c3b;
   color: #f6f8f0;
   padding: 13px 20px;
-  margin-top: 26px;
+  margin-top: 20px;
   border-radius: 28px;
   font-size: 11px;
   transition:
@@ -927,15 +889,6 @@ textarea {
   margin-top: 22px;
 }
 
-@keyframes scene-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
 @media (max-width: 359px) {
   .site-header {
     padding: 0 8px 0 12px;
@@ -993,11 +946,11 @@ textarea {
     font-size: 9px;
   }
   .hero-description {
-    margin-top: 20px;
+    margin-top: 16px;
     font-size: 13px;
   }
   .hero-cta {
-    margin-top: 22px;
+    margin-top: 18px;
     font-size: 12px;
     padding: 14px 23px;
   }
@@ -1076,7 +1029,7 @@ textarea {
     max-width: 1180px;
   }
   .hero-art {
-    top: calc(405px - var(--sculpture-size) * 116 / 650);
+    top: 360px;
   }
   h1 {
     display: flex;
@@ -1189,6 +1142,47 @@ textarea {
   }
   .footer-meta > span:first-child {
     flex: none;
+  }
+}
+/* Keep the upper glass forms visible in a short design-preview panel. */
+@media (max-height: 740px) and (max-width: 700px) {
+  .hero {
+    min-height: 560px;
+    padding-top: 105px;
+  }
+  .hero h1 {
+    font-size: 34px;
+  }
+  .hero-copy .eyebrow {
+    font-size: 7px;
+    margin-bottom: 9px;
+  }
+  .hero-description {
+    margin-top: 10px;
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .hero-cta {
+    margin-top: 12px;
+    padding: 10px 18px;
+    font-size: 10px;
+  }
+  .hero-art {
+    top: 290px;
+    bottom: 8px;
+  }
+  .hero-signature,
+  .hero-footer {
+    bottom: 18px;
+  }
+  .hero-signature {
+    left: 24px;
+  }
+  .hero-signature > span:last-child {
+    display: none;
+  }
+  .hero-footer {
+    right: 24px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
