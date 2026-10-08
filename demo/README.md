@@ -10,7 +10,7 @@ From the repository root, open http://localhost:4173.
 
 ## Design direction
 
-Dark and sculptural: centered copy above an oversized TACTIC mark, cropped at the bottom of the opening scene. Broad sage and coral light, brighter material reflections, faded dividers, and filled controls give the scene a quiet presence. The floating header stays visible from the start. A custom SVG sculpture interprets the paired diagonal TACTIC marks.
+Light and sculptural: warm ivory surfaces, dark green typography, sage and coral accents, faded dividers, and filled controls. Centered desktop copy sits above the oversized TACTIC mark, showing more of both forms while cropping their lower edges. Soft daylight and brighter material reflections give the scene a quiet presence. The floating header stays visible from the start. A custom SVG sculpture interprets the paired diagonal TACTIC marks; the favicon uses both original brand colors.
 
 The abilities section takes composition inspiration from `assets/example-section.jpg`, with original TACTIC concept boards for brand and design, web and app design/development, and AI advertising films. The three brand explorations use supplied artwork. All boards are studio concepts; they are not client projects. Studio and capabilities text is draft copy for design review.
 
