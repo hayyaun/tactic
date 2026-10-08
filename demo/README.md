@@ -10,7 +10,7 @@ From the repository root, open http://localhost:4173.
 
 ## Design direction
 
-Light and sculptural: a neutral ivory stage, dark typography, and distinct green/red glass towers. Centered desktop copy sits above the upper faces; the tall lower ends extend beyond the viewport. The actual white silhouette in `assets/1.jpg` supplies the two base footprints, extruded upward with beveled edges into `assets/tactic-mark.glb`. Their height and close composition follow `assets/example-hero-object-from-logo.jpg`. A lower orthographic view preserves the original base spacing and makes the two forms read as one mark. Physical transmission, colored volume absorption, neutral studio lighting, luminous cards behind the glass, and real reflections define the surfaces. The floating header stays visible from the start; the favicon uses both original brand colors.
+Dark and sculptural: a charcoal stage, ivory typography, and two clear glass towers, framed by green light on the left and red light on the right. Centered desktop copy sits above the upper faces; the tall lower ends extend beyond the viewport. The actual white silhouette in `assets/1.jpg` supplies the two nearly identical base footprints, extruded upward with beveled edges into `assets/tactic-mark.glb`. Both forms are 4.6 units tall. Their close composition follows `assets/example-hero-object-from-logo.jpg`. A lower orthographic view preserves the original base spacing and gives the front form more visible height. Physical transmission, neutral studio panels, side lights, and real reflections define the surfaces. The floating header stays visible from the start; the favicon uses both original brand colors.
 
 The abilities section takes composition inspiration from `assets/example-section.jpg`, with original TACTIC concept boards for brand and design, web and app design/development, and AI advertising films. The three brand explorations use supplied artwork. All boards are studio concepts; they are not client projects. Studio and capabilities text is draft copy for design review.
 
@@ -18,6 +18,7 @@ The abilities section takes composition inspiration from `assets/example-section
 
 - Always-visible floating navigation, responsive menu, section links, and back-to-top link.
 - Subtle 3D parallax, paused offscreen and when the page is hidden. Reduced-motion preference keeps the model still. A two-color mark remains visible while loading or if WebGL is unavailable.
+- Mesh-only raycasting adds a green volume tint to the rear form or a red tint to the front form while hovered. The nearest surface wins where forms overlap. The GLB has neutral white surface and volume colors at rest; background and side-light reflections remain visible in the clear glass. Hover transitions become immediate under reduced motion, and leaving or blurring the scene restores clear glass.
 - Three capability boards with accessible tabs, arrow-key navigation, Home/End, and visible focus.
 - Brand-study dialogs with keyboard dismissal and focus restoration.
 - Project-enquiry dialog with field validation and a copyable brief. It does not send or persist data. A real studio inbox or submission endpoint must be supplied before launch.

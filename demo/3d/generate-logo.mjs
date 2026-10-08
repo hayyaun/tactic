@@ -100,7 +100,8 @@ for (const component of outline.shapes) {
     max: [Math.max(...indices)],
   });
 
-  // Colored bulk glass uses a neutral boundary and absorbs light in its volume.
+  // Default clear glass has a neutral boundary and neutral volume absorption.
+  // Original brand colors stay in extras for the hero's interactive hover tint.
   // glTF attenuation factors are linear RGB; CSS source colors are sRGB.
   const glass = component.glass;
   const attenuation = new Color(glass.attenuationColor);

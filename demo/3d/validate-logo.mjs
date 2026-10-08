@@ -92,8 +92,8 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
   const component = outline.shapes[meshIndex];
   assert.equal(
     component.height,
-    meshIndex === 0 ? 4.6 : 4.3,
-    "Taller reference proportions",
+    4.6,
+    "Equal extrusion heights balance the original paired footprint",
   );
   assert.equal(mesh.name, component.name);
   assert.equal(document.nodes[meshIndex].mesh, meshIndex);
@@ -233,6 +233,16 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
   assert.equal(material.extensions.KHR_materials_volume.thicknessFactor, 0.9);
   assert.equal(material.extensions.KHR_materials_volume.attenuationDistance, 3);
   const attenuation = new Color(component.glass.attenuationColor);
+  assert.equal(
+    component.glass.attenuationColor,
+    "#ffffff",
+    "Default glass is neutral",
+  );
+  assert.deepEqual(
+    material.extensions.KHR_materials_volume.attenuationColor,
+    [1, 1, 1],
+    "Neutral volume preserves incoming light color",
+  );
   assert.deepEqual(
     material.extensions.KHR_materials_volume.attenuationColor,
     [attenuation.r, attenuation.g, attenuation.b],
@@ -284,6 +294,11 @@ for (let index = 0; index < loadedMeshes.length; index++) {
   assert.equal(material.thickness, 0.9, "Runtime volume");
   assert.equal(material.attenuationDistance, 3, "Runtime absorption distance");
   assert.equal(material.ior, 1.5, "Runtime glass IOR");
+  assert.equal(
+    material.userData.sourceBrandColorSRGB,
+    outline.shapes[index].color,
+    "Original brand color remains available for hover",
+  );
   assert.equal(
     material.side,
     DoubleSide,

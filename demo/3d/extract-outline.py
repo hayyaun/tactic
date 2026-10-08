@@ -137,9 +137,9 @@ def main() -> None:
         output["shapes"].append({
             "name": "TACTIC_Green_Rear" if index == 0 else "TACTIC_Red_Front",
             "color": "#16913b" if index == 0 else "#d61932",
-            "height": 4.6 if index == 0 else 4.3,
+            "height": 4.6,
             "glass": {
-                "attenuationColor": "#0e713b" if index == 0 else "#a70716",
+                "attenuationColor": "#ffffff",
                 "attenuationDistance": 3.0,
                 "thickness": 0.9,
                 "ior": 1.5,

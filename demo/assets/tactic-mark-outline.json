@@ -31,7 +31,7 @@
       "color": "#16913b",
       "height": 4.6,
       "glass": {
-        "attenuationColor": "#0e713b",
+        "attenuationColor": "#ffffff",
         "attenuationDistance": 3.0,
         "thickness": 0.9,
         "ior": 1.5,
@@ -94,9 +94,9 @@
     {
       "name": "TACTIC_Red_Front",
       "color": "#d61932",
-      "height": 4.3,
+      "height": 4.6,
       "glass": {
-        "attenuationColor": "#a70716",
+        "attenuationColor": "#ffffff",
         "attenuationDistance": 3.0,
         "thickness": 0.9,
         "ior": 1.5,

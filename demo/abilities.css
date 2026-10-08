@@ -35,7 +35,7 @@
   letter-spacing: -0.055em;
 }
 .ability-heading h2 > span {
-  color: #788575;
+  color: var(--muted);
 }
 .ability-introduction {
   max-width: 380px;
@@ -54,25 +54,26 @@
   padding: 14px 22px;
   border: 1px solid transparent;
   border-radius: 50px;
-  background: #e8ece2;
-  color: #52614f;
+  background: rgb(255 255 255 / 4%);
+  color: var(--muted);
   font-size: 12px;
   transition:
     color 180ms,
     background 180ms;
 }
 .ability-tab:hover {
-  background: #dde5d4;
+  background: rgb(255 255 255 / 8%);
   color: var(--text);
 }
 .ability-tab[aria-selected="true"] {
   background: var(--green);
-  color: #f6f7ef;
+  color: var(--bg);
 }
 .ability-tab[aria-selected="true"]:hover {
-  background: #355539;
+  background: color-mix(in srgb, var(--green) 88%, var(--text));
 }
 .ability-tab:focus-visible,
+.ability-panel:focus-visible,
 .ability-contact:focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 4px;
@@ -107,6 +108,7 @@
 }
 .ability-board {
   display: grid;
+  color: var(--ability-carbon);
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 12px;
 }
@@ -895,15 +897,15 @@
   gap: 24px;
   padding: 17px 22px;
   border-radius: 50px;
-  background: var(--green);
-  color: #f6f7ef;
+  background: var(--text);
+  color: var(--bg);
   font-size: 12px;
   transition:
     background 180ms,
     transform 180ms;
 }
 .ability-contact:hover {
-  background: #355539;
+  background: color-mix(in srgb, var(--text) 90%, var(--green));
   transform: translateY(-2px);
 }
 .ability-contact svg {
