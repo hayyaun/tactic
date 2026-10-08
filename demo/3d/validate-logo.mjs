@@ -92,7 +92,7 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
   const component = outline.shapes[meshIndex];
   assert.equal(
     component.height,
-    4.6,
+    6.6,
     "Equal extrusion heights balance the original paired footprint",
   );
   assert.equal(mesh.name, component.name);
@@ -213,7 +213,7 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
   }
   const material = document.materials[meshIndex];
   assert.equal(material.pbrMetallicRoughness.metallicFactor, 0);
-  assert.equal(material.pbrMetallicRoughness.roughnessFactor, 0.1);
+  assert.equal(material.pbrMetallicRoughness.roughnessFactor, 0.045);
   assert.deepEqual(
     material.pbrMetallicRoughness.baseColorFactor,
     [1, 1, 1, 1],
@@ -230,8 +230,8 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
     material.extensions.KHR_materials_transmission.transmissionFactor,
     1,
   );
-  assert.equal(material.extensions.KHR_materials_volume.thicknessFactor, 0.9);
-  assert.equal(material.extensions.KHR_materials_volume.attenuationDistance, 3);
+  assert.equal(material.extensions.KHR_materials_volume.thicknessFactor, 0.45);
+  assert.equal(material.extensions.KHR_materials_volume.attenuationDistance, 8);
   const attenuation = new Color(component.glass.attenuationColor);
   assert.equal(
     component.glass.attenuationColor,
@@ -248,7 +248,7 @@ for (let meshIndex = 0; meshIndex < document.meshes.length; meshIndex++) {
     [attenuation.r, attenuation.g, attenuation.b],
     "Linear volume absorption tint",
   );
-  assert.equal(material.extensions.KHR_materials_ior.ior, 1.5);
+  assert.equal(material.extensions.KHR_materials_ior.ior, 1.28);
   details.push({
     name: mesh.name,
     vertices: positions.length / 3,
@@ -290,10 +290,10 @@ for (let index = 0; index < loadedMeshes.length; index++) {
   assert.equal(material.transmission, 1, "Runtime transmission");
   assert.equal(material.opacity, 1, "Runtime surface coverage");
   assert.equal(material.metalness, 0, "Runtime dielectric");
-  assert.equal(material.roughness, 0.1, "Runtime glass polish");
-  assert.equal(material.thickness, 0.9, "Runtime volume");
-  assert.equal(material.attenuationDistance, 3, "Runtime absorption distance");
-  assert.equal(material.ior, 1.5, "Runtime glass IOR");
+  assert.equal(material.roughness, 0.045, "Runtime glass polish");
+  assert.equal(material.thickness, 0.45, "Runtime volume");
+  assert.equal(material.attenuationDistance, 8, "Runtime absorption distance");
+  assert.equal(material.ior, 1.28, "Runtime glass IOR");
   assert.equal(
     material.userData.sourceBrandColorSRGB,
     outline.shapes[index].color,

@@ -29,14 +29,14 @@
     {
       "name": "TACTIC_Green_Rear",
       "color": "#16913b",
-      "height": 4.6,
+      "height": 6.6,
       "glass": {
         "attenuationColor": "#ffffff",
-        "attenuationDistance": 3.0,
-        "thickness": 0.9,
-        "ior": 1.5,
+        "attenuationDistance": 8.0,
+        "thickness": 0.45,
+        "ior": 1.28,
         "transmission": 1.0,
-        "roughness": 0.1
+        "roughness": 0.045
       },
       "outlinePixels": [
         [
@@ -94,14 +94,14 @@
     {
       "name": "TACTIC_Red_Front",
       "color": "#d61932",
-      "height": 4.6,
+      "height": 6.6,
       "glass": {
         "attenuationColor": "#ffffff",
-        "attenuationDistance": 3.0,
-        "thickness": 0.9,
-        "ior": 1.5,
+        "attenuationDistance": 8.0,
+        "thickness": 0.45,
+        "ior": 1.28,
         "transmission": 1.0,
-        "roughness": 0.1
+        "roughness": 0.045
       },
       "outlinePixels": [
         [

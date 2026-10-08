@@ -9,7 +9,7 @@ prisms echo the architecture in `assets/5.png` and the glass reference
 The model uses Y-up coordinates. Image X maps to X; image Y maps to Z, so the upper
 rear shape is at negative Z. Both parts share the original relative position and
 uniform scale. The footprint is 4 by approximately 5.412 units. Both forms are
-4.6 units high and based at Y=0, balancing the original pair's nearly equal
+6.6 units high and based at Y=0, balancing the original pair's nearly equal
 footprints. These heights are interpreted rather than source measurements. The
 minimum traced footprint gap remains approximately 0.36681 units, or 9.17% of the
 overall width. No individual translation or independent centering is applied.
@@ -22,14 +22,14 @@ and corresponding long outside edges of approximately 3.262 units. No perspectiv
 scaling is baked into the geometry.
 
 Each mesh has indexed triangles, positions and normals, and forms a closed,
-consistently wound volume. PBR materials are glass: metalness 0, roughness 0.10,
-transmission 1, opacity 1, and IOR 1.5. `KHR_materials_transmission`,
+consistently wound volume. PBR materials are glass: metalness 0, roughness 0.045,
+transmission 1, opacity 1, and IOR 1.28. `KHR_materials_transmission`,
 `KHR_materials_volume`, and `KHR_materials_ior` encode these properties in the GLB.
 The surface base color and volume attenuation are both neutral white, producing
 clear glass that preserves the color of incoming light. Original brand colors
 `#16913b` and `#d61932` remain in material extras for the hero's green/rear and
 red/front hover effect. Scene lights and reflections can tint the clear glass
-independently. Thickness 0.9 and attenuation distance 3 provide an optical approximation
+independently. Thickness 0.45 and attenuation distance 8 provide an optical approximation
 for the real-time renderer, rather than exact ray traversal through the tall
 geometry. `alphaMode` remains `OPAQUE`: transmission handles optical transparency,
 while opacity keeps the physical surface fully present. `doubleSided` lets the

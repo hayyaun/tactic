@@ -16,11 +16,11 @@ async function createScene() {
     preserveDrawingBuffer: true,
     powerPreference: "low-power",
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 0.9;
-  renderer.transmissionResolutionScale = 0.75;
+  renderer.transmissionResolutionScale = 1;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;
 
@@ -31,21 +31,25 @@ async function createScene() {
   const room = new RoomEnvironment();
   room.traverse((object) => {
     if (object.material?.isMeshStandardMaterial) {
-      object.material.color.set("#232524");
+      object.material.color.set("#818780");
     }
   });
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const environment = pmrem.fromScene(room, 0.04);
-  scene.environment = environment.texture;
-  scene.environmentIntensity = 0.85;
-  room.dispose();
-  pmrem.dispose();
+  const overheadPanel = new THREE.Mesh(
+    new THREE.PlaneGeometry(12, 10),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(2, 2, 2),
+      side: THREE.DoubleSide,
+    }),
+  );
+  overheadPanel.rotation.x = -Math.PI / 2;
+  overheadPanel.position.set(0, 10, -3);
+  room.add(overheadPanel);
 
   const camera = new THREE.OrthographicCamera(-5, 5, 3.2, -3.2, 0.1, 200);
-  // A lower, parallel view pulls the logo halves together without changing 1.jpg.
-  // Aim above their bases so the tall lower ends continue beyond the viewport.
-  camera.position.set(4, 30, 55);
-  camera.lookAt(0, 4.4, 0);
+  // Tall walls and a forward tilt reveal the broad faces in the concept reference.
+  // The parallel view keeps both original logo footprints at equal scale.
+  camera.position.set(4, 36, 55);
+  camera.lookAt(0, 6.45, 0);
 
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.75);
   keyLight.position.set(-4, 10, 6);
@@ -77,24 +81,51 @@ async function createScene() {
   redLight.position.set(6, 5, 2);
   scene.add(redLight);
 
-  // Real luminous cards behind the glass are sampled by the transmission pass.
-  // Their narrow profile gives the volume a clear light source to refract.
+  // Softboxes belong to the reflection environment, never the visible backdrop.
+  const softbox = document.createElement("canvas");
+  softbox.width = 256;
+  softbox.height = 1024;
+  const softboxContext = softbox.getContext("2d");
+  softboxContext.fillStyle = "#101211";
+  softboxContext.fillRect(0, 0, softbox.width, softbox.height);
+  softboxContext.scale(1, 4);
+  const softGlow = softboxContext.createRadialGradient(
+    128,
+    128,
+    0,
+    128,
+    128,
+    128,
+  );
+  softGlow.addColorStop(0, "rgba(255, 255, 255, 0.6)");
+  softGlow.addColorStop(0.3, "rgba(255, 255, 255, 0.4)");
+  softGlow.addColorStop(0.7, "rgba(255, 255, 255, 0.12)");
+  softGlow.addColorStop(1, "rgba(255, 255, 255, 0)");
+  softboxContext.fillStyle = softGlow;
+  softboxContext.fillRect(0, 0, 256, 256);
+  const softboxTexture = new THREE.CanvasTexture(softbox);
+  softboxTexture.colorSpace = THREE.SRGBColorSpace;
   const lightCards = new THREE.Group();
-  for (const [x, width] of [
-    [-1.6, 0.1],
-    [1.3, 0.22],
-  ]) {
+  for (const x of [-6, 6]) {
     const card = new THREE.Mesh(
-      new THREE.PlaneGeometry(width, 4),
+      new THREE.PlaneGeometry(4, 10),
       new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0.35, 0.35, 0.35),
+        map: softboxTexture,
+        color: new THREE.Color(8, 8, 8),
+        dithering: true,
         side: THREE.DoubleSide,
       }),
     );
-    card.position.set(x, 2, -3.2);
+    card.position.set(x, 7, 10);
     lightCards.add(card);
   }
-  scene.add(lightCards);
+  room.add(lightCards);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const environment = pmrem.fromScene(room, 0.04);
+  scene.environment = environment.texture;
+  scene.environmentIntensity = 1.35;
+  room.dispose();
+  pmrem.dispose();
 
   // A second camera renders the object into the floor reflection.
   const reflectionShader = {
@@ -106,8 +137,8 @@ async function createScene() {
     ),
   };
   const reflection = new Reflector(new THREE.PlaneGeometry(24, 24), {
-    textureWidth: 768,
-    textureHeight: 768,
+    textureWidth: 1024,
+    textureHeight: 1024,
     multisample: 2,
     clipBias: 0.003,
     shader: reflectionShader,
@@ -131,6 +162,21 @@ async function createScene() {
 
   const gltf = await new GLTFLoader().loadAsync("assets/tactic-mark.glb");
   const model = gltf.scene;
+  const sculpture = new THREE.Group();
+  const modelBounds = new THREE.Box3().setFromObject(model);
+  const centerY = (modelBounds.min.y + modelBounds.max.y) / 2;
+  sculpture.position.y = centerY;
+  sculpture.rotation.x = THREE.MathUtils.degToRad(12);
+  model.position.y = -centerY;
+  sculpture.add(model);
+  sculpture.updateMatrixWorld(true);
+  const floorOffset = Math.max(
+    0,
+    -new THREE.Box3().setFromObject(sculpture).min.y,
+  );
+  sculpture.position.y += floorOffset;
+  camera.position.y += floorOffset;
+  camera.lookAt(0, 6.45 + floorOffset, 0);
   const pickableMeshes = [];
   const hoverBodies = [];
   const glassProperties = [];
@@ -142,31 +188,51 @@ async function createScene() {
     object.castShadow = false;
     object.receiveShadow = false;
     object.material.envMapIntensity = 1;
+    object.material.dithering = true;
     glassProperties.push({
       transmission: object.material.transmission,
       thickness: object.material.thickness,
       ior: object.material.ior,
       attenuationDistance: object.material.attenuationDistance,
     });
-    // Fine creases keep the glass boundaries readable against the pale stage.
-    const edges = new THREE.LineSegments(
-      new THREE.EdgesGeometry(object.geometry, 12),
+    // Faint rear creases remain visible through the physical front surface.
+    const edgeGeometry = new THREE.EdgesGeometry(object.geometry, 12);
+    const innerEdges = new THREE.LineSegments(
+      edgeGeometry,
       new THREE.LineBasicMaterial({
         color: "#f3f7f2",
         transparent: true,
-        opacity: 0.2,
+        opacity: 0.095,
+        depthTest: false,
         depthWrite: false,
       }),
     );
+    innerEdges.renderOrder = 4;
+    object.add(innerEdges);
+    const edges = new THREE.LineSegments(
+      edgeGeometry,
+      new THREE.LineBasicMaterial({
+        color: "#f3f7f2",
+        transparent: true,
+        opacity: 0.36,
+        depthWrite: false,
+      }),
+    );
+    edges.renderOrder = 5;
     object.add(edges);
     hoverBodies.push({
       mesh: object,
       edges,
-      tint: new THREE.Color(object.material.userData.sourceBrandColorSRGB),
+      tint: new THREE.Color(
+        object.name.includes("Rear") ? "#07351b" : "#400e18",
+      ),
       amount: 0,
     });
   });
-  scene.add(model);
+  scene.add(sculpture);
+  stage.dataset.tiltAxis = "x";
+  stage.dataset.tiltDegrees = "12";
+  stage.dataset.renderQuality = "full-resolution-transmission";
   stage.dataset.meshes = String(pickableMeshes.length);
   stage.dataset.engine = `three-r${THREE.REVISION}`;
   stage.dataset.camera = "orthographic";
@@ -216,6 +282,20 @@ async function createScene() {
       context.fillStyle = glow;
       context.fillRect(0, 0, backdrop.width, backdrop.height);
     }
+    // Sub-pixel luminance noise breaks up 8-bit banding in the gentle side glows.
+    const lightField = context.getImageData(
+      0,
+      0,
+      backdrop.width,
+      backdrop.height,
+    );
+    for (let index = 0; index < lightField.data.length; index += 4) {
+      const noise = ((((index * 13) ^ (index >>> 8)) % 7) - 3) * 0.24;
+      for (let channel = 0; channel < 3; channel++) {
+        lightField.data[index + channel] += noise;
+      }
+    }
+    context.putImageData(lightField, 0, 0);
     // Use the same light field in CSS and the transmission background, without seams.
     hero.style.backgroundImage = `url(${backdrop.toDataURL()})`;
     hero.style.backgroundSize = "100% 100%";
@@ -238,6 +318,8 @@ async function createScene() {
     backgroundTexture?.dispose();
     backgroundTexture = new THREE.CanvasTexture(sceneBackdrop);
     backgroundTexture.colorSpace = THREE.SRGBColorSpace;
+    backgroundTexture.generateMipmaps = false;
+    backgroundTexture.minFilter = THREE.LinearFilter;
     scene.background = backgroundTexture;
   }
 
@@ -252,23 +334,23 @@ async function createScene() {
     stage.dataset.hover = hoveredMesh?.name ?? "none";
   }
 
-  function updateGlass(immediate = false) {
+  function updateGlass(immediate = false, delta = 1 / 30) {
     for (const body of hoverBodies) {
       const target = body.mesh === hoveredMesh ? 1 : 0;
       body.amount = immediate
         ? target
-        : THREE.MathUtils.lerp(body.amount, target, 0.14);
+        : THREE.MathUtils.damp(body.amount, target, 1.1, delta);
       if (Math.abs(body.amount - target) < 0.001) body.amount = target;
       body.mesh.material.attenuationColor
         .copy(clearColor)
-        .lerp(body.tint, body.amount);
-      body.mesh.material.emissive
-        .copy(body.tint)
-        .multiplyScalar(body.amount * 0.16);
+        .lerp(body.tint, body.amount * 0.38);
+      body.mesh.material.color
+        .copy(clearColor)
+        .lerp(body.tint, body.amount * 0.12);
       body.edges.material.color
         .copy(edgeColor)
-        .lerp(body.tint, body.amount * 0.75);
-      body.edges.material.opacity = 0.2 + body.amount * 0.22;
+        .lerp(body.tint, body.amount * 0.12);
+      body.edges.material.opacity = 0.36;
     }
     stage.dataset.hoverStrength = JSON.stringify(
       hoverBodies.map((body) => Math.round(body.amount * 1000) / 1000),
@@ -279,8 +361,10 @@ async function createScene() {
     pointerInside = false;
     pointerYaw = 0;
     pickBody();
-    updateGlass(true);
-    renderer.render(scene, camera);
+    if (reducedMotion.matches || !visible || document.hidden) {
+      updateGlass(true);
+      renderer.render(scene, camera);
+    }
   }
 
   function resize() {
@@ -338,7 +422,7 @@ async function createScene() {
         0.06,
       );
       pickBody();
-      updateGlass();
+      updateGlass(false, Math.min((time - lastFrame) / 1000, 0.1));
       renderer.render(scene, camera);
       lastFrame = time;
     }
@@ -362,6 +446,7 @@ async function createScene() {
   resizeObserver.observe(stage);
   const visibilityObserver = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
+    if (!visible) clearHover();
     syncMotion();
   });
   visibilityObserver.observe(stage);
@@ -410,6 +495,7 @@ async function createScene() {
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
     environment.dispose();
+    softboxTexture.dispose();
     backgroundTexture.dispose();
     reflection.dispose();
     scene.traverse((object) => {
