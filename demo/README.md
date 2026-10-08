@@ -33,4 +33,4 @@ WebP files are resized, re-encoded copies of supplied TACTIC assets. Original co
 
 The GLB contains two closed bodies with indexed geometry, UV coordinates, and physical materials. [The model build notes](3d/README.md) cover extraction, generation, and validation. `glass-faces.js` supplies lightweight contours only; `studio-lighting.js` bakes the studio environment, and `studio-reflections.js` applies finite-probe projection to the physical reflection lookup. Three.js 0.186.1 and required addons are vendored locally under `vendor/three`, with their MIT license and registry provenance. No runtime CDN request is needed. Formatting and linting skip the unchanged vendor distribution; authored demo code remains checked.
 
-No Next.js application files or dependencies are changed. This folder is the design review surface; migration can follow once the direction is approved.
+This folder remains the standalone design reference. The migrated Next.js application lives in `app/`; see the root `README.md` for setup, architecture, and validation notes.

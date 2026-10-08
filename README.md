@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TACTIC
 
-## Getting Started
+The TACTIC design demo, migrated to Next.js App Router, Tailwind CSS v4, and React Three Fiber. The original standalone reference remains in `demo/`.
 
-First, run the development server:
+## Run locally
 
-```bash
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. For a production preview, run `npm run build` followed by `npm start`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/page.tsx` and `app/components/capabilities.tsx`: server-rendered studio content and concept boards.
+- `app/components/header.tsx`, `capability-tabs.tsx`, and `interactions.tsx`: responsive navigation, accessible tabs, native dialogs, and project briefs. Static panel content passes from the server into the tab component.
+- `app/components/hero-art.tsx`: client-only, lazy-loaded 3D canvas with a persistent SVG fallback.
+- `app/components/hero-canvas.tsx`: R3F Canvas, cached GLTF loading, and mount/unmount lifecycle. Hooks run inside Canvas. A manual orthographic camera preserves the reference framing across viewport changes.
+- `app/components/three/`: the reference glass contours, finite-probe reflection shader, baked studio environment, and scene controller. Fiber owns the renderer and frame scheduling; GPU rendering is capped at 30fps during transitions and stops when idle, offscreen, or hidden. Each mounted scene clones and disposes its own resources without modifying the loader cache. Listeners and observers are removed on unmount.
+- `app/globals.css`: Tailwind entrypoint and theme tokens. `base.css`, `studio.css`, and `abilities.css` are imported by the root layout in cascade order; detailed art-directed styling stays in base/components layers so utilities can override it.
+- `public/studio/`: local artwork, fonts, brand mark, and GLB. Fonts use `next/font/local`; content images use `next/image`. The Next.js app does not load the demo's vendored Three.js or use a CDN/import map.
 
-## Learn More
+Three.js is pinned to the demo's 0.186.1 release because the custom physical-material shader extension checks its shader chunks. Review that extension and compare the glass appearance before upgrading Three.js. Fiber v9 matches React 19.
 
-To learn more about Next.js, take a look at the following resources:
+## Validation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm run lint
+npm run build
+npm run format:check
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Use `npm run format` to format authored files and sort Tailwind classes. Browser checks should cover mobile/desktop framing, all capability tabs, keyboard navigation, study dialogs, enquiry validation/edit/copy, hover tinting, reduced motion, renderer fallback, and idle/offscreen rendering. See `AGENTS.md` for project conventions.
 
-## Deploy on Vercel
+## Content and launch requirements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form validates locally and prepares a copyable brief; it does not send or persist personal information. Connect a real studio inbox or submission endpoint before launch.

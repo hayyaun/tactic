@@ -1,0 +1,1447 @@
+@layer components {
+  .abilities {
+    --ability-chalk: #e0e2d8;
+    --ability-carbon: #20221e;
+    --ability-green: #abc292;
+    --ability-red: #bd8881;
+    --ability-line: rgb(41 60 41 / 8%);
+    max-width: 1320px;
+    margin-block: clamp(120px, 14vw, 220px);
+  }
+  .ability-heading {
+    max-width: 770px;
+    margin-bottom: 56px;
+  }
+  .ability-kicker,
+  .ability-small-label,
+  .ability-index,
+  .ability-tile-label,
+  .ability-board-note,
+  .ability-film-meta,
+  .ability-film-bottom,
+  .ability-film-title > span {
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+  }
+  .ability-kicker {
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .ability-heading h2 {
+    font-size: clamp(40px, 5.6vw, 76px);
+    font-weight: 400;
+    line-height: 1.09;
+    letter-spacing: -0.055em;
+  }
+  .ability-heading h2 > span {
+    color: var(--muted);
+  }
+  .ability-introduction {
+    max-width: 380px;
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .ability-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 48px;
+  }
+  .ability-tab {
+    padding: 14px 22px;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    background: rgb(255 255 255 / 4%);
+    color: var(--muted);
+    font-size: 12px;
+    transition:
+      color 180ms,
+      background 180ms;
+  }
+  .ability-tab:hover {
+    background: rgb(255 255 255 / 8%);
+    color: var(--text);
+  }
+  .ability-tab[aria-selected="true"] {
+    background: var(--green);
+    color: var(--bg);
+  }
+  .ability-tab[aria-selected="true"]:hover {
+    background: color-mix(in srgb, var(--green) 88%, var(--text));
+  }
+  .ability-tab:focus-visible,
+  .ability-panel:focus-visible,
+  .ability-contact:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 4px;
+  }
+  .ability-panel[hidden] {
+    display: none;
+  }
+  .ability-panel {
+    outline-offset: 10px;
+  }
+  .ability-panel-intro {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr auto;
+    align-items: start;
+    gap: 40px;
+    margin-bottom: 28px;
+  }
+  .ability-panel-intro h3 {
+    font-size: 23px;
+    font-weight: 400;
+    letter-spacing: -0.035em;
+  }
+  .ability-panel-intro > p {
+    max-width: 400px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  .ability-index {
+    color: var(--muted);
+    padding-top: 5px;
+  }
+  .ability-board {
+    display: grid;
+    color: var(--ability-carbon);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .ability-tile {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--ability-line);
+    border-radius: 25px;
+    overflow: hidden;
+  }
+  .ability-tile-label {
+    position: absolute;
+    bottom: 20px;
+    left: 24px;
+    color: inherit;
+    opacity: 0.6;
+  }
+  .ability-brand-board {
+    grid-template-rows: 230px 180px 145px;
+  }
+  .ability-identity {
+    grid-column: 1 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    padding: 44px;
+    background: var(--ability-chalk);
+    color: #272e24;
+  }
+  .ability-identity-mark {
+    width: 65px;
+    height: 91px;
+  }
+  .ability-identity strong {
+    font-size: clamp(43px, 5.2vw, 76px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.075em;
+  }
+  .ability-identity p {
+    font-size: 17px;
+    margin-top: 10px;
+    letter-spacing: -0.04em;
+  }
+  .ability-brand-art {
+    grid-column: 9 / 13;
+    grid-row: 1 / 3;
+    background: #162016;
+    color: #d6e0c7;
+  }
+  .ability-brand-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.52) brightness(0.96);
+  }
+  .ability-poster {
+    grid-column: 1 / 5;
+    grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 28px;
+    background: #9cac86;
+    color: #26301e;
+  }
+  .ability-poster p {
+    position: relative;
+    z-index: 1;
+    margin-block: 20px;
+    font-size: clamp(28px, 3.5vw, 45px);
+    line-height: 1.05;
+    letter-spacing: -0.06em;
+  }
+  .ability-poster p em {
+    font-family: Georgia, serif;
+    font-weight: normal;
+    letter-spacing: -0.07em;
+  }
+  .ability-poster > svg {
+    position: absolute;
+    right: -15px;
+    bottom: 50px;
+    width: 150px;
+    height: 206px;
+    transform: rotate(15deg);
+    opacity: 0.1;
+  }
+  .ability-poster .ability-small-label:last-child {
+    max-width: 200px;
+    font-size: 8px;
+  }
+  .ability-stationery {
+    grid-column: 5 / 9;
+    grid-row: 2;
+    background: linear-gradient(135deg, #282b26, #121612 85%);
+  }
+  .ability-card {
+    position: absolute;
+    width: 57%;
+    aspect-ratio: 1.85;
+    border-radius: 2px;
+    box-shadow: 8px 14px 25px rgb(0 0 0 / 25%);
+  }
+  .ability-card-back {
+    top: 19%;
+    left: 12%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    color: #b5caa4;
+    background: #1d241b;
+    border: 1px solid rgb(184 204 165 / 9%);
+    transform: rotate(-12deg);
+  }
+  .ability-card-back > span {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+  .ability-card-back svg {
+    width: 16px;
+    height: 22px;
+  }
+  .ability-card-front {
+    top: 37%;
+    left: 36%;
+    display: grid;
+    grid-template-columns: 21px 1fr;
+    align-content: center;
+    column-gap: 12px;
+    padding: 17px 21px;
+    color: #25301f;
+    background: #c1cfb4;
+    transform: rotate(11deg);
+  }
+  .ability-card-front svg {
+    grid-row: 1 / 3;
+    width: 21px;
+    height: 29px;
+  }
+  .ability-card-front strong {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.055em;
+  }
+  .ability-card-front > span {
+    font-size: 7px;
+    margin-top: 4px;
+  }
+  .ability-type {
+    grid-column: 5 / 9;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-content: center;
+    column-gap: 15px;
+    padding: 28px;
+    background: #d2d3c8;
+    color: #30342a;
+  }
+  .ability-type strong {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    font-size: 77px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.075em;
+  }
+  .ability-type-sample {
+    max-width: 100px;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .ability-palette {
+    grid-column: 9 / 13;
+    grid-row: 3;
+    display: flex;
+    border: 0;
+  }
+  .ability-swatch {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px 5px;
+    font-family: var(--mono);
+    font-size: 8px;
+  }
+  .ability-swatch-chalk {
+    background: var(--ability-chalk);
+    color: #454c3d;
+  }
+  .ability-swatch-carbon {
+    background: var(--ability-carbon);
+    color: #b1b5a9;
+  }
+  .ability-swatch-green {
+    background: var(--ability-green);
+    color: #3a472f;
+  }
+  .ability-swatch-red {
+    background: var(--ability-red);
+    color: #46332d;
+  }
+  .ability-board-note {
+    margin-top: 15px;
+    color: var(--muted);
+    font-size: 9px;
+  }
+  .ability-digital-board {
+    grid-template-rows: 380px 175px;
+  }
+  .ability-desktop {
+    grid-column: 1 / 9;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 30px 52px;
+    background: radial-gradient(ellipse at 80% 10%, #373b31, #232820 70%);
+    color: #cbd0c2;
+  }
+  .ability-browser {
+    width: 100%;
+    max-width: 700px;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgb(0 0 0 / 23%);
+  }
+  .ability-browser-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: #33372e;
+    font-family: var(--mono);
+    font-size: 7px;
+    color: #9b9f93;
+  }
+  .ability-browser-dots {
+    display: flex;
+    gap: 4px;
+  }
+  .ability-browser-dots i {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #818876;
+  }
+  .ability-web-page {
+    padding: 20px 25px 15px;
+    background: #e4e2d6;
+    color: #454a3b;
+  }
+  .ability-web-nav,
+  .ability-web-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 6px;
+  }
+  .ability-web-nav > strong {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.09em;
+  }
+  .ability-web-content {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+  }
+  .ability-web-content .ability-small-label {
+    font-size: 6px;
+    color: #8a8e7d;
+  }
+  .ability-web-content p {
+    margin-top: 13px;
+    font-size: clamp(22px, 3vw, 39px);
+    line-height: 1.05;
+    letter-spacing: -0.06em;
+  }
+  .ability-web-content p em {
+    font-family: Georgia, serif;
+    font-weight: normal;
+    letter-spacing: -0.06em;
+  }
+  .ability-mock-button {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: #707b61;
+    color: #eff0e6;
+    font-size: 6px;
+  }
+  .ability-object-scene {
+    position: relative;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    height: 180px;
+    background: radial-gradient(ellipse at 50% 0, #e8e8dd, #c8ccba);
+    border-radius: 55% 55% 3px 3px;
+  }
+  .ability-vase {
+    position: absolute;
+    z-index: 2;
+    bottom: 30px;
+    width: 82px;
+    height: 100px;
+    border-radius: 46% 46% 30% 30%;
+    background: linear-gradient(
+      100deg,
+      #869274,
+      #bcc5ab 30%,
+      #a6b095 60%,
+      #667553
+    );
+    box-shadow: inset -5px 0 8px rgb(68 85 54 / 15%);
+  }
+  .ability-vase::before {
+    position: absolute;
+    top: -19px;
+    left: 30px;
+    width: 23px;
+    height: 27px;
+    border-radius: 4px 4px 12% 12%;
+    background: linear-gradient(100deg, #869274, #b8c2a5 35%, #6f7f5b);
+    content: "";
+  }
+  .ability-vase::after {
+    position: absolute;
+    top: -19px;
+    left: 30px;
+    width: 23px;
+    height: 4px;
+    border-radius: 50%;
+    background: #5a684e;
+    box-shadow: inset 0 1px 1px #d1dac3;
+    content: "";
+  }
+  .ability-object-pedestal {
+    position: absolute;
+    bottom: 0;
+    width: 135px;
+    height: 42px;
+    border-radius: 50% 50% 0 0 / 10px 10px 0 0;
+    background: linear-gradient(100deg, #adaf9e, #d9d9cc 40%, #bebead);
+  }
+  .ability-object-shadow {
+    position: absolute;
+    z-index: 1;
+    bottom: 28px;
+    left: 32%;
+    width: 105px;
+    height: 15px;
+    border-radius: 50%;
+    background: #515748;
+    filter: blur(7px);
+    opacity: 0.4;
+  }
+  .ability-object-scene > span {
+    position: absolute;
+    right: 8px;
+    bottom: 7px;
+    z-index: 3;
+    font-size: 5px;
+    color: #676f59;
+  }
+  .ability-web-footer {
+    margin-top: 17px;
+    color: #959988;
+    font-size: 5px;
+  }
+  .ability-mobile {
+    grid-column: 9 / 13;
+    grid-row: 1 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 15px 52px;
+    background: radial-gradient(ellipse at top left, #474c3d, #2c3225);
+    color: #d4dccb;
+  }
+  .ability-phone {
+    width: 225px;
+    max-width: 100%;
+    border: 5px solid #20251b;
+    border-radius: 31px;
+    overflow: hidden;
+    background: #e1e6d8;
+    color: #3a4931;
+    box-shadow:
+      12px 24px 40px rgb(0 0 0 / 25%),
+      inset 0 0 0 1px #4d5741;
+  }
+  .ability-phone-top {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 17px 6px;
+    font-size: 7px;
+  }
+  .ability-phone-content {
+    padding: 20px 18px 16px;
+  }
+  .ability-phone-content > .ability-small-label {
+    font-size: 6px;
+    color: #8d9983;
+  }
+  .ability-phone-content > strong {
+    display: block;
+    margin-top: 11px;
+    font-size: 28px;
+    line-height: 1.06;
+    letter-spacing: -0.065em;
+    font-weight: 400;
+  }
+  .ability-app-orbit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 142px;
+    height: 142px;
+    margin: 24px auto;
+    border: 1px solid #bdc9b0;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 7px rgb(169 190 150 / 9%),
+      0 0 0 15px rgb(169 190 150 / 6%);
+  }
+  .ability-app-orbit > span {
+    font-size: 8px;
+    color: #7a8a6d;
+  }
+  .ability-app-orbit > b {
+    font-size: 47px;
+    line-height: 1.1;
+    font-weight: 300;
+    letter-spacing: -0.07em;
+  }
+  .ability-app-orbit > small {
+    font-size: 6px;
+    color: #8b9980;
+  }
+  .ability-app-task {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+    padding: 11px 8px;
+    border-radius: 8px;
+    background: #d4dec9;
+    font-size: 7px;
+  }
+  .ability-app-task > i {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #9dad8e;
+    border-radius: 50%;
+  }
+  .ability-app-task small {
+    display: block;
+    margin-top: 3px;
+    color: #89977e;
+    font-size: 5px;
+  }
+  .ability-app-task > b {
+    margin-left: auto;
+    font-weight: 400;
+  }
+  .ability-app-nav {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 24px;
+    padding-top: 8px;
+    font-size: 10px;
+    color: #879a78;
+  }
+  .ability-digital-note {
+    grid-column: 1 / 5;
+    grid-row: 2;
+    padding: 28px;
+    background: #c4c9b9;
+    color: #404b34;
+  }
+  .ability-digital-note > svg {
+    position: absolute;
+    top: 26px;
+    right: 25px;
+    width: 22px;
+    height: 31px;
+    opacity: 0.7;
+  }
+  .ability-digital-note p {
+    font-size: 27px;
+    line-height: 1.08;
+    letter-spacing: -0.05em;
+  }
+  .ability-digital-note p em {
+    font-family: Georgia, serif;
+    font-weight: 400;
+  }
+  .ability-digital-note > span {
+    display: block;
+    margin-top: 21px;
+    color: #6f7a63;
+    font-size: 8px;
+  }
+  .ability-components {
+    grid-column: 5 / 9;
+    grid-row: 2;
+    padding: 24px;
+    background: #1f261b;
+    color: #839576;
+  }
+  .ability-components > .ability-small-label {
+    font-size: 8px;
+  }
+  .ability-component-samples {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 21px;
+  }
+  .ability-component-pill {
+    padding: 10px 14px;
+    border-radius: 20px;
+    background: #b4c99f;
+    color: #28331e;
+    font-size: 9px;
+  }
+  .ability-component-circle {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 50%;
+    background: #34422a;
+    color: #afc39d;
+    font-size: 16px;
+  }
+  .ability-component-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 39px;
+    height: 23px;
+    padding: 3px;
+    border-radius: 20px;
+    background: #829c6c;
+  }
+  .ability-component-toggle > i {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #d5e2c8;
+  }
+  .ability-component-lines {
+    display: flex;
+    gap: 5px;
+    margin-top: 15px;
+  }
+  .ability-component-lines > i {
+    width: 36px;
+    height: 3px;
+    border-radius: 3px;
+    background: #485c3b;
+  }
+  .ability-component-lines > i:nth-child(2) {
+    width: 25px;
+    background: #35482a;
+  }
+  .ability-component-lines > i:nth-child(3) {
+    width: 15px;
+    background: #293c1f;
+  }
+  .ability-component-caption {
+    display: block;
+    margin-top: 15px;
+    font-size: 8px;
+  }
+  .ability-film-board {
+    grid-template-rows: 270px 270px;
+  }
+  .ability-film-scene {
+    grid-column: 1 / 9;
+    grid-row: 1 / 3;
+    min-height: 0;
+    background: #352d25;
+    color: #e1d2bc;
+  }
+  .ability-film-meta,
+  .ability-film-bottom {
+    position: absolute;
+    z-index: 4;
+    left: 28px;
+    right: 28px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 8px;
+    color: #c1b59e;
+  }
+  .ability-film-meta {
+    top: 26px;
+  }
+  .ability-film-bottom {
+    bottom: 24px;
+  }
+  .ability-film-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .ability-film-scene::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgb(9 15 12 / 85%),
+      transparent 50%,
+      rgb(9 15 12 / 30%)
+    );
+    pointer-events: none;
+    content: "";
+  }
+  .ability-film-detail-image,
+  .ability-film-atmosphere-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ability-film-detail-image {
+    transform: scale(2.25);
+    transform-origin: 52% 54%;
+  }
+  .ability-film-atmosphere-image {
+    transform: scale(2.5);
+    transform-origin: 100% 52%;
+    filter: brightness(0.53) saturate(0.7);
+  }
+  .ability-storyboard-light::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgb(15 25 17 / 65%),
+      transparent 50%,
+      rgb(15 25 17 / 30%)
+    );
+    content: "";
+  }
+  .ability-film-title {
+    position: absolute;
+    z-index: 3;
+    left: 32px;
+    bottom: 88px;
+  }
+  .ability-film-title > span {
+    color: #aeb296;
+    font-size: 8px;
+  }
+  .ability-film-title > strong {
+    display: block;
+    margin-top: 20px;
+    font-size: clamp(28px, 3.1vw, 42px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+  }
+  .ability-film-title em {
+    font-family: Georgia, serif;
+    font-weight: normal;
+    font-size: 0.92em;
+  }
+  .ability-storyboard {
+    grid-column: 9 / 13;
+    padding: 25px;
+  }
+  .ability-storyboard-light {
+    grid-row: 1;
+    color: #d9d2b6;
+    background: radial-gradient(ellipse at 80% 0, #8c906e, #434938 65%);
+  }
+  .ability-storyboard-light > .ability-small-label {
+    position: relative;
+    z-index: 2;
+    color: #cfccb2;
+  }
+
+  .ability-storyboard p {
+    position: absolute;
+    left: 25px;
+    bottom: 22px;
+    z-index: 2;
+    font-size: 10px;
+  }
+  .ability-storyboard-end {
+    grid-row: 2;
+    background: #c0c6ad;
+    color: #ead7c8;
+  }
+  .ability-storyboard-end > .ability-small-label {
+    position: relative;
+    z-index: 2;
+    color: #d0b8aa;
+  }
+  .ability-storyboard-end > div {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .ability-storyboard-end strong {
+    font-size: 60px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+  }
+  .ability-storyboard-end > div > span {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-style: italic;
+    margin-top: 4px;
+    color: #d3bbab;
+  }
+  .ability-film-process {
+    grid-column: 1 / 13;
+    padding: 26px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+    border-radius: 20px;
+    background: #1c2119;
+    color: #8e9c7f;
+  }
+  .ability-film-process > .ability-small-label {
+    font-size: 8px;
+  }
+  .ability-film-process > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #b8c3ab;
+  }
+  .ability-film-process i {
+    font-size: 11px;
+    font-style: normal;
+    color: #56684a;
+  }
+  .ability-film-process > p {
+    font-size: 8px;
+  }
+  .ability-section-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-top: 48px;
+  }
+  .ability-section-footer > p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .ability-section-footer > p > span {
+    color: var(--text);
+  }
+  .ability-contact {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 17px 22px;
+    border-radius: 50px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 12px;
+    transition:
+      background 180ms,
+      transform 180ms;
+  }
+  .ability-contact:hover {
+    background: color-mix(in srgb, var(--text) 90%, var(--green));
+    transform: translateY(-2px);
+  }
+  .ability-contact svg {
+    width: 14px;
+    height: 14px;
+  }
+  @media (min-width: 1440px) {
+    .ability-brand-board {
+      grid-template-rows: 260px 210px 160px;
+    }
+    .ability-digital-board {
+      grid-template-rows: 420px 185px;
+    }
+    .ability-object-scene {
+      height: 215px;
+    }
+    .ability-film-board {
+      grid-template-rows: 295px 295px;
+    }
+  }
+  @media (max-width: 1000px) {
+    .ability-identity {
+      padding: 30px;
+      gap: 25px;
+    }
+    .ability-identity-mark {
+      width: 46px;
+      height: 63px;
+    }
+    .ability-identity p {
+      font-size: 14px;
+    }
+    .ability-card-front {
+      padding: 13px 15px;
+      grid-template-columns: 17px 1fr;
+      column-gap: 8px;
+    }
+    .ability-card-front svg {
+      width: 17px;
+      height: 24px;
+    }
+    .ability-card-front strong {
+      font-size: 18px;
+    }
+    .ability-card-front > span {
+      font-size: 5px;
+    }
+    .ability-card-back > span {
+      font-size: 7px;
+    }
+    .ability-desktop {
+      padding: 25px 20px 50px;
+    }
+    .ability-web-page {
+      padding: 18px 17px 15px;
+    }
+    .ability-phone {
+      width: 200px;
+    }
+    .ability-phone-content {
+      padding: 20px 15px 16px;
+    }
+    .ability-digital-note,
+    .ability-components {
+      padding: 23px;
+    }
+    .ability-digital-note p {
+      font-size: 23px;
+    }
+    .ability-digital-note > svg {
+      right: 19px;
+      width: 17px;
+      height: 24px;
+    }
+    .ability-component-samples {
+      gap: 7px;
+    }
+    .ability-component-pill {
+      padding: 9px 11px;
+      font-size: 7px;
+    }
+    .ability-film-title {
+      left: 25px;
+      bottom: 85px;
+    }
+    .ability-film-process {
+      flex-wrap: wrap;
+    }
+    .ability-film-process > p {
+      display: none;
+    }
+  }
+  @media (max-width: 700px) {
+    .abilities {
+      margin-block: 120px;
+    }
+    .ability-heading {
+      margin-bottom: 35px;
+    }
+    .ability-kicker {
+      margin-bottom: 24px;
+    }
+    .ability-introduction {
+      font-size: 13px;
+    }
+    .ability-tabs {
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+    .ability-tab {
+      padding: 12px 15px;
+      font-size: 11px;
+    }
+    .ability-panel-intro {
+      grid-template-columns: 1fr auto;
+      gap: 12px 15px;
+      margin-bottom: 24px;
+    }
+    .ability-panel-intro h3 {
+      font-size: 22px;
+    }
+    .ability-panel-intro > p {
+      grid-column: 1 / 3;
+      grid-row: 2;
+      max-width: 360px;
+      font-size: 12px;
+    }
+    .ability-index {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .ability-board {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .ability-tile {
+      border-radius: 19px;
+    }
+    .ability-brand-board {
+      grid-template-rows: 190px 230px 145px 110px;
+    }
+    .ability-identity {
+      grid-column: 1 / 3;
+      grid-row: 1;
+    }
+    .ability-identity strong {
+      font-size: 55px;
+    }
+    .ability-identity-mark {
+      width: 42px;
+      height: 58px;
+    }
+    .ability-identity p {
+      font-size: 13px;
+    }
+    .ability-poster {
+      grid-column: 1;
+      grid-row: 2;
+      padding: 22px;
+    }
+    .ability-poster > .ability-small-label {
+      font-size: 7px;
+    }
+    .ability-poster p {
+      font-size: 30px;
+      margin-block: 15px;
+    }
+    .ability-poster .ability-small-label:last-child {
+      font-size: 6px;
+    }
+    .ability-brand-art {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .ability-tile-label {
+      left: 20px;
+      bottom: 17px;
+      font-size: 7px;
+    }
+    .ability-stationery {
+      grid-column: 1;
+      grid-row: 3;
+    }
+    .ability-card {
+      width: 66%;
+    }
+    .ability-card-back {
+      left: 4%;
+      top: 23%;
+      padding: 12px;
+    }
+    .ability-card-front {
+      top: 41%;
+      left: 31%;
+      grid-template-columns: 13px 1fr;
+      padding: 13px;
+      column-gap: 6px;
+    }
+    .ability-card-front svg {
+      width: 13px;
+      height: 18px;
+    }
+    .ability-card-front strong {
+      font-size: 16px;
+    }
+    .ability-card-front > span {
+      font-size: 4px;
+    }
+    .ability-card-back > span {
+      font-size: 5px;
+    }
+    .ability-card-back svg {
+      width: 11px;
+      height: 15px;
+    }
+    .ability-type {
+      grid-column: 2;
+      grid-row: 3;
+      grid-template-columns: 1fr;
+      padding: 18px;
+    }
+    .ability-type > .ability-small-label {
+      font-size: 7px;
+    }
+    .ability-type strong {
+      grid-column: 1;
+      grid-row: 2;
+      font-size: 60px;
+      margin-top: 6px;
+    }
+    .ability-type-sample {
+      margin-top: 4px;
+      max-width: none;
+      font-size: 7px;
+    }
+    .ability-palette {
+      grid-column: 1 / 3;
+      grid-row: 4;
+    }
+    .ability-swatch {
+      font-size: 8px;
+    }
+    .ability-board-note {
+      font-size: 8px;
+      line-height: 1.8;
+    }
+    .ability-digital-board {
+      grid-template-rows: 300px 470px 150px;
+    }
+    .ability-desktop {
+      grid-column: 1 / 3;
+      grid-row: 1;
+      padding: 22px 16px 45px;
+    }
+    .ability-web-page {
+      padding: 15px;
+    }
+    .ability-web-content {
+      padding-top: 14px;
+    }
+    .ability-web-content p {
+      font-size: 24px;
+    }
+    .ability-object-scene {
+      height: 143px;
+    }
+    .ability-vase {
+      width: 60px;
+      height: 73px;
+      bottom: 24px;
+    }
+    .ability-vase::before {
+      left: 23px;
+      top: -15px;
+      width: 17px;
+      height: 21px;
+    }
+    .ability-vase::after {
+      left: 23px;
+      top: -15px;
+      width: 17px;
+      height: 3px;
+    }
+    .ability-object-pedestal {
+      width: 105px;
+      height: 33px;
+    }
+    .ability-mock-button {
+      margin-top: 17px;
+      padding: 8px;
+      font-size: 5px;
+    }
+    .ability-mobile {
+      grid-column: 1 / 3;
+      grid-row: 2;
+    }
+    .ability-phone {
+      width: 200px;
+      transform: rotate(4deg);
+    }
+    .ability-digital-note {
+      grid-column: 1;
+      grid-row: 3;
+      padding: 20px;
+    }
+    .ability-digital-note p {
+      font-size: 22px;
+    }
+    .ability-digital-note > svg {
+      width: 13px;
+      height: 18px;
+      right: 13px;
+      top: 17px;
+    }
+    .ability-digital-note > span {
+      max-width: 100px;
+      font-size: 7px;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+    .ability-components {
+      grid-column: 2;
+      grid-row: 3;
+      padding: 19px;
+    }
+    .ability-components > .ability-small-label {
+      display: block;
+      font-size: 6px;
+      max-width: 115px;
+    }
+    .ability-component-samples {
+      flex-wrap: wrap;
+      margin-top: 15px;
+      gap: 8px;
+    }
+    .ability-component-pill {
+      padding: 7px 9px;
+      font-size: 6px;
+    }
+    .ability-component-circle {
+      width: 24px;
+      height: 24px;
+      font-size: 13px;
+    }
+    .ability-component-toggle {
+      display: none;
+    }
+    .ability-component-caption {
+      margin-top: 12px;
+      font-size: 6px;
+    }
+    .ability-film-board {
+      grid-template-rows: 450px 220px auto;
+    }
+    .ability-film-scene {
+      grid-column: 1 / 3;
+      grid-row: 1;
+    }
+    .ability-film-meta,
+    .ability-film-bottom {
+      left: 22px;
+      right: 22px;
+      font-size: 6px;
+    }
+    .ability-film-meta {
+      top: 22px;
+    }
+    .ability-film-bottom {
+      bottom: 21px;
+    }
+    .ability-film-title {
+      bottom: 88px;
+      left: 24px;
+    }
+    .ability-film-title > strong {
+      font-size: 31px;
+      margin-top: 14px;
+    }
+    .ability-film-title > span {
+      font-size: 7px;
+    }
+    .ability-film-image {
+      object-position: 48% center;
+    }
+    .ability-storyboard {
+      padding: 20px;
+    }
+    .ability-storyboard > .ability-small-label {
+      font-size: 6px;
+    }
+    .ability-storyboard-light {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .ability-storyboard-end {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .ability-storyboard p {
+      left: 20px;
+      bottom: 20px;
+      font-size: 7px;
+    }
+    .ability-storyboard-end strong {
+      font-size: 35px;
+      letter-spacing: 0.07em;
+    }
+    .ability-storyboard-end > div > span {
+      font-size: 10px;
+    }
+    .ability-film-process {
+      grid-column: 1 / 3;
+      grid-row: 3;
+      flex-direction: column;
+      align-items: start;
+      gap: 15px;
+      padding: 21px;
+    }
+    .ability-film-process > div {
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 10px;
+    }
+    .ability-section-footer {
+      margin-top: 35px;
+      gap: 25px;
+    }
+    .ability-section-footer > p {
+      font-size: 12px;
+    }
+    .ability-contact {
+      padding: 15px 18px;
+      gap: 16px;
+      font-size: 10px;
+    }
+    .ability-contact svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+  @media (max-width: 380px) {
+    .ability-tab {
+      padding: 12px 13px;
+      font-size: 10px;
+    }
+    .ability-heading h2 {
+      font-size: 37px;
+    }
+    .ability-identity {
+      gap: 19px;
+      padding: 24px;
+    }
+    .ability-identity strong {
+      font-size: 45px;
+    }
+    .ability-identity-mark {
+      width: 35px;
+      height: 48px;
+    }
+    .ability-identity p {
+      font-size: 11px;
+    }
+    .ability-poster {
+      padding: 18px;
+    }
+    .ability-poster p {
+      font-size: 25px;
+    }
+    .ability-card-front {
+      grid-template-columns: 10px 1fr;
+      padding: 10px;
+      column-gap: 5px;
+    }
+    .ability-card-front strong {
+      font-size: 12px;
+    }
+    .ability-card-front svg {
+      width: 10px;
+      height: 14px;
+    }
+    .ability-card-front > span {
+      font-size: 3px;
+    }
+    .ability-desktop {
+      padding-inline: 12px;
+    }
+    .ability-web-page {
+      padding: 11px;
+    }
+    .ability-web-content p {
+      font-size: 21px;
+    }
+    .ability-web-nav > strong {
+      font-size: 14px;
+    }
+    .ability-web-nav > span {
+      font-size: 5px;
+    }
+    .ability-web-content .ability-small-label {
+      font-size: 5px;
+    }
+    .ability-object-scene {
+      height: 133px;
+    }
+    .ability-digital-note {
+      padding: 17px;
+    }
+    .ability-digital-note p {
+      font-size: 20px;
+    }
+    .ability-digital-note > svg {
+      opacity: 0.25;
+    }
+    .ability-components {
+      padding: 17px;
+    }
+    .ability-component-samples {
+      gap: 5px;
+    }
+    .ability-component-pill {
+      padding: 7px;
+      font-size: 5px;
+    }
+    .ability-section-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ability-tab,
+    .ability-contact {
+      transition: none;
+    }
+    .ability-contact:hover {
+      transform: none;
+    }
+  }
+}
