@@ -22,6 +22,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font);
+    line-height: normal;
     -webkit-font-smoothing: antialiased;
   }
   body.modal-open {
@@ -73,5 +74,37 @@
   }
   [hidden] {
     display: none !important;
+  }
+}
+@layer base {
+  input,
+  select,
+  textarea {
+    min-width: 0;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #101411;
+    color: var(--text);
+    padding: 12px;
+    font-size: 12px;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #929d90;
+  }
+  textarea {
+    resize: vertical;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation: none;
+      transition: none;
+    }
   }
 }

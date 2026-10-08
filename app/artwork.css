@@ -1,0 +1,63 @@
+/* Bespoke illustration details. Layout lives in Tailwind utilities. */
+@layer components {
+  .ability-vase::before {
+    position: absolute;
+    top: -19px;
+    left: 30px;
+    width: 23px;
+    height: 27px;
+    border-radius: 4px 4px 12% 12%;
+    background: linear-gradient(100deg, #869274, #b8c2a5 35%, #6f7f5b);
+    content: "";
+  }
+  .ability-vase::after {
+    position: absolute;
+    top: -19px;
+    left: 30px;
+    width: 23px;
+    height: 4px;
+    border-radius: 50%;
+    background: #5a684e;
+    box-shadow: inset 0 1px 1px #d1dac3;
+    content: "";
+  }
+  .ability-film-scene::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgb(9 15 12 / 85%),
+      transparent 50%,
+      rgb(9 15 12 / 30%)
+    );
+    pointer-events: none;
+    content: "";
+  }
+  .ability-storyboard-light::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgb(15 25 17 / 65%),
+      transparent 50%,
+      rgb(15 25 17 / 30%)
+    );
+    content: "";
+  }
+  @media (max-width: 700px) {
+    .ability-vase::before {
+      left: 23px;
+      top: -15px;
+      width: 17px;
+      height: 21px;
+    }
+  }
+  @media (max-width: 700px) {
+    .ability-vase::after {
+      left: 23px;
+      top: -15px;
+      width: 17px;
+      height: 3px;
+    }
+  }
+}

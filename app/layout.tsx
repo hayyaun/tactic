@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "./base.css";
-import "./studio.css";
-import "./abilities.css";
+import "./artwork.css";
+
 const geist = localFont({
   src: "../public/studio/geist-latin.woff2",
   variable: "--font-geist-sans",

@@ -2,14 +2,11 @@
 
 import Image from "next/image";
 import {
-  createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
-  type ButtonHTMLAttributes,
-  type ReactNode,
   type MouseEvent,
+  type ComponentProps,
 } from "react";
 
 const studies = {
@@ -33,27 +30,15 @@ const studies = {
   },
 };
 type Study = keyof typeof studies;
-const DialogContext = createContext<(kind: "contact" | Study) => void>(
-  () => {},
-);
-export function ContactButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const open = useContext(DialogContext);
+function StudioDialog(props: ComponentProps<"dialog">) {
   return (
-    <button
+    <dialog
       {...props}
-      type={props.type ?? "button"}
-      onClick={() => open("contact")}
+      className="max-h-[calc(100dvh-32px)] w-[calc(100%-24px)] max-w-170 overflow-auto rounded-[22px] border border-line bg-[#1b201c] p-6.5 text-foreground backdrop:bg-black/60 backdrop:backdrop-blur-[9px] min-[600px]:p-9"
     />
   );
 }
-export function StudyButton({
-  study,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { study: Study }) {
-  const open = useContext(DialogContext);
-  return <button {...props} type="button" onClick={() => open(study)} />;
-}
-export function DialogProvider({ children }: { children: ReactNode }) {
+export function Dialogs() {
   const contact = useRef<HTMLDialogElement>(null);
   const studyDialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -72,14 +57,15 @@ export function DialogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (brief) copyButton.current?.focus();
   }, [brief]);
-  function open(kind: "contact" | Study) {
+  function opening(event: React.ToggleEvent<HTMLDialogElement>) {
+    if (event.newState !== "open") return;
     const active = document.activeElement;
     opener.current = active instanceof HTMLElement ? active : null;
+    const selected = opener.current?.dataset.study;
+    if (selected && selected in studies) setStudy(selected as Study);
     if (opener.current?.closest("#mobile-menu"))
       opener.current =
-        document.querySelector<HTMLButtonElement>(".menu-toggle");
-    if (kind !== "contact") setStudy(kind);
-    (kind === "contact" ? contact : studyDialog).current?.showModal();
+        document.querySelector<HTMLButtonElement>("#navigation-toggle");
     document.body.classList.add("modal-open");
   }
   function closed() {
@@ -88,6 +74,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     opener.current = null;
   }
   const dialogEvents = {
+    onBeforeToggleCapture: opening,
     onClose: closed,
     onClick: (event: MouseEvent<HTMLDialogElement>) => {
       if (event.target !== event.currentTarget) return;
@@ -117,40 +104,64 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     }
   }
   return (
-    <DialogContext.Provider value={open}>
-      {children}
-      <dialog
+    <>
+      <StudioDialog
         ref={contact}
-        className="contact-dialog"
+        id="contact-dialog"
         aria-labelledby="contact-dialog-title"
         {...dialogEvents}
       >
-        <div className="dialog-heading">
-          <span className="eyebrow">Your next move starts here</span>
+        <div className="mb-6.5 flex items-center justify-between gap-3.75">
+          <span className="flex items-center gap-2.5 font-mono text-[8px] leading-[1.7] font-normal tracking-wider text-green uppercase">
+            Your next move starts here
+          </span>
           <button
-            className="dialog-close"
+            className="grid h-9.5 w-9.5 flex-[0_0_auto] place-items-center rounded-full border-0 bg-[rgba(255,255,255,0.05)] text-[25px] font-extralight text-foreground hover:border-green hover:bg-green hover:text-background"
             aria-label="Close project enquiry"
             onClick={() => contact.current?.close()}
           >
             ×
           </button>
         </div>
-        <h2 id="contact-dialog-title">
+        <h2
+          className="text-[43px] leading-[1.12] font-[380] tracking-[-0.045em] min-[600px]:text-[54px]"
+          id="contact-dialog-title"
+        >
           Let’s make
           <br />
-          something <span>matter.</span>
+          something <span className="text-green">matter.</span>
         </h2>
-        <p className="dialog-intro">
+        <p className="mx-0 mt-4.75 mb-7 text-[12px] leading-[1.7] text-muted">
           Tell us a little about you and what you have in mind.
         </p>
         <form
           ref={form}
           id="contact-form"
           hidden={!!brief}
+          onInput={(event) => {
+            const input = event.target;
+            if (
+              input instanceof HTMLInputElement ||
+              input instanceof HTMLTextAreaElement
+            )
+              input.setCustomValidity("");
+          }}
           onSubmit={(event) => {
             event.preventDefault();
             const data = new FormData(event.currentTarget);
             const field = (name: string) => String(data.get(name) ?? "").trim();
+            for (const name of ["name", "message"]) {
+              const input = event.currentTarget.elements.namedItem(name);
+              if (
+                input instanceof HTMLInputElement ||
+                input instanceof HTMLTextAreaElement
+              ) {
+                input.setCustomValidity(
+                  field(name) ? "" : "Please enter more than spaces.",
+                );
+                if (!input.reportValidity()) return;
+              }
+            }
             setBrief(
               [
                 "TACTIC — Project enquiry",
@@ -166,8 +177,8 @@ export function DialogProvider({ children }: { children: ReactNode }) {
             setStatus("");
           }}
         >
-          <div className="form-row">
-            <label>
+          <div className="grid gap-0 min-[600px]:grid-cols-[1fr_1fr] min-[600px]:gap-4.5">
+            <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
               Your name
               <input
                 name="name"
@@ -176,7 +187,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                 required
               />
             </label>
-            <label>
+            <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
               Email address
               <input
                 type="email"
@@ -187,7 +198,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
               />
             </label>
           </div>
-          <label>
+          <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
             What are you thinking about?
             <select name="service" required defaultValue="">
               <option value="" disabled>
@@ -199,7 +210,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
               <option>A little of everything</option>
             </select>
           </label>
-          <label>
+          <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
             A little about your project
             <textarea
               name="message"
@@ -208,38 +219,46 @@ export function DialogProvider({ children }: { children: ReactNode }) {
               required
             />
           </label>
-          <p className="form-note">
+          <p className="mb-4.25 font-mono text-[9px] leading-[1.7] font-normal tracking-normal text-muted normal-case">
             Prepare a project brief below. Nothing is sent.
           </p>
-          <button className="submit-button" type="submit">
+          <button
+            className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green"
+            type="submit"
+          >
             Prepare project brief <span>↗</span>
           </button>
         </form>
-        <div className="brief-result" id="brief-result" hidden={!brief}>
-          <p className="eyebrow">
-            <span className="signal-dot" /> Your starting point
+        <div id="brief-result" hidden={!brief}>
+          <p className="flex items-center gap-2.5 font-mono text-[10px] leading-[1.7] font-normal tracking-wider uppercase">
+            <span className="inline-block h-1 w-1 flex-[0_0_4px] rounded-full bg-green" />{" "}
+            Your starting point
           </p>
-          <h3>
+          <h3 className="mx-0 my-4.25 text-[32px] leading-[1.1] font-normal tracking-[-0.04em]">
             A clear brief.
             <br />A good first move.
           </h3>
-          <p>
+          <p className="text-[12px] leading-[1.7] text-muted">
             This brief is ready to copy. The studio’s contact details will be
             connected when the website goes live.
           </p>
-          <pre ref={preview} id="brief-preview">
+          <pre
+            className="mx-0 my-5 rounded-xl border border-line bg-[rgba(255,255,255,0.02)] p-4.5 font-mono text-[11px] leading-[1.8] wrap-anywhere whitespace-pre-wrap text-foreground"
+            ref={preview}
+            id="brief-preview"
+          >
             {brief}
           </pre>
           <button
             ref={copyButton}
-            className="submit-button"
+            className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green"
             id="copy-brief"
             onClick={copy}
           >
             Copy project brief <span>↗</span>
           </button>
           <button
-            className="edit-brief"
+            className="mx-auto mt-4.5 mb-0 block rounded-[22px] bg-[rgba(255,255,255,0.07)] px-4.5 py-2.75 text-[12px]"
             id="edit-brief"
             onClick={() => {
               setBrief("");
@@ -250,24 +269,35 @@ export function DialogProvider({ children }: { children: ReactNode }) {
           >
             Edit your brief
           </button>
-          <p className="copy-status" id="copy-status" role="status">
+          <p
+            className="mt-2.5 min-h-[1.7em] text-center text-[12px] leading-[1.7] text-muted"
+            id="copy-status"
+            role="status"
+          >
             {status}
           </p>
         </div>
-      </dialog>
-      <dialog
+      </StudioDialog>
+      <StudioDialog
         ref={studyDialog}
-        className="study-dialog"
+        id="study-dialog"
         aria-labelledby="study-dialog-title"
         {...dialogEvents}
       >
-        <div className="study-dialog-top">
+        <div className="mb-5.75 flex items-start justify-between gap-5">
           <div>
-            <p className="eyebrow">The TACTIC world / Brand exploration</p>
-            <h2 id="study-dialog-title">{studies[study].title}</h2>
+            <p className="mb-2.25 flex items-center gap-2.5 font-mono text-[8px] leading-[1.7] font-normal tracking-wider text-green uppercase">
+              The TACTIC world / Brand exploration
+            </p>
+            <h2
+              className="text-[26px] leading-[1.12] font-[380] tracking-[-0.045em]"
+              id="study-dialog-title"
+            >
+              {studies[study].title}
+            </h2>
           </div>
           <button
-            className="dialog-close"
+            className="grid h-9.5 w-9.5 flex-[0_0_auto] place-items-center rounded-full border-0 bg-[rgba(255,255,255,0.05)] text-[25px] font-extralight text-foreground hover:border-green hover:bg-green hover:text-background"
             aria-label="Close brand study"
             onClick={() => studyDialog.current?.close()}
           >
@@ -275,6 +305,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
           </button>
         </div>
         <Image
+          className="w-full rounded-[14px]"
           id="study-dialog-image"
           src={`/studio/${study}.webp`}
           alt={studies[study].alt}
@@ -282,8 +313,13 @@ export function DialogProvider({ children }: { children: ReactNode }) {
           height={1200}
           sizes="(max-width: 700px) 100vw, 80vw"
         />
-        <p id="study-dialog-description">{studies[study].description}</p>
-      </dialog>
-    </DialogContext.Provider>
+        <p
+          className="mt-5.5 text-[12px] leading-[1.8] text-muted"
+          id="study-dialog-description"
+        >
+          {studies[study].description}
+        </p>
+      </StudioDialog>
+    </>
   );
 }

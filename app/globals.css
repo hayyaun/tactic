@@ -1,11 +1,21 @@
 @import "tailwindcss";
 
+@theme {
+  --font-editorial: Georgia, serif;
+}
+
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--text);
   --color-muted: var(--muted);
   --color-green: var(--green);
   --color-coral: var(--coral);
+  --color-line: var(--line);
+  --color-chalk: #e0e2d8;
+  --color-carbon: #20221e;
+  --color-sage: #abc292;
+  --color-rose: #bd8881;
+  --color-board-line: rgb(41 60 41 / 8%);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

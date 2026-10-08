@@ -40,7 +40,7 @@
 
 ### Documentation and compatibility
 
-- Before adding or changing 3D code, read the official [React Three Fiber documentation](https://r3f.docs.pmnd.rs/getting-started/introduction), [installation guide](https://r3f.docs.pmnd.rs/getting-started/installation), and relevant API pages. Check installed versions and peer dependencies for React, `three`, `@react-three/fiber`, and optional `@react-three/drei`; Fiber v9 pairs with React 19. These packages are not currently installed; this guidance does not authorize adding them unless the task needs 3D functionality.
+- Before adding or changing 3D code, read the official [React Three Fiber documentation](https://r3f.docs.pmnd.rs/getting-started/introduction), [installation guide](https://r3f.docs.pmnd.rs/getting-started/installation), and relevant API pages. Check installed versions and peer dependencies for React, `three`, `@react-three/fiber`, and optional `@react-three/drei`; Fiber v9 pairs with React 19. These packages are installed for the hero scene; use the existing versions and helpers before adding alternatives.
 - Consult the [Three.js documentation](https://threejs.org/docs/) for underlying objects, materials, lights, cameras, and renderer APIs. Verify optional Drei helpers against their own documentation and installed version.
 
 ### Components and Next.js integration

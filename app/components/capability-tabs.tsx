@@ -24,7 +24,7 @@ export function CapabilityTabs({ panels }: { panels: ReactNode[] }) {
   return (
     <>
       <div
-        className="ability-tabs"
+        className="mb-8 flex flex-wrap gap-1.5 min-[701px]:mb-12 min-[701px]:gap-2"
         role="tablist"
         aria-label="Explore our capabilities"
       >
@@ -34,7 +34,7 @@ export function CapabilityTabs({ panels }: { panels: ReactNode[] }) {
             ref={(node) => {
               refs.current[i] = node;
             }}
-            className="ability-tab"
+            className="rounded-[50px] border border-transparent bg-[rgba(255,255,255,0.04)] px-3.25 py-3 text-[10px] text-muted [transition:color_180ms,background_180ms] hover:bg-[rgba(255,255,255,0.08)] hover:text-foreground focus-visible:[outline:2px_solid_var(--green)] focus-visible:outline-offset-1 aria-selected:bg-green aria-selected:text-background aria-selected:hover:bg-[color-mix(in_srgb,var(--green)_88%,var(--text))] motion-reduce:transition-none min-[381px]:px-3.75 min-[381px]:text-[11px] min-[701px]:px-5.5 min-[701px]:py-3.5 min-[701px]:text-[12px]"
             type="button"
             role="tab"
             id={`ability-tab-${tab.id}`}
@@ -51,7 +51,7 @@ export function CapabilityTabs({ panels }: { panels: ReactNode[] }) {
       {tabs.map((tab, i) => (
         <div
           key={tab.id}
-          className="ability-panel"
+          className="outline-offset-10 focus-visible:[outline:2px_solid_var(--green)] focus-visible:outline-offset-1"
           role="tabpanel"
           id={`ability-panel-${tab.id}`}
           aria-labelledby={`ability-tab-${tab.id}`}
