@@ -8,29 +8,8 @@ const contactForm = document.getElementById("contact-form");
 const briefResult = document.getElementById("brief-result");
 const briefPreview = document.getElementById("brief-preview");
 const copyStatus = document.getElementById("copy-status");
-const siteHeader = document.querySelector(".site-header");
 let briefText = "";
 let dialogOpener = null;
-let headerFrame = null;
-
-function updateHeader() {
-  const visible = window.scrollY > 100;
-  siteHeader.classList.toggle("is-visible", visible);
-  siteHeader.inert = !visible;
-  siteHeader.setAttribute("aria-hidden", String(!visible));
-  if (!visible) closeMenu();
-  headerFrame = null;
-}
-
-window.addEventListener(
-  "scroll",
-  () => {
-    if (headerFrame === null) headerFrame = requestAnimationFrame(updateHeader);
-  },
-  { passive: true },
-);
-window.addEventListener("pageshow", updateHeader);
-updateHeader();
 
 function closeMenu() {
   mobileMenu.hidden = true;

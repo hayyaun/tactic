@@ -10,13 +10,13 @@ From the repository root, open http://localhost:4173.
 
 ## Design direction
 
-Airy, dark, and quiet: a centered sculpture scene, broad negative space, soft green and coral light, faded dividers, and filled controls. The header starts hidden and appears after the first 100px of scrolling. A custom SVG sculpture interprets the paired diagonal TACTIC marks.
+Dark and sculptural: centered copy above an oversized TACTIC mark, cropped at the bottom of the opening scene. Broad sage and coral light, brighter material reflections, faded dividers, and filled controls give the scene a quiet presence. The floating header stays visible from the start. A custom SVG sculpture interprets the paired diagonal TACTIC marks.
 
 The abilities section takes composition inspiration from `assets/example-section.jpg`, with original TACTIC concept boards for brand and design, web and app design/development, and AI advertising films. The three brand explorations use supplied artwork. All boards are studio concepts; they are not client projects. Studio and capabilities text is draft copy for design review.
 
 ## Interactions
 
-- Navigation revealed after scrolling, responsive menu, section links, and back-to-top link.
+- Always-visible floating navigation, responsive menu, section links, and back-to-top link.
 - Three capability boards with accessible tabs, arrow-key navigation, Home/End, and visible focus.
 - Brand-study dialogs with keyboard dismissal and focus restoration.
 - Project-enquiry dialog with field validation and a copyable brief. It does not send or persist data. A real studio inbox or submission endpoint must be supplied before launch.
