@@ -2,7 +2,11 @@
 
 import { LevaPanel, folder, monitor, useControls, useCreateStore } from "leva";
 import { useEffect, useState } from "react";
-import { RENDER_QUALITIES, type SceneTelemetry } from "./hero-performance";
+import {
+  RENDER_QUALITIES,
+  type RenderQuality,
+  type SceneTelemetry,
+} from "./hero-performance";
 import { createPortal } from "react-dom";
 import {
   DEFAULT_SCENE_SETTINGS as defaults,
@@ -12,9 +16,13 @@ import {
 export default function HeroDebug({
   onChange,
   telemetry,
+  quality,
+  onQualityChange,
 }: {
   onChange: (settings: SceneSettings) => void;
   telemetry: SceneTelemetry;
+  quality: RenderQuality;
+  onQualityChange: (quality: RenderQuality) => void;
 }) {
   const store = useCreateStore();
   const [copyStatus, setCopyStatus] = useState("");
@@ -288,10 +296,25 @@ export default function HeroDebug({
     }),
     { store },
   );
-  const [, setPerformance] = useControls(
+  const [performanceSettings, setPerformance] = useControls(
     () => ({
       Performance: folder(
         {
+          autoQuality: { label: "Auto quality", value: defaults.autoQuality },
+          fpsThreshold: {
+            label: "Minimum FPS",
+            value: defaults.fpsThreshold,
+            min: 5,
+            max: 120,
+            step: 1,
+          },
+          fpsDuration: {
+            label: "Slow time (s)",
+            value: defaults.fpsDuration,
+            min: 1,
+            max: 30,
+            step: 0.5,
+          },
           FPS: monitor(() => telemetry.getFPS(), {
             graph: false,
             interval: 1000,
@@ -299,14 +322,13 @@ export default function HeroDebug({
           renderQuality: {
             label: "Preset",
             transient: false,
-            value: "High",
-            options: Object.keys(RENDER_QUALITIES),
-            onChange: (
-              quality: keyof typeof RENDER_QUALITIES,
-              _path,
-              context,
-            ) => {
-              if (!context.initial) set(RENDER_QUALITIES[quality]);
+            value: quality,
+            options: [...Object.keys(RENDER_QUALITIES), "Preview"],
+            onChange: (quality: RenderQuality, _path, context) => {
+              if (!context.initial) {
+                if (quality !== "Preview") set(RENDER_QUALITIES[quality]);
+                onQualityChange(quality);
+              }
             },
           },
         },
@@ -315,11 +337,31 @@ export default function HeroDebug({
     }),
     { store },
   );
-  useEffect(() => telemetry.start(), [telemetry]);
   useEffect(() => {
-    onChange(settings);
-  }, [settings, onChange]);
-  useEffect(() => () => onChange(defaults), [onChange]);
+    setPerformance({ renderQuality: quality });
+    if (quality !== "Preview") set(RENDER_QUALITIES[quality]);
+  }, [quality, set, setPerformance]);
+  useEffect(() => {
+    onChange({
+      ...settings,
+      autoQuality: performanceSettings.autoQuality,
+      fpsThreshold: performanceSettings.fpsThreshold,
+      fpsDuration: performanceSettings.fpsDuration,
+    });
+  }, [
+    settings,
+    performanceSettings.autoQuality,
+    performanceSettings.fpsThreshold,
+    performanceSettings.fpsDuration,
+    onChange,
+  ]);
+  useEffect(
+    () => () => {
+      onChange(defaults);
+      onQualityChange("High");
+    },
+    [onChange, onQualityChange],
+  );
   return createPortal(
     <aside
       aria-label="Scene debug controls"
@@ -335,7 +377,16 @@ export default function HeroDebug({
         onClick={async () => {
           try {
             await navigator.clipboard.writeText(
-              JSON.stringify(settings, null, 2),
+              JSON.stringify(
+                {
+                  ...settings,
+                  autoQuality: performanceSettings.autoQuality,
+                  fpsThreshold: performanceSettings.fpsThreshold,
+                  fpsDuration: performanceSettings.fpsDuration,
+                },
+                null,
+                2,
+              ),
             );
             setCopyStatus("Settings copied.");
           } catch {
@@ -357,8 +408,20 @@ export default function HeroDebug({
           if (
             window.confirm("Reset all scene settings to the demo defaults?")
           ) {
-            setPerformance({ renderQuality: "High" });
-            set({ ...defaults });
+            setPerformance({
+              renderQuality: "High",
+              autoQuality: defaults.autoQuality,
+              fpsThreshold: defaults.fpsThreshold,
+              fpsDuration: defaults.fpsDuration,
+            });
+            const sceneDefaults = { ...defaults };
+            const sceneValues = Object.fromEntries(
+              Object.keys(settings).map((key) => [
+                key,
+                sceneDefaults[key as keyof SceneSettings],
+              ]),
+            );
+            set(sceneValues);
             setCopyStatus("");
           }
         }}

@@ -688,6 +688,7 @@ function Sculpture({
   motion,
   settings,
   contextVersion,
+  telemetry,
 }: SceneProps & {
   motion: RefObject<PointerMotion>;
   contextVersion: number;
@@ -714,18 +715,25 @@ function Sculpture({
     // can still request native-rate frames through Fiber's demand loop.
     let previous = performance.now();
     let wasSweeping = false;
-    const timer = window.setInterval(() => {
+    let timer = 0;
+    const tick = () => {
       const now = performance.now();
       shimmerTime.current += (now - previous) / 1000;
       previous = now;
       const sweeping =
         shimmerTime.current % settings.rimShimmerInterval <
         Math.min(settings.rimShimmerDuration, settings.rimShimmerInterval);
+      telemetry.setAnimating(sweeping);
       if (sweeping || wasSweeping) invalidate();
       wasSweeping = sweeping;
-    }, 1000 / 30);
+      timer = window.requestAnimationFrame(tick);
+    };
+    timer = window.requestAnimationFrame(tick);
     invalidate();
-    return () => window.clearInterval(timer);
+    return () => {
+      window.cancelAnimationFrame(timer);
+      telemetry.setAnimating(false);
+    };
   }, [
     active,
     reducedMotion,
@@ -734,6 +742,7 @@ function Sculpture({
     settings.rimShimmerStrength,
     settings.rimShimmerInterval,
     settings.rimShimmerDuration,
+    telemetry,
     invalidate,
   ]);
   useLayoutEffect(() => {

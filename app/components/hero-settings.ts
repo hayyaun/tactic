@@ -4,6 +4,9 @@ export const SCENE_FRAMING = { minHeight: 3.6, minWidth: 4.7 };
 
 export const DEFAULT_SCENE_SETTINGS = {
   ...BACKGROUND_DEFAULTS,
+  autoQuality: true,
+  fpsThreshold: 40,
+  fpsDuration: 3,
   cameraX: 4,
   cameraY: 36,
   cameraZ: 55,

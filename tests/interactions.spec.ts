@@ -219,6 +219,7 @@ test("performance presets apply rendering settings and reset restores High", asy
     "Low",
     "Balanced",
     "High",
+    "Preview",
   ]);
   for (const [quality, dprLimit, transmissionResolution] of [
     ["Low", 1, 0.25],
@@ -266,4 +267,56 @@ test("debug FPS reflects rendering and returns to zero offscreen", async ({
     window.scrollTo(0, document.documentElement.scrollHeight),
   );
   await expect.poll(fps).toBe(0);
+});
+
+test("Preview releases the canvas and a render preset restores it", async ({
+  page,
+}) => {
+  await page.goto("/?debug");
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  const preset = page.getByLabel("Preset", { exact: true });
+  await preset.selectOption({ label: "Preview" });
+  await expect(stage).toHaveAttribute("data-render-quality", "Preview");
+  await expect(stage).toHaveAttribute("data-ready", "false");
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await preset.selectOption({ label: "Balanced" });
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  await expect(stage.locator("canvas")).toHaveCount(1);
+});
+
+test("sustained slow frames lower quality and idle does not", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/?debug");
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  const threshold = page.getByLabel("Minimum FPS", { exact: true });
+  await threshold.fill("120");
+  await threshold.press("Enter");
+  const duration = page.getByLabel("Slow time (s)", { exact: true });
+  await duration.fill("1");
+  await duration.press("Enter");
+  await page.waitForTimeout(2200);
+  await expect(stage).toHaveAttribute("data-render-quality", "High");
+  await page.getByRole("button", { name: "Copy settings" }).click();
+  const settings = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText()),
+  );
+  expect(settings.autoQuality).toBe(true);
+  expect(settings.fpsThreshold).toBe(120);
+  expect(settings.fpsDuration).toBe(1);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
+  await page.getByLabel("Auto quality", { exact: true }).uncheck();
+  await page.waitForTimeout(2200);
+  await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
+  await page.getByLabel("Auto quality", { exact: true }).check();
+  await expect(stage).toHaveAttribute("data-render-quality", "Preview");
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await expect(
+    page.getByLabel("Preset", { exact: true }).locator("option:checked"),
+  ).toHaveText("Preview");
 });
