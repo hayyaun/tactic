@@ -11,19 +11,19 @@
       gradientUnits="userSpaceOnUse"
       cx="-115"
       cy="800"
-      r="1404"
+      r="1044"
     >
-      <stop offset="0" stop-color="rgb(51.84000 85.84000 37.16000)" />
-      <stop offset="0.1" stop-color="rgb(41.73903 66.72031 31.47821)" />
-      <stop offset="0.2" stop-color="rgb(33.35086 50.84270 26.75986)" />
+      <stop offset="0" stop-color="rgb(83.20000 145.20000 54.80000)" />
+      <stop offset="0.1" stop-color="rgb(64.26069 109.35059 44.14664)" />
+      <stop offset="0.2" stop-color="rgb(48.53286 79.58006 35.29974)" />
       <stop
         offset="0.30000000000000004"
-        stop-color="rgb(26.64645 38.15221 22.98863)"
+        stop-color="rgb(35.96210 55.78540 28.22868)"
       />
-      <stop offset="0.4" stop-color="rgb(21.59677 28.59389 20.14819)" />
-      <stop offset="0.55" stop-color="rgb(17.51742 20.87225 17.85355)" />
-      <stop offset="0.7" stop-color="rgb(16.24110 18.45637 17.13562)" />
-      <stop offset="0.85" stop-color="rgb(16.01039 18.01966 17.00584)" />
+      <stop offset="0.4" stop-color="rgb(26.49395 37.86355 22.90285)" />
+      <stop offset="0.55" stop-color="rgb(18.84516 23.38548 18.60040)" />
+      <stop offset="0.7" stop-color="rgb(16.45206 18.85569 17.25429)" />
+      <stop offset="0.85" stop-color="rgb(16.01947 18.03686 17.01095)" />
       <stop offset="1" stop-color="rgb(16.00000 18.00000 17.00000)" />
     </radialGradient>
     <radialGradient
@@ -31,19 +31,19 @@
       gradientUnits="userSpaceOnUse"
       cx="1555"
       cy="800"
-      r="1404"
+      r="1044"
     >
-      <stop offset="0" stop-color="rgb(81.60000 8.95190 19.88571)" />
-      <stop offset="0.1" stop-color="rgb(58.60226 6.42894 14.28122)" />
-      <stop offset="0.2" stop-color="rgb(39.50419 4.33379 9.62707)" />
+      <stop offset="0" stop-color="rgb(153.00000 16.78481 37.28571)" />
+      <stop offset="0.1" stop-color="rgb(109.87924 12.05426 26.77730)" />
+      <stop offset="0.2" stop-color="rgb(74.07036 8.12586 18.05076)" />
       <stop
         offset="0.30000000000000004"
-        stop-color="rgb(24.23969 2.65921 5.90715)"
+        stop-color="rgb(45.44941 4.98601 11.07591)"
       />
-      <stop offset="0.4" stop-color="rgb(12.74266 1.39793 3.10535)" />
-      <stop offset="0.55" stop-color="rgb(3.45483 0.37901 0.84193)" />
-      <stop offset="0.7" stop-color="rgb(0.54894 0.06022 0.13377)" />
-      <stop offset="0.85" stop-color="rgb(0.02365 0.00259 0.00576)" />
+      <stop offset="0.4" stop-color="rgb(23.89248 2.62112 5.82254)" />
+      <stop offset="0.55" stop-color="rgb(6.47781 0.71065 1.57863)" />
+      <stop offset="0.7" stop-color="rgb(1.02925 0.11291 0.25083)" />
+      <stop offset="0.85" stop-color="rgb(0.04434 0.00486 0.01081)" />
       <stop offset="1" stop-color="rgb(0.00000 0.00000 0.00000)" />
     </radialGradient>
     <filter
@@ -72,8 +72,8 @@
         in2="grayNoise"
         operator="arithmetic"
         k2="1"
-        k3="0.1"
-        k4="-0.05"
+        k3="0.08"
+        k4="-0.04"
         result="grainComposite"
       />
       <feGaussianBlur

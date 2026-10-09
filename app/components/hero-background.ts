@@ -1,8 +1,8 @@
 export const BACKGROUND_DEFAULTS = {
-  backgroundNoise: 0.1,
-  backgroundRadius: 0.975,
+  backgroundNoise: 0.08,
+  backgroundRadius: 0.725,
   backgroundFade: 0.6,
-  backgroundIntensity: 0.32,
+  backgroundIntensity: 0.6,
 };
 export type BackgroundSettings = typeof BACKGROUND_DEFAULTS;
 export const BACKGROUND_URL = "/studio/hero-background.svg";

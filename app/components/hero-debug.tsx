@@ -392,6 +392,82 @@ export default function HeroDebug({
       >
         Copy settings
       </button>
+      <button
+        type="button"
+        onClick={async () => {
+          let text: string;
+          try {
+            text = await navigator.clipboard.readText();
+          } catch {
+            setCopyStatus(
+              "Could not read clipboard. Please allow clipboard access and try again.",
+            );
+            return;
+          }
+          try {
+            const parsed: unknown = JSON.parse(text);
+            if (
+              !parsed ||
+              typeof parsed !== "object" ||
+              Array.isArray(parsed)
+            ) {
+              throw new Error("Copy settings JSON first.");
+            }
+            const imported: Partial<SceneSettings> = {};
+            const controls = Object.entries(store.getData());
+            for (const [key, value] of Object.entries(parsed)) {
+              if (!Object.hasOwn(defaults, key)) continue;
+              const defaultValue = defaults[key as keyof SceneSettings];
+              if (typeof value !== typeof defaultValue)
+                throw new Error(`Invalid value for ${key}.`);
+              if (typeof value === "number") {
+                const control = controls.find(([path]) =>
+                  path.endsWith(`.${key}`),
+                )?.[1];
+                const bounds = (
+                  control && "settings" in control
+                    ? control.settings
+                    : undefined
+                ) as { min?: number; max?: number } | undefined;
+                if (
+                  !Number.isFinite(value) ||
+                  (bounds?.min !== undefined && value < bounds.min) ||
+                  (bounds?.max !== undefined && value > bounds.max)
+                ) {
+                  throw new Error(`Value out of range for ${key}.`);
+                }
+              }
+              if (
+                typeof value === "string" &&
+                !/^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(value)
+              ) {
+                throw new Error(`Invalid color for ${key}.`);
+              }
+              Object.assign(imported, { [key]: value });
+            }
+            if (!Object.keys(imported).length)
+              throw new Error("No recognized settings found.");
+            const { autoQuality, fpsThreshold, fpsDuration, ...sceneValues } =
+              imported;
+            set(sceneValues);
+            setPerformance({
+              autoQuality: autoQuality ?? performanceSettings.autoQuality,
+              fpsThreshold: fpsThreshold ?? performanceSettings.fpsThreshold,
+              fpsDuration: fpsDuration ?? performanceSettings.fpsDuration,
+            });
+            setCopyStatus("Settings imported.");
+          } catch (error) {
+            setCopyStatus(
+              error instanceof Error
+                ? `Could not import settings: ${error.message}`
+                : "Could not import settings.",
+            );
+          }
+        }}
+        className="mt-2 w-full rounded-lg bg-rose px-4 py-2 text-sm text-carbon hover:bg-rose/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose"
+      >
+        Import from clipboard
+      </button>
       <p role="status" className="px-1 text-sm text-foreground">
         {copyStatus}
       </p>

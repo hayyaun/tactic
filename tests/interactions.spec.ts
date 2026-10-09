@@ -78,8 +78,8 @@ test("debug settings copy current values and reset requires confirmation", async
     await page.evaluate(() => navigator.clipboard.readText()),
   );
   expect(copied.exposure).toBe(1.25);
-  expect(copied.rimShimmerDuration).toBe(10);
-  expect(copied.greenTint).toBe("#07351b");
+  expect(copied.rimShimmerDuration).toBe(7.5);
+  expect(copied.greenTint).toBe("#51ea27");
   page.once("dialog", async (dialog) => {
     expect(dialog.type()).toBe("confirm");
     await dialog.dismiss();
@@ -88,7 +88,7 @@ test("debug settings copy current values and reset requires confirmation", async
   await expect(exposure).toHaveValue("1.25");
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Reset to demo" }).click();
-  await expect(exposure).toHaveValue("0.90");
+  await expect(exposure).toHaveValue("0.72");
 });
 
 test("production loads debug modules only with the debug query", async ({
@@ -177,7 +177,7 @@ test("background controls update, copy, and restore the shared backdrop", async 
   expect(copied).not.toHaveProperty("backgroundSmoothing");
   expect(copied.backgroundRadius).toBe(1.2);
   expect(copied.backgroundFade).toBe(0.75);
-  expect(copied.backgroundIntensity).toBe(0.32);
+  expect(copied.backgroundIntensity).toBe(0.6);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Reset to demo" }).click();
   await expect.poll(background).toContain("/studio/hero-background.svg");
@@ -316,4 +316,51 @@ test("sustained slow frames lower quality and idle does not", async ({
   await expect(
     page.getByLabel("Preset", { exact: true }).locator("option:checked"),
   ).toHaveText("Preview");
+});
+
+test("clipboard import restores scene and performance values and rejects invalid input atomically", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/?debug");
+  await page.getByText("Quality", { exact: true }).click();
+  const exposure = page.getByLabel("Exposure", { exact: true });
+  const threshold = page.getByLabel("Minimum FPS", { exact: true });
+  await exposure.fill("1.25");
+  await exposure.press("Enter");
+  await threshold.fill("55");
+  await threshold.press("Enter");
+  await page
+    .getByRole("button", { name: "Copy settings", exact: true })
+    .click();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Reset to demo" }).click();
+  await expect(exposure).toHaveValue("0.72");
+  await page.evaluate((text) => navigator.clipboard.writeText(text), copied);
+  await page.getByRole("button", { name: "Import from clipboard" }).click();
+  await expect(page.getByRole("status")).toHaveText("Settings imported.");
+  await expect(exposure).toHaveValue("1.25");
+  await expect(threshold).toHaveValue("55");
+  await page
+    .getByRole("button", { name: "Copy settings", exact: true })
+    .click();
+  expect(
+    JSON.parse(await page.evaluate(() => navigator.clipboard.readText())),
+  ).toEqual(JSON.parse(copied));
+  for (const text of [
+    "invalid json",
+    JSON.stringify({ exposure: 1.5, cameraY: "wrong" }),
+    JSON.stringify({ exposure: 100 }),
+    JSON.stringify({ greenTint: "not a color" }),
+    "[]",
+  ]) {
+    await page.evaluate((text) => navigator.clipboard.writeText(text), text);
+    await page.getByRole("button", { name: "Import from clipboard" }).click();
+    await expect(page.getByRole("status")).toContainText(
+      "Could not import settings:",
+    );
+    await expect(exposure).toHaveValue("1.25");
+  }
 });

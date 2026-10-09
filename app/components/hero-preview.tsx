@@ -1,7 +1,10 @@
 import { getImageProps } from "next/image";
 import type { CSSProperties } from "react";
 import preview from "../../public/studio/hero-preview.json";
-import { SCENE_FRAMING } from "./hero-settings";
+import {
+  DEFAULT_SCENE_SETTINGS as defaults,
+  SCENE_FRAMING,
+} from "./hero-settings";
 
 const image = {
   alt: "",
@@ -32,7 +35,7 @@ export function HeroPreview() {
       style={
         {
           "--preview-aspect": `${preview.worldWidth} / ${preview.worldHeight}`,
-          "--preview-width": `min(100cqw, ${(SCENE_FRAMING.minWidth / SCENE_FRAMING.minHeight) * 100}cqh)`,
+          "--preview-width": `min(${defaults.zoom * 100}cqw, ${(SCENE_FRAMING.minWidth / SCENE_FRAMING.minHeight) * defaults.zoom * 100}cqh)`,
         } as CSSProperties
       }
     >

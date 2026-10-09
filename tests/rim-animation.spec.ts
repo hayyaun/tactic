@@ -30,12 +30,27 @@ function drawCount(page: Page) {
   );
 }
 
+async function useShimmerTestTiming(page: Page) {
+  // Exercise the quiet period and ten-second handoff independently of art defaults.
+  await page.goto("/?debug");
+  await page.getByLabel("Auto quality", { exact: true }).uncheck();
+  await page.locator("div").filter({ hasText: /^Rim$/ }).last().click();
+  for (const [label, value] of [
+    ["Repeat every (s)", "15"],
+    ["Sweep duration (s)", "10"],
+  ]) {
+    const input = page.getByLabel(label, { exact: true });
+    await input.fill(value);
+    await input.press("Enter");
+  }
+}
+
 test("idle rim shines, pauses offscreen, and resumes on return", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   const errors = await observeScene(page);
-  await page.goto("/");
+  await useShimmerTestTiming(page);
   const stage = page.locator("[data-hero-art]");
   await expect(stage).toHaveAttribute("data-ready", "true");
   // Sample the independent glint during its ten-second pass.
@@ -150,7 +165,7 @@ test("both rims fade to zero through the handoff", async ({ page }) => {
       return Reflect.apply(original, this, args);
     };
   });
-  await page.goto("/");
+  await useShimmerTestTiming(page);
   await expect(page.locator("[data-hero-art]")).toHaveAttribute(
     "data-ready",
     "true",
