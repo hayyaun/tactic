@@ -1,5 +1,7 @@
 "use client";
 
+import { DialogCloseButton, DialogActionButton } from "./dialog-controls";
+
 import Image from "next/image";
 import {
   useEffect,
@@ -9,27 +11,8 @@ import {
   type ComponentProps,
 } from "react";
 
-const studies = {
-  pathways: {
-    title: "A clearer direction",
-    alt: "TACTIC’s green and red marks become intersecting pathways with figures choosing a direction.",
-    description:
-      "Every decision opens a path. Our paired marks represent two perspectives: the possibility ahead and the lessons that help us get there. A visual exploration of clarity, choice, and moving with intent.",
-  },
-  strategy: {
-    title: "Thinking ahead",
-    alt: "A chess pawn sits within a green ring among other pieces and TACTIC brand symbols.",
-    description:
-      "Creativity starts with a good question. This brand exploration brings the TACTIC perspective to the chessboard: see the bigger picture, understand the possibilities, and make the next move a considered one.",
-  },
-  architecture: {
-    title: "Built to stand apart",
-    alt: "TACTIC’s opposing green and red marks form two architectural towers.",
-    description:
-      "An identity with substance. Our opposing forms become a small architectural world, turning a simple mark into a place for possibility. Distinctive from a distance. Considered up close.",
-  },
-};
-type Study = keyof typeof studies;
+import { studies, type Study } from "../studies";
+
 function StudioDialog(props: ComponentProps<"dialog">) {
   return (
     <dialog
@@ -115,13 +98,10 @@ export function Dialogs() {
           <span className="flex items-center gap-2.5 font-mono text-[8px] leading-[1.7] font-normal tracking-wider text-green uppercase">
             Your next move starts here
           </span>
-          <button
-            className="grid h-9.5 w-9.5 flex-[0_0_auto] place-items-center rounded-full border-0 bg-[rgba(255,255,255,0.05)] text-[25px] font-extralight text-foreground hover:border-green hover:bg-green hover:text-background"
+          <DialogCloseButton
             aria-label="Close project enquiry"
             onClick={() => contact.current?.close()}
-          >
-            ×
-          </button>
+          />
         </div>
         <h2
           className="text-[43px] leading-[1.12] font-[380] tracking-[-0.045em] min-[600px]:text-[54px]"
@@ -222,12 +202,9 @@ export function Dialogs() {
           <p className="mb-4.25 font-mono text-[9px] leading-[1.7] font-normal tracking-normal text-muted normal-case">
             Prepare a project brief below. Nothing is sent.
           </p>
-          <button
-            className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green"
-            type="submit"
-          >
-            Prepare project brief <span>↗</span>
-          </button>
+          <DialogActionButton type="submit">
+            Prepare project brief
+          </DialogActionButton>
         </form>
         <div id="brief-result" hidden={!brief}>
           <p className="flex items-center gap-2.5 font-mono text-[10px] leading-[1.7] font-normal tracking-wider uppercase">
@@ -249,14 +226,14 @@ export function Dialogs() {
           >
             {brief}
           </pre>
-          <button
+          <DialogActionButton
             ref={copyButton}
-            className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green"
+
             id="copy-brief"
             onClick={copy}
           >
-            Copy project brief <span>↗</span>
-          </button>
+            Copy project brief
+          </DialogActionButton>
           <button
             className="mx-auto mt-4.5 mb-0 block rounded-[22px] bg-[rgba(255,255,255,0.07)] px-4.5 py-2.75 text-[12px]"
             id="edit-brief"
@@ -296,21 +273,18 @@ export function Dialogs() {
               {studies[study].title}
             </h2>
           </div>
-          <button
-            className="grid h-9.5 w-9.5 flex-[0_0_auto] place-items-center rounded-full border-0 bg-[rgba(255,255,255,0.05)] text-[25px] font-extralight text-foreground hover:border-green hover:bg-green hover:text-background"
+          <DialogCloseButton
             aria-label="Close brand study"
             onClick={() => studyDialog.current?.close()}
-          >
-            ×
-          </button>
+          />
         </div>
         <Image
           className="w-full rounded-[14px]"
           id="study-dialog-image"
-          src={`/studio/${study}.webp`}
+          src={studies[study].src}
           alt={studies[study].alt}
-          width={1200}
-          height={1200}
+          width={studies[study].size}
+          height={studies[study].size}
           sizes="(min-width: 704px) 606px, (min-width: 600px) calc(100vw - 98px), calc(100vw - 78px)"
         />
         <p

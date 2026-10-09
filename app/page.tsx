@@ -1,6 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ContactButton, StudyButton } from "./components/dialog-buttons";
+import { StudyCard } from "./components/study-card";
+import { SectionLabel, StudioPrinciples } from "./components/studio-content";
+import { ContactButton } from "./components/dialog-buttons";
 import { Dialogs } from "./components/interactions";
 import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
@@ -99,16 +100,15 @@ export default function Home() {
         <Capabilities />
 
         <section
-          className="mx-auto w-[calc(100%-48px)] max-w-7xl py-25 min-[600px]:w-[calc(100%-80px)] min-[960px]:w-[calc(100%-144px)] min-[960px]:py-36.25"
+          className="studio-container py-25 min-[960px]:py-36.25"
           id="world"
           aria-labelledby="world-title"
         >
-          <div className="flex justify-between gap-5 font-mono text-[9px] leading-[1.7] font-normal tracking-wider text-muted uppercase">
-            <span>02 / The TACTIC world</span>
+          <SectionLabel label="02 / The TACTIC world">
             <span className="hidden text-muted min-[960px]:inline">
               Thinking, made visible.
             </span>
-          </div>
+          </SectionLabel>
           <div className="mx-0 mt-9.5 mb-10 grid gap-6.5 min-[960px]:mt-11.75 min-[960px]:mb-15 min-[960px]:flex min-[960px]:items-end min-[960px]:justify-between">
             <h2
               className="text-[clamp(37px,8.7vw,61px)] leading-[1.12] font-[380] tracking-[-0.045em] min-[960px]:text-[58px]"
@@ -127,87 +127,9 @@ export default function Home() {
             </p>
           </div>
           <div className="grid gap-8.75 min-[600px]:grid-cols-[repeat(3,minmax(0px,1fr))] min-[600px]:gap-5.5 min-[960px]:gap-7.5">
-            <StudyButton
-              className="group/study block w-full bg-transparent p-0 text-left"
-              aria-label="View A clearer direction brand study"
-              study="pathways"
-            >
-              <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
-                <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
-                  src="/studio/pathways.webp"
-                  width={1200}
-                  height={1200}
-                  alt="TACTIC’s green and red marks become intersecting pathways with figures choosing a direction."
-                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
-                />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
-                  ↗
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between gap-3 px-0.75 pt-4.75 pb-3 [border-bottom:1px_solid_var(--line)] min-[600px]:flex-wrap min-[600px]:gap-2 min-[960px]:flex-nowrap">
-                <h3 className="text-[14px] font-normal tracking-[-0.02em]">
-                  A clearer direction
-                </h3>
-                <span className="font-mono text-[7px] leading-[1.7] font-normal tracking-wider whitespace-nowrap text-muted uppercase">
-                  01 / Perspective
-                </span>
-              </div>
-            </StudyButton>
-            <StudyButton
-              className="group/study block w-full bg-transparent p-0 text-left"
-              aria-label="View Thinking ahead brand study"
-              study="strategy"
-            >
-              <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
-                <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
-                  src="/studio/strategy.webp"
-                  width={1200}
-                  height={1200}
-                  alt="A chess pawn sits within a green ring among other pieces and TACTIC brand symbols."
-                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
-                />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
-                  ↗
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between gap-3 px-0.75 pt-4.75 pb-3 [border-bottom:1px_solid_var(--line)] min-[600px]:flex-wrap min-[600px]:gap-2 min-[960px]:flex-nowrap">
-                <h3 className="text-[14px] font-normal tracking-[-0.02em]">
-                  Thinking ahead
-                </h3>
-                <span className="font-mono text-[7px] leading-[1.7] font-normal tracking-wider whitespace-nowrap text-muted uppercase">
-                  02 / Strategy
-                </span>
-              </div>
-            </StudyButton>
-            <StudyButton
-              className="group/study block w-full bg-transparent p-0 text-left"
-              aria-label="View Built to stand apart brand study"
-              study="architecture"
-            >
-              <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
-                <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
-                  src="/studio/architecture.webp"
-                  width={900}
-                  height={900}
-                  alt="TACTIC’s opposing green and red marks form two architectural towers."
-                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
-                />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
-                  ↗
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between gap-3 px-0.75 pt-4.75 pb-3 [border-bottom:1px_solid_var(--line)] min-[600px]:flex-wrap min-[600px]:gap-2 min-[960px]:flex-nowrap">
-                <h3 className="text-[14px] font-normal tracking-[-0.02em]">
-                  Built to stand apart
-                </h3>
-                <span className="font-mono text-[7px] leading-[1.7] font-normal tracking-wider whitespace-nowrap text-muted uppercase">
-                  03 / Identity
-                </span>
-              </div>
-            </StudyButton>
+            <StudyCard study="pathways" />
+            <StudyCard study="strategy" />
+            <StudyCard study="architecture" />
           </div>
           <p className="mt-8 flex items-center gap-2.25 font-mono text-[8px] leading-[1.8] font-normal tracking-normal text-muted min-[960px]:mt-9.75">
             <span className="inline-block h-1 w-1 flex-[0_0_4px] rounded-full bg-green"></span>{" "}
@@ -220,13 +142,12 @@ export default function Home() {
           id="studio"
           aria-labelledby="studio-title"
         >
-          <div className="mx-auto w-[calc(100%-48px)] max-w-7xl min-[600px]:w-[calc(100%-80px)] min-[960px]:w-[calc(100%-144px)]">
-            <div className="flex justify-between gap-5 font-mono text-[9px] leading-[1.7] font-normal tracking-wider text-muted uppercase">
-              <span>03 / The studio</span>
+          <div className="studio-container">
+            <SectionLabel label="03 / The studio">
               <svg className="h-4.25 w-3 text-green" aria-hidden="true">
                 <use href="#tactic-mark" />
               </svg>
-            </div>
+            </SectionLabel>
             <div className="mt-11.25 grid gap-9 min-[960px]:mt-14.25 min-[960px]:grid-cols-[1.15fr_1fr] min-[960px]:gap-27.5">
               <h2
                 className="text-[clamp(37px,8.7vw,61px)] leading-[1.12] font-[380] tracking-[-0.045em] min-[960px]:text-[63px]"
@@ -258,53 +179,21 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="mt-16.25 grid gap-8.25 min-[600px]:grid-cols-[repeat(3,minmax(0px,1fr))] min-[600px]:gap-8 min-[960px]:mt-23 min-[960px]:gap-17.5">
-              <div className="pt-6 [border-top:1px_solid_var(--line)]">
-                <span className="font-mono text-[9px] text-green">01</span>
-                <h3 className="mt-5.75 text-[24px] font-[350] tracking-[-0.035em] min-[600px]:text-[21px] min-[960px]:text-[27px]">
-                  Think clearly.
-                </h3>
-                <p className="mt-3.5 max-w-72.5 text-[12px] leading-[1.85] text-muted min-[600px]:text-[11px] min-[960px]:text-[12px]">
-                  Find what matters. Give the idea a purpose before giving it a
-                  form.
-                </p>
-              </div>
-              <div className="pt-6 [border-top:1px_solid_var(--line)]">
-                <span className="font-mono text-[9px] text-green">02</span>
-                <h3 className="mt-5.75 text-[24px] font-[350] tracking-[-0.035em] min-[600px]:text-[21px] min-[960px]:text-[27px]">
-                  Make it distinct.
-                </h3>
-                <p className="mt-3.5 max-w-72.5 text-[12px] leading-[1.85] text-muted min-[600px]:text-[11px] min-[960px]:text-[12px]">
-                  Bring a fresh perspective. Build something that could only be
-                  yours.
-                </p>
-              </div>
-              <div className="pt-6 [border-top:1px_solid_var(--line)]">
-                <span className="font-mono text-[9px] text-green">03</span>
-                <h3 className="mt-5.75 text-[24px] font-[350] tracking-[-0.035em] min-[600px]:text-[21px] min-[960px]:text-[27px]">
-                  Move together.
-                </h3>
-                <p className="mt-3.5 max-w-72.5 text-[12px] leading-[1.85] text-muted min-[600px]:text-[11px] min-[960px]:text-[12px]">
-                  Keep the conversation open. Turn shared ambition into a clear
-                  next step.
-                </p>
-              </div>
-            </div>
+            <StudioPrinciples />
           </div>
         </section>
 
         <section
-          className="mx-auto mt-25 w-[calc(100%-48px)] max-w-7xl pt-13.5 pb-15 [border-bottom:1px_solid_var(--line)] [border-top:1px_solid_var(--line)] min-[600px]:w-[calc(100%-80px)] min-[960px]:mt-36.25 min-[960px]:w-[calc(100%-144px)] min-[960px]:pt-12.25 min-[960px]:pb-17.25"
+          className="studio-container mt-25 pt-13.5 pb-15 [border-bottom:1px_solid_var(--line)] [border-top:1px_solid_var(--line)] min-[960px]:mt-36.25 min-[960px]:pt-12.25 min-[960px]:pb-17.25"
           id="contact"
           aria-labelledby="contact-title"
         >
-          <div className="flex justify-between gap-5 font-mono text-[9px] leading-[1.7] font-normal tracking-wider text-muted uppercase">
-            <span>04 / Your next move</span>
+          <SectionLabel label="04 / Your next move">
             <span className="hidden items-center gap-2 text-muted min-[960px]:inline">
               <span className="inline-block h-1 w-1 flex-[0_0_4px] rounded-full bg-green"></span>{" "}
               Let’s make something matter.
             </span>
-          </div>
+          </SectionLabel>
           <div className="mt-10.5 flex flex-wrap items-center gap-8.25 min-[960px]:mt-14.75 min-[960px]:flex-nowrap min-[960px]:justify-between min-[960px]:gap-12.5">
             <h2
               className="text-[clamp(38px,9vw,83px)] leading-[1.13] font-[380] tracking-[-0.045em] min-[960px]:text-[clamp(59px,5.6vw,84px)]"
@@ -339,7 +228,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="mx-auto w-[calc(100%-48px)] max-w-7xl overflow-hidden pt-15 pb-7 min-[600px]:w-[calc(100%-80px)] min-[960px]:w-[calc(100%-144px)] min-[960px]:pt-19.5 min-[960px]:pb-8.75">
+      <footer className="studio-container overflow-hidden pt-15 pb-7 min-[960px]:pt-19.5 min-[960px]:pb-8.75">
         <Link
           className="block w-fit text-[clamp(72px,23vw,345px)] leading-[0.96] font-[420] tracking-[-0.068em] text-[rgb(160,177,154)]"
           href="#top"

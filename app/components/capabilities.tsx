@@ -1,6 +1,21 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { ContactButton } from "./dialog-buttons";
 import { CapabilityTabs } from "./capability-tabs";
+function BoardCaption({ children }: { children: ReactNode }) {
+  return (
+    <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
+      {children}
+    </span>
+  );
+}
+function BoardNote({ children }: { children: ReactNode }) {
+  return (
+    <p className="mt-3.75 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px] min-[701px]:leading-normal">
+      {children}
+    </p>
+  );
+}
 function CapabilityIntro({
   title,
   description,
@@ -76,9 +91,7 @@ export function Capabilities() {
                     Every move matters.
                   </p>
                 </div>
-                <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
-                  Identity / 01
-                </span>
+                <BoardCaption>Identity / 01</BoardCaption>
               </div>
               <div className="relative col-start-2 row-start-2 min-w-0 overflow-hidden rounded-[19px] border border-board-line bg-[rgb(22,32,22)] text-[rgb(214,224,199)] min-[701px]:col-[9/13] min-[701px]:row-[1/3] min-[701px]:rounded-[25px]">
                 <Image
@@ -89,9 +102,7 @@ export function Capabilities() {
                   height={1200}
                   sizes="(min-width: 1440px) 482px, (min-width: 701px) 424px, max(230px, calc((100vw - 57px) / 2))"
                 />
-                <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
-                  A matter of direction
-                </span>
+                <BoardCaption>A matter of direction</BoardCaption>
               </div>
               <div className="relative col-start-1 row-start-2 flex min-w-0 flex-col justify-between overflow-hidden rounded-[19px] border border-board-line bg-[rgb(156,172,134)] p-4.5 text-[rgb(38,48,30)] min-[381px]:p-5.5 min-[701px]:col-[1/5] min-[701px]:row-[2/4] min-[701px]:rounded-[25px] min-[701px]:p-7">
                 <span className="font-mono text-[7px] leading-normal tracking-[0.03em] min-[701px]:text-[10px]">
@@ -177,9 +188,7 @@ export function Capabilities() {
                 </div>
               </div>
             </div>
-            <p className="mt-3.75 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px] min-[701px]:leading-normal">
-              TACTIC identity exploration / Studio concept
-            </p>
+            <BoardNote>TACTIC identity exploration / Studio concept</BoardNote>
           </div>,
           <div key="1">
             <CapabilityIntro
@@ -248,9 +257,7 @@ export function Capabilities() {
                     </div>
                   </div>
                 </div>
-                <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
-                  Web design + development
-                </span>
+                <BoardCaption>Web design + development</BoardCaption>
               </div>
               <div
                 className="relative col-[1/3] row-start-2 flex min-w-0 items-center justify-center overflow-hidden rounded-[19px] border border-board-line bg-[radial-gradient(at_left_top,rgb(71,76,61),rgb(44,50,37))] px-3.75 pt-8.75 pb-13 text-[rgb(212,220,203)] min-[701px]:col-[9/13] min-[701px]:row-[1/3] min-[701px]:rounded-[25px]"
@@ -314,9 +321,7 @@ export function Capabilities() {
                     </div>
                   </div>
                 </div>
-                <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
-                  App design + development
-                </span>
+                <BoardCaption>App design + development</BoardCaption>
               </div>
               <div className="relative col-start-1 row-start-3 min-w-0 overflow-hidden rounded-[19px] border border-board-line bg-[rgb(196,201,185)] p-4.25 text-[rgb(64,75,52)] min-[381px]:p-5 min-[701px]:col-[1/5] min-[701px]:row-start-2 min-[701px]:rounded-[25px] min-[701px]:p-5.75 min-[1001px]:p-7">
                 <svg
@@ -362,9 +367,9 @@ export function Capabilities() {
                 </span>
               </div>
             </div>
-            <p className="mt-3.75 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px] min-[701px]:leading-normal">
+            <BoardNote>
               FORM website + daily planning app / Studio concepts
-            </p>
+            </BoardNote>
           </div>,
           <div key="2">
             <CapabilityIntro
@@ -470,9 +475,9 @@ export function Capabilities() {
                 </p>
               </div>
             </div>
-            <p className="mt-3.75 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px] min-[701px]:leading-normal">
+            <BoardNote>
               STILL advertising direction / AI-generated concept stills
-            </p>
+            </BoardNote>
           </div>,
         ]}
       />

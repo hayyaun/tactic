@@ -2,6 +2,12 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ContactButton } from "./dialog-buttons";
+const navigation = [
+  { href: "#capabilities", label: "What we do", number: "01" },
+  { href: "#world", label: "Our world", number: "02" },
+  { href: "#studio", label: "The studio", number: "03" },
+];
+
 export function Header() {
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -37,24 +43,15 @@ export function Header() {
           className="hidden gap-8.5 text-[12px] text-muted min-[960px]:flex"
           aria-label="Main navigation"
         >
-          <Link
-            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
-            href="#capabilities"
-          >
-            What we do
-          </Link>
-          <Link
-            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
-            href="#world"
-          >
-            Our world
-          </Link>
-          <Link
-            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
-            href="#studio"
-          >
-            The studio
-          </Link>
+          {navigation.map(({ href, label }) => (
+            <Link
+              key={href}
+              className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
+              href={href}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
         <ContactButton className="ml-auto flex items-center gap-2.25 rounded-[28px] bg-foreground px-2.75 py-2.5 text-[10px] whitespace-nowrap text-background [transition:background_0.3s,color_0.3s] hover:bg-[rgb(213,231,206)] hover:text-background motion-reduce:transition-none min-[360px]:gap-3.25 min-[360px]:px-3.5 min-[360px]:py-2.75 min-[360px]:text-[11px] min-[960px]:ml-0 min-[960px]:gap-5.75 min-[960px]:px-4.5 min-[960px]:py-3 min-[960px]:text-[12px]">
           Let’s talk{" "}
@@ -81,26 +78,17 @@ export function Header() {
         aria-label="Mobile navigation"
         hidden={!open}
       >
-        <Link
-          className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350]"
-          href="#capabilities"
-        >
-          What we do{" "}
-          <span className="font-mono text-[10px] text-green">01</span>
-        </Link>
-        <Link
-          className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350]"
-          href="#world"
-        >
-          Our world <span className="font-mono text-[10px] text-green">02</span>
-        </Link>
-        <Link
-          className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350]"
-          href="#studio"
-        >
-          The studio{" "}
-          <span className="font-mono text-[10px] text-green">03</span>
-        </Link>
+        {navigation.map(({ href, label, number }) => (
+          <Link
+            key={href}
+            className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350]"
+            href={href}
+          >
+            {label}{" "}
+            <span className="font-mono text-[10px] text-green">{number}</span>
+          </Link>
+        ))}
+
         <ContactButton className="mx-0 mt-2.5 mb-0 flex justify-between rounded-[28px] bg-foreground px-4.25 py-3.25 text-left text-[17px] font-[350] text-background">
           Let’s talk{" "}
           <span className="font-mono text-[10px] text-inherit">↗</span>

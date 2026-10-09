@@ -19,3 +19,16 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+@utility studio-container {
+  margin-inline: auto;
+  width: calc(100% - 48px);
+  max-width: var(--container-7xl);
+
+  @media (width >= 600px) {
+    width: calc(100% - 80px);
+  }
+  @media (width >= 960px) {
+    width: calc(100% - 144px);
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ButtonHTMLAttributes } from "react";
+import type { Study } from "../studies";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 function openDialog(id: string) {
@@ -22,7 +23,7 @@ export function StudyButton({
   study,
   ...props
 }: ButtonProps & {
-  study: "pathways" | "strategy" | "architecture";
+  study: Study;
 }) {
   return (
     <button
