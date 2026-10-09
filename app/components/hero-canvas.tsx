@@ -322,12 +322,15 @@ function contourData(geometry: BufferGeometry) {
               number,
             ],
           );
-          colors.push([
-            1,
-            1,
-            1,
-            alpha[role] * (0.4 + 0.6 * Math.sin(Math.PI * f)),
-          ]);
+          const falloff = Math.sin(Math.PI * f);
+          const topRim = !rear && role === "rim";
+          // Give the visible top rim an actual dark-to-light gradient rather
+          // than fading a white line. Keep structural and rear contours intact.
+          const radiance = topRim ? 0.01 + 1.49 * falloff : 1;
+          const opacity = topRim
+            ? 0.75 * (0.9 + 0.1 * falloff)
+            : (rear ? 0.08 : 0.35) * alpha[role] * (0.4 + 0.6 * falloff);
+          colors.push([radiance, radiance, radiance, opacity]);
         }
     }
     return {
@@ -371,7 +374,6 @@ function GlassContours({
         color="#f3f7f2"
         vertexColors
         transparent
-        opacity={rear ? 0.08 : 0.35}
         depthTest={!rear}
         depthWrite={false}
         dithering
