@@ -24,12 +24,14 @@ import {
   type RefObject,
 } from "react";
 import {
+  AdditiveBlending,
   Box3,
   BufferGeometry,
   EdgesGeometry,
   Float32BufferAttribute,
   Color,
   DoubleSide,
+  DynamicDrawUsage,
   MathUtils,
   Matrix4,
   Mesh,
@@ -304,14 +306,41 @@ function contourData(geometry: BufferGeometry) {
   }
   cap.dispose();
   if (source !== geometry) source.dispose();
+  // Walk connected cap edges to give the glint one continuous perimeter path.
+  const pending = segments.filter(({ role }) => role === "rim");
+  const rimPath = new Map<
+    (typeof segments)[number],
+    { start: number; length: number; reverse: boolean }
+  >();
+  let perimeter = 0;
+  let endpoint = pending[0]?.a;
+  const samePoint = (a: number[], b: number[]) =>
+    a.every((value, axis) => Math.abs(value - b[axis]) < 0.00001);
+  while (pending.length && endpoint) {
+    const index = pending.findIndex(
+      ({ a, b }) => samePoint(a, endpoint!) || samePoint(b, endpoint!),
+    );
+    if (index < 0) break;
+    const [edge] = pending.splice(index, 1);
+    const reverse = samePoint(edge.b, endpoint);
+    const length = Math.hypot(
+      ...edge.a.map((value, axis) => edge.b[axis] - value),
+    );
+    rimPath.set(edge, { start: perimeter, length, reverse });
+    perimeter += length;
+    endpoint = reverse ? edge.a : edge.b;
+  }
   return [true, false].map((rear) => {
     const points: [number, number, number][] = [];
+    const glintPoints: number[] = [];
     const colors: [number, number, number, number][] = [];
+    const rimSamples: { vertex: number; distance: number }[] = [];
     const alpha = rear
       ? { crease: 0.25, rim: 0.35, inset: 0.65 }
       : { crease: 0.3, rim: 0.7, inset: 0 };
     const stops = [0, 0.12, 0.5, 0.88, 1];
-    for (const { a, b, role } of segments) {
+    for (const segment of segments) {
+      const { a, b, role } = segment;
       if (!alpha[role]) continue;
       const topRim = !rear && role === "rim";
       const rimStops = topRim
@@ -344,10 +373,32 @@ function contourData(geometry: BufferGeometry) {
           colors.push([radiance, radiance, radiance, opacity]);
         }
     }
+    if (!rear)
+      for (const [edge, path] of rimPath) {
+        const divisions = Math.max(
+          8,
+          Math.ceil(path.length / (perimeter * 0.008)),
+        );
+        for (let i = 0; i < divisions; i++)
+          for (const f of [i / divisions, (i + 1) / divisions]) {
+            rimSamples.push({
+              vertex: glintPoints.length / 3,
+              distance:
+                (path.start + path.length * (path.reverse ? 1 - f : f)) /
+                perimeter,
+            });
+            for (let axis = 0; axis < 3; axis++)
+              glintPoints.push(
+                edge.a[axis] + (edge.b[axis] - edge.a[axis]) * f,
+              );
+          }
+      }
     return {
       positions: new Float32Array(points.flat()),
       colors: new Float32Array(colors.flat()),
       rear,
+      rimSamples,
+      glintPositions: new Float32Array(glintPoints),
     };
   });
 }
@@ -355,43 +406,131 @@ function GlassContours({
   geometry,
   amount,
   tint,
+  reducedMotion,
+  settings,
+  shimmerTime,
+  shimmerOffset,
 }: {
   geometry: BufferGeometry;
   amount: RefObject<number>;
   tint: Color;
+  reducedMotion: boolean;
+  settings: SceneSettings;
+  shimmerTime: RefObject<number>;
+  shimmerOffset: number;
 }) {
   const contours = useMemo(() => contourData(geometry), [geometry]);
   const front = useRef<LineSegments<BufferGeometry, LineBasicMaterial>>(null);
   const rearLine =
     useRef<LineSegments<BufferGeometry, LineBasicMaterial>>(null);
-  useFrame(() => {
+  const glint = useRef<LineSegments<BufferGeometry, LineBasicMaterial>>(null);
+  const frontData = contours.find(({ rear }) => !rear)!;
+  const glintColors = useMemo(() => {
+    const colors = new Float32Array(frontData.rimSamples.length * 4);
+    for (let i = 0; i < colors.length; i += 4) colors.fill(1, i, i + 3);
+    return colors;
+  }, [frontData]);
+  useFrame((state) => {
+    if (state.gl.getContext().isContextLost()) return;
     rearLine.current?.material.color.set("#f3f7f2");
     front.current?.material.color
       .set("#f3f7f2")
       .lerp(tint, amount.current * 0.12);
+    const phase = shimmerTime.current % settings.rimShimmerInterval;
+    const duration = Math.min(
+      settings.rimShimmerDuration,
+      settings.rimShimmerInterval,
+    );
+    // The two closed rims take turns within the ten-second sweep. Each needs
+    // its own fade: the second rim must not inherit the first rim's full alpha.
+    const rimDuration = duration / 2;
+    const rimPhase = phase - duration * shimmerOffset;
+    const sweeping =
+      !reducedMotion &&
+      settings.rimShimmer &&
+      rimPhase >= 0 &&
+      rimPhase < rimDuration;
+    const t = MathUtils.clamp(rimPhase / rimDuration, 0, 1);
+    const center =
+      t < 0.5 ? 8 * Math.pow(t, 4) : 1 - Math.pow(-2 * t + 2, 4) / 2;
+    const halfWidth = 0.11;
+    const quietDuration = Math.min(1, rimDuration * 0.2);
+    const fadeDuration = Math.min(2, (rimDuration - 2 * quietDuration) / 3);
+    const envelope = sweeping
+      ? MathUtils.smootherstep(
+          rimPhase,
+          quietDuration,
+          quietDuration + fadeDuration,
+        ) *
+        (1 -
+          MathUtils.smootherstep(
+            rimPhase,
+            rimDuration - quietDuration - fadeDuration,
+            rimDuration - quietDuration,
+          ))
+      : 0;
+    glint.current?.material.color.setScalar(settings.rimShimmerStrength);
+    const attribute = glint.current?.geometry.getAttribute("color");
+    if (!attribute) return;
+    for (const { vertex, distance } of frontData.rimSamples) {
+      // Distance wraps at the closed rim's seam, preserving the whole glint.
+      const directDistance = Math.abs(distance - center);
+      const separation = Math.min(directDistance, 1 - directDistance);
+      const peak = 1 - MathUtils.smoothstep(separation, 0, halfWidth);
+      attribute.setW(vertex, peak * envelope);
+    }
+    attribute.needsUpdate = true;
   });
-  return contours.map(({ positions, colors, rear }) => (
-    <lineSegments
-      ref={rear ? rearLine : front}
-      key={String(rear)}
-      renderOrder={rear ? 4 : 5}
-      raycast={() => {}}
-    >
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 4]} />
-      </bufferGeometry>
-      <lineBasicMaterial
-        color="#f3f7f2"
-        vertexColors
-        transparent
-        depthTest={!rear}
-        depthWrite={false}
-        dithering
-        toneMapped={false}
-      />
-    </lineSegments>
-  ));
+  return (
+    <>
+      {contours.map(({ positions, colors, rear }) => (
+        <lineSegments
+          ref={rear ? rearLine : front}
+          key={String(rear)}
+          renderOrder={rear ? 4 : 5}
+          raycast={() => {}}
+        >
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              args={[positions, 3]}
+            />
+            <bufferAttribute attach="attributes-color" args={[colors, 4]} />
+          </bufferGeometry>
+          <lineBasicMaterial
+            color="#f3f7f2"
+            vertexColors
+            transparent
+            depthTest={!rear}
+            depthWrite={false}
+            dithering
+            toneMapped={false}
+          />
+        </lineSegments>
+      ))}
+      <lineSegments ref={glint} renderOrder={6} raycast={() => {}}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[frontData.glintPositions, 3]}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            args={[glintColors, 4]}
+            usage={DynamicDrawUsage}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial
+          color="white"
+          vertexColors
+          transparent
+          blending={AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </lineSegments>
+    </>
+  );
 }
 
 function GlassBody({
@@ -402,6 +541,7 @@ function GlassBody({
   onOver,
   onOut,
   settings,
+  shimmerTime,
 }: {
   geometry: BufferGeometry;
   name: string;
@@ -410,6 +550,7 @@ function GlassBody({
   onOver: (event: ThreeEvent<PointerEvent>) => void;
   onOut: () => void;
   settings: SceneSettings;
+  shimmerTime: RefObject<number>;
 }) {
   const mesh = useRef<Mesh<BufferGeometry, MeshPhysicalMaterial>>(null);
   const projection = useBoxProjectedEnv([0, 3.3, 0], [14, 20, 18]);
@@ -474,7 +615,15 @@ function GlassBody({
         polygonOffsetUnits={1}
       />
       {settings.contours && (
-        <GlassContours geometry={geometry} amount={amount} tint={tint} />
+        <GlassContours
+          geometry={geometry}
+          amount={amount}
+          tint={tint}
+          reducedMotion={reducedMotion}
+          settings={settings}
+          shimmerTime={shimmerTime}
+          shimmerOffset={name.includes("Rear") ? 0 : 0.5}
+        />
       )}
     </mesh>
   );
@@ -499,6 +648,42 @@ function Sculpture({
   const events = useThree((state) => state.events);
   const invalidate = useThree((state) => state.invalidate);
   const readyFrames = useRef(0);
+  const shimmerTime = useRef(0);
+  useEffect(() => {
+    if (
+      !active ||
+      reducedMotion ||
+      !settings.contours ||
+      !settings.rimShimmer ||
+      settings.rimShimmerStrength === 0
+    )
+      return;
+    // Only the visible, animated rim requests idle frames; pointer animation
+    // can still request native-rate frames through Fiber's demand loop.
+    let previous = performance.now();
+    let wasSweeping = false;
+    const timer = window.setInterval(() => {
+      const now = performance.now();
+      shimmerTime.current += (now - previous) / 1000;
+      previous = now;
+      const sweeping =
+        shimmerTime.current % settings.rimShimmerInterval <
+        Math.min(settings.rimShimmerDuration, settings.rimShimmerInterval);
+      if (sweeping || wasSweeping) invalidate();
+      wasSweeping = sweeping;
+    }, 1000 / 30);
+    invalidate();
+    return () => window.clearInterval(timer);
+  }, [
+    active,
+    reducedMotion,
+    settings.contours,
+    settings.rimShimmer,
+    settings.rimShimmerStrength,
+    settings.rimShimmerInterval,
+    settings.rimShimmerDuration,
+    invalidate,
+  ]);
   useLayoutEffect(() => {
     readyFrames.current = 0;
     invalidate();
@@ -616,6 +801,7 @@ function Sculpture({
               hovered={active && settings.hover && hovered === body.name}
               reducedMotion={reducedMotion}
               settings={settings}
+              shimmerTime={shimmerTime}
               onOver={(event) => {
                 if (
                   event.pointerType !== "mouse" &&

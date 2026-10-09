@@ -22,7 +22,7 @@ export default function HeroDebug({
             label: "Camera X",
             value: defaults.cameraX,
             min: -20,
-            max: 20,
+            max: 30,
             step: 0.1,
           },
           cameraY: {
@@ -157,6 +157,33 @@ export default function HeroDebug({
           greenTint: { label: "Green hover tint", value: defaults.greenTint },
           redTint: { label: "Red hover tint", value: defaults.redTint },
           contours: { label: "Contours", value: defaults.contours },
+        },
+        { collapsed: true },
+      ),
+      Rim: folder(
+        {
+          rimShimmer: { label: "Shimmer", value: defaults.rimShimmer },
+          rimShimmerInterval: {
+            label: "Repeat every (s)",
+            value: defaults.rimShimmerInterval,
+            min: 4,
+            max: 20,
+            step: 0.5,
+          },
+          rimShimmerDuration: {
+            label: "Sweep duration (s)",
+            value: defaults.rimShimmerDuration,
+            min: 1,
+            max: 15,
+            step: 0.25,
+          },
+          rimShimmerStrength: {
+            label: "Shimmer strength",
+            value: defaults.rimShimmerStrength,
+            min: 0,
+            max: 3,
+            step: 0.05,
+          },
         },
         { collapsed: true },
       ),
