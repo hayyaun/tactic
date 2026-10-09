@@ -38,25 +38,25 @@ export function Header() {
           aria-label="Main navigation"
         >
           <Link
-            className="[transition:color_0.2s] hover:text-foreground"
+            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
             href="#capabilities"
           >
             What we do
           </Link>
           <Link
-            className="[transition:color_0.2s] hover:text-foreground"
+            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
             href="#world"
           >
             Our world
           </Link>
           <Link
-            className="[transition:color_0.2s] hover:text-foreground"
+            className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
             href="#studio"
           >
             The studio
           </Link>
         </nav>
-        <ContactButton className="ml-auto flex items-center gap-2.25 rounded-[28px] bg-foreground px-2.75 py-2.5 text-[10px] whitespace-nowrap text-background [transition:background_0.3s,color_0.3s] hover:bg-[rgb(213,231,206)] hover:text-background min-[360px]:gap-3.25 min-[360px]:px-3.5 min-[360px]:py-2.75 min-[360px]:text-[11px] min-[960px]:ml-0 min-[960px]:gap-5.75 min-[960px]:px-4.5 min-[960px]:py-3 min-[960px]:text-[12px]">
+        <ContactButton className="ml-auto flex items-center gap-2.25 rounded-[28px] bg-foreground px-2.75 py-2.5 text-[10px] whitespace-nowrap text-background [transition:background_0.3s,color_0.3s] hover:bg-[rgb(213,231,206)] hover:text-background motion-reduce:transition-none min-[360px]:gap-3.25 min-[360px]:px-3.5 min-[360px]:py-2.75 min-[360px]:text-[11px] min-[960px]:ml-0 min-[960px]:gap-5.75 min-[960px]:px-4.5 min-[960px]:py-3 min-[960px]:text-[12px]">
           Let’s talk{" "}
           <svg className="h-2.75 w-2.75" aria-hidden="true">
             <use href="#arrow-up-right" />
@@ -70,8 +70,8 @@ export function Header() {
           aria-label={open ? "Close navigation" : "Open navigation"}
           onClick={() => setOpen(!open)}
         >
-          <span className="h-px w-4.25 bg-foreground [transition:transform_0.2s] group-aria-expanded/menu-toggle:transform-[translateY(3px)_rotate(45deg)]"></span>
-          <span className="h-px w-4.25 bg-foreground [transition:transform_0.2s] group-aria-expanded/menu-toggle:transform-[translateY(-3px)_rotate(-45deg)]"></span>
+          <span className="h-px w-4.25 bg-foreground [transition:transform_0.2s] group-aria-expanded/menu-toggle:transform-[translateY(3px)_rotate(45deg)] motion-reduce:transition-none"></span>
+          <span className="h-px w-4.25 bg-foreground [transition:transform_0.2s] group-aria-expanded/menu-toggle:transform-[translateY(-3px)_rotate(-45deg)] motion-reduce:transition-none"></span>
         </button>
       </header>
       <nav

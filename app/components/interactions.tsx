@@ -311,7 +311,7 @@ export function Dialogs() {
           alt={studies[study].alt}
           width={1200}
           height={1200}
-          sizes="(max-width: 700px) 100vw, 80vw"
+          sizes="(min-width: 704px) 606px, (min-width: 600px) calc(100vw - 98px), calc(100vw - 78px)"
         />
         <p
           className="mt-5.5 text-[12px] leading-[1.8] text-muted"

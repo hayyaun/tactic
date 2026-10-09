@@ -5,6 +5,7 @@ import { Dialogs } from "./components/interactions";
 import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
 import { HeroArt } from "./components/hero-art";
+import { HeroPreview } from "./components/hero-preview";
 export default function Home() {
   return (
     <>
@@ -73,14 +74,16 @@ export default function Home() {
               <br />A little imagination. A clear direction.
             </p>
             <Link
-              className="mt-5 inline-flex items-center gap-7.5 rounded-[28px] bg-foreground px-5 py-3.25 text-[11px] text-background [transition:background_0.3s,transform_0.3s] hover:-translate-y-0.5 hover:bg-[rgb(213,231,206)] min-[600px]:mt-4.5 min-[600px]:px-5.75 min-[600px]:py-3.5 min-[600px]:text-[12px] [@media(max-height:_740px)_and_(max-width:_700px)]:mt-3 [@media(max-height:_740px)_and_(max-width:_700px)]:px-4.5 [@media(max-height:_740px)_and_(max-width:_700px)]:py-2.5 [@media(max-height:_740px)_and_(max-width:_700px)]:text-[10px]"
+              className="mt-5 inline-flex items-center gap-7.5 rounded-[28px] bg-foreground px-5 py-3.25 text-[11px] text-background [transition:background_0.3s,transform_0.3s] hover:-translate-y-0.5 hover:bg-[rgb(213,231,206)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 min-[600px]:mt-4.5 min-[600px]:px-5.75 min-[600px]:py-3.5 min-[600px]:text-[12px] [@media(max-height:_740px)_and_(max-width:_700px)]:mt-3 [@media(max-height:_740px)_and_(max-width:_700px)]:px-4.5 [@media(max-height:_740px)_and_(max-width:_700px)]:py-2.5 [@media(max-height:_740px)_and_(max-width:_700px)]:text-[10px]"
               href="#capabilities"
             >
               Discover what we do <span>↗</span>
             </Link>
           </div>
 
-          <HeroArt />
+          <HeroArt>
+            <HeroPreview />
+          </HeroArt>
           <div className="absolute right-8 bottom-7.75 z-2 min-[960px]:right-[max(56px,-630px+50vw)] min-[960px]:bottom-8.75 [@media(max-height:_740px)_and_(max-width:_700px)]:right-6 [@media(max-height:_740px)_and_(max-width:_700px)]:bottom-4.5">
             <Link
               className="flex flex-row items-center gap-3.25 font-mono text-[8px] tracking-[0.06em] text-muted"
@@ -131,14 +134,14 @@ export default function Home() {
             >
               <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
                 <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)]"
+                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
                   src="/studio/pathways.webp"
                   width={1200}
                   height={1200}
                   alt="TACTIC’s green and red marks become intersecting pathways with figures choosing a direction."
-                  sizes="(max-width: 700px) 100vw, 60vw"
+                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
                 />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)]">
+                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
                   ↗
                 </span>
               </div>
@@ -158,14 +161,14 @@ export default function Home() {
             >
               <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
                 <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)]"
+                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
                   src="/studio/strategy.webp"
                   width={1200}
                   height={1200}
                   alt="A chess pawn sits within a green ring among other pieces and TACTIC brand symbols."
-                  sizes="(max-width: 700px) 100vw, 60vw"
+                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
                 />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)]">
+                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
                   ↗
                 </span>
               </div>
@@ -185,14 +188,14 @@ export default function Home() {
             >
               <div className="relative aspect-square overflow-hidden rounded-[23px] bg-[rgb(24,29,22)] min-[960px]:rounded-[28px]">
                 <Image
-                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)]"
+                  className="h-full w-full object-cover filter-[saturate(0.65)_brightness(0.98)] [transition:transform_0.9s_cubic-bezier(0.2,0.7,0.2,1),filter_0.6s] group-hover/study:transform-[scale(1.035)] group-hover/study:filter-[saturate(0.85)_brightness(1.04)] motion-reduce:transition-none motion-reduce:group-hover/study:transform-none"
                   src="/studio/architecture.webp"
                   width={900}
                   height={900}
                   alt="TACTIC’s opposing green and red marks form two architectural towers."
-                  sizes="(max-width: 700px) 100vw, 60vw"
+                  sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
                 />
-                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)]">
+                <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
                   ↗
                 </span>
               </div>
@@ -249,7 +252,7 @@ export default function Home() {
                   href="#capabilities"
                 >
                   Meet our approach{" "}
-                  <span className="inline-grid h-8.25 w-8.25 place-items-center rounded-full bg-[rgba(255,255,255,0.07)] text-[16px] [transition:background_0.3s,color_0.3s,transform_0.3s] group-hover/text-link:rotate-45 group-hover/text-link:bg-foreground group-hover/text-link:text-background">
+                  <span className="inline-grid h-8.25 w-8.25 place-items-center rounded-full bg-[rgba(255,255,255,0.07)] text-[16px] [transition:background_0.3s,color_0.3s,transform_0.3s] group-hover/text-link:rotate-45 group-hover/text-link:bg-foreground group-hover/text-link:text-background motion-reduce:transition-none motion-reduce:group-hover/text-link:rotate-0">
                     ↘
                   </span>
                 </Link>
@@ -312,7 +315,7 @@ export default function Home() {
               with a <span className="text-green">conversation.</span>
             </h2>
             <ContactButton
-              className="grid h-16.75 w-16.75 place-items-center rounded-full bg-foreground [transition:background_0.3s,transform_0.3s] hover:rotate-45 hover:bg-[rgb(213,231,206)] min-[960px]:h-26 min-[960px]:w-26 min-[960px]:flex-[0_0_auto]"
+              className="grid h-16.75 w-16.75 place-items-center rounded-full bg-foreground [transition:background_0.3s,transform_0.3s] hover:rotate-45 hover:bg-[rgb(213,231,206)] motion-reduce:transition-none motion-reduce:hover:rotate-0 min-[960px]:h-26 min-[960px]:w-26 min-[960px]:flex-[0_0_auto]"
               aria-label="Start a project enquiry"
             >
               <svg
@@ -329,7 +332,7 @@ export default function Home() {
               <br />
               We’d love to hear what’s on your mind.
             </p>
-            <ContactButton className="group/text-link inline-flex items-center justify-between gap-7 rounded-[25px] bg-foreground px-5 py-3.5 text-[12px] text-background [transition:background_0.3s] hover:bg-[rgb(213,231,206)]">
+            <ContactButton className="group/text-link inline-flex items-center justify-between gap-7 rounded-[25px] bg-foreground px-5 py-3.5 text-[12px] text-background [transition:background_0.3s] hover:bg-[rgb(213,231,206)] motion-reduce:transition-none">
               Tell us what you’re building <span>↗</span>
             </ContactButton>
           </div>

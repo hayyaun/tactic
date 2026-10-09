@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import { HeroDebugGate } from "./hero-debug-gate";
-import { HeroPreview } from "./hero-preview";
 import { DEFAULT_SCENE_SETTINGS, type SceneSettings } from "./hero-settings";
 const HeroCanvas = dynamic(() => import("./hero-canvas"), { ssr: false });
 function subscribeMotion(callback: () => void) {
@@ -53,7 +52,7 @@ class SceneBoundary extends Component<
     return this.state.failed ? null : this.props.children;
   }
 }
-export function HeroArt() {
+export function HeroArt({ children }: { children: ReactNode }) {
   const webGL = useSyncExternalStore(
     subscribeWebGL,
     () => webGLAvailable ?? false,
@@ -99,7 +98,7 @@ export function HeroArt() {
         className="group/scene @container-size pointer-events-none absolute inset-x-0 top-113.75 bottom-0 overflow-hidden min-[960px]:top-80 [@media(max-height:740px)_and_(max-width:700px)]:top-72.5 [@media(max-height:740px)_and_(max-width:700px)]:bottom-2"
         aria-hidden="true"
       >
-        <HeroPreview />
+        {children}
         <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-600 group-data-[ready=true]/scene:opacity-100 motion-reduce:transition-none">
           {webGL && (
             <SceneBoundary onFailure={onFailure}>

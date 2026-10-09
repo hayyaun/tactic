@@ -233,13 +233,22 @@ function HeroBackdrop() {
   );
 }
 
+// Read cached GLTF buffers without changing their shared bounding-box metadata.
+function geometryBounds(geometry: BufferGeometry) {
+  const bounds = new Box3();
+  const point = new Vector3();
+  const position = geometry.getAttribute("position");
+  for (let i = 0; i < position.count; i++)
+    bounds.expandByPoint(point.fromBufferAttribute(position, i));
+  return bounds;
+}
+
 // Extract the concept's structural creases; Fiber owns the native line resources.
 function contourData(geometry: BufferGeometry) {
   const source = geometry.index ? geometry.toNonIndexed() : geometry;
   const position = source.getAttribute("position");
   const normal = source.getAttribute("normal");
-  geometry.computeBoundingBox();
-  const { min, max } = geometry.boundingBox!;
+  const { min, max } = geometryBounds(geometry);
   const capPositions: number[] = [];
   for (let i = 0; i < position.count; i += 3) {
     if (
@@ -374,7 +383,6 @@ function GlassBody({
   hovered,
   reducedMotion,
   onOver,
-  onMove,
   onOut,
   settings,
 }: {
@@ -383,7 +391,6 @@ function GlassBody({
   hovered: boolean;
   reducedMotion: boolean;
   onOver: (event: ThreeEvent<PointerEvent>) => void;
-  onMove: (event: ThreeEvent<PointerEvent>) => void;
   onOut: () => void;
   settings: SceneSettings;
 }) {
@@ -422,7 +429,7 @@ function GlassBody({
       ref={mesh}
       name={name}
       onPointerOver={onOver}
-      onPointerMove={onMove}
+      onPointerMove={(event) => event.stopPropagation()}
       onPointerOut={onOut}
     >
       <primitive object={geometry} attach="geometry" dispose={null} />
@@ -507,12 +514,13 @@ function Sculpture({
   const events = useThree((state) => state.events);
   const invalidate = useThree((state) => state.invalidate);
   const readyFrames = useRef(0);
-  const framing = useMemo(() => {
+  const bounds = useMemo(() => {
     const bounds = new Box3();
-    for (const node of [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front]) {
-      node.geometry.computeBoundingBox();
-      bounds.union(node.geometry.boundingBox!);
-    }
+    for (const node of [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front])
+      bounds.union(geometryBounds(node.geometry));
+    return bounds;
+  }, [nodes]);
+  const framing = useMemo(() => {
     const center = (bounds.min.y + bounds.max.y) / 2;
     const tilt = MathUtils.degToRad(settings.tilt);
     const matrix = new Matrix4()
@@ -521,7 +529,7 @@ function Sculpture({
       .multiply(new Matrix4().makeTranslation(0, -center, 0));
     const offset = Math.max(0, -bounds.clone().applyMatrix4(matrix).min.y);
     return { center, tilt, offset };
-  }, [nodes, settings.tilt]);
+  }, [bounds, settings.tilt]);
   const viewHeight =
     Math.max(
       SCENE_FRAMING.minHeight,
@@ -632,10 +640,6 @@ function Sculpture({
                   current === body.name ? null : current,
                 )
               }
-              onMove={(event) => {
-                event.stopPropagation();
-                setHovered(body.name);
-              }}
             />
           ))}
         </group>

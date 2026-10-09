@@ -87,7 +87,7 @@ export function Capabilities() {
                   alt="TACTIC’s green and red forms become intersecting pathways."
                   width={1200}
                   height={1200}
-                  sizes="(max-width: 700px) 100vw, 60vw"
+                  sizes="(min-width: 1440px) 482px, (min-width: 701px) 424px, max(230px, calc((100vw - 57px) / 2))"
                 />
                 <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
                   A matter of direction
@@ -387,7 +387,7 @@ export function Capabilities() {
                   alt="Smoked glass perfume bottle on stone, lit by sage light and a muted coral sunset in an imagined landscape."
                   width={1672}
                   height={941}
-                  sizes="1600px"
+                  sizes="(min-width: 1440px) 1070px, (min-width: 701px) 981px, 800px"
                 />
                 <div className="absolute bottom-22 left-6 z-3 min-[701px]:bottom-21.25 min-[701px]:left-6.25 min-[1001px]:bottom-22 min-[1001px]:left-8">
                   <span className="font-mono text-[7px] leading-normal tracking-[0.03em] text-[rgb(174,178,150)] min-[701px]:text-[8px]">
@@ -413,7 +413,7 @@ export function Capabilities() {
                   alt="Close detail of the perfume bottle and softly lit vapor."
                   width={1672}
                   height={941}
-                  sizes="1600px"
+                  sizes="(min-width: 1440px) 1180px, (min-width: 701px) 1080px, 880px"
                 />
                 <span className="relative z-2 font-mono text-[6px] leading-normal tracking-[0.03em] text-[rgb(207,204,178)] min-[701px]:text-[10px]">
                   02 / Light & texture
@@ -429,7 +429,7 @@ export function Capabilities() {
                   alt="Muted coral sunset reflected over an imagined rocky shoreline."
                   width={1672}
                   height={941}
-                  sizes="1600px"
+                  sizes="(min-width: 1440px) 1312px, (min-width: 701px) 1200px, 978px"
                 />
                 <span className="relative z-2 font-mono text-[6px] leading-normal tracking-[0.03em] text-[rgb(208,184,170)] min-[701px]:text-[10px]">
                   03 / The last frame

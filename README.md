@@ -1,6 +1,6 @@
 # TACTIC
 
-The TACTIC design demo, migrated to Next.js App Router, Tailwind CSS v4, and React Three Fiber. The original standalone reference remains in `demo/`.
+The TACTIC website uses Next.js App Router, Tailwind CSS v4, and React Three Fiber.
 
 ## Run locally
 
