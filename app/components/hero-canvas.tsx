@@ -313,8 +313,17 @@ function contourData(geometry: BufferGeometry) {
     const stops = [0, 0.12, 0.5, 0.88, 1];
     for (const { a, b, role } of segments) {
       if (!alpha[role]) continue;
-      for (let i = 0; i < stops.length - 1; i++)
-        for (const f of [stops[i], stops[i + 1]]) {
+      const topRim = !rear && role === "rim";
+      const rimStops = topRim
+        ? [0, 0.15, 0.3, 0.4, 0.5, 0.6, 0.7, 0.85, 1]
+        : stops;
+      const dx = Math.abs(b[0] - a[0]);
+      const dz = Math.abs(b[2] - a[2]);
+      const facing =
+        (0.3 + 0.7 * MathUtils.smoothstep((a[2] + b[2]) / 2, min.z, max.z)) *
+        (0.45 + 0.55 * (dx / Math.max(dx + dz, 0.00001)));
+      for (let i = 0; i < rimStops.length - 1; i++)
+        for (const f of [rimStops[i], rimStops[i + 1]]) {
           points.push(
             a.map((value, axis) => value + (b[axis] - value) * f) as [
               number,
@@ -323,12 +332,14 @@ function contourData(geometry: BufferGeometry) {
             ],
           );
           const falloff = Math.sin(Math.PI * f);
-          const topRim = !rear && role === "rim";
-          // Give the visible top rim an actual dark-to-light gradient rather
-          // than fading a white line. Keep structural and rear contours intact.
-          const radiance = topRim ? 0.01 + 1.49 * falloff : 1;
+          // Concentrate highlights into shorter stretches and vary their
+          // strength with the edge's position/orientation in the studio.
+          // Structural and rear contours keep their original falloff.
+          const radiance = topRim
+            ? 0.002 + 1.4 * facing * Math.pow(falloff, 4)
+            : 1;
           const opacity = topRim
-            ? 0.75 * (0.9 + 0.1 * falloff)
+            ? 0.82
             : (rear ? 0.08 : 0.35) * alpha[role] * (0.4 + 0.6 * falloff);
           colors.push([radiance, radiance, radiance, opacity]);
         }
