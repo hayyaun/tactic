@@ -1,7 +1,7 @@
 "use client";
 
 import { LevaPanel, folder, useControls, useCreateStore } from "leva";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   DEFAULT_SCENE_SETTINGS as defaults,
@@ -14,6 +14,7 @@ export default function HeroDebug({
   onChange: (settings: SceneSettings) => void;
 }) {
   const store = useCreateStore();
+  const [copyStatus, setCopyStatus] = useState("");
   const [settings, set] = useControls(
     () => ({
       Camera: folder(
@@ -257,7 +258,35 @@ export default function HeroDebug({
       />
       <button
         type="button"
-        onClick={() => set({ ...defaults })}
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(
+              JSON.stringify(settings, null, 2),
+            );
+            setCopyStatus("Settings copied.");
+          } catch {
+            setCopyStatus(
+              "Could not copy settings. Please allow clipboard access and try again.",
+            );
+          }
+        }}
+        className="mt-2 w-full rounded-lg bg-sage px-4 py-2 text-sm text-carbon hover:bg-sage/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage"
+      >
+        Copy settings
+      </button>
+      <p role="status" className="px-1 text-sm text-foreground">
+        {copyStatus}
+      </p>
+      <button
+        type="button"
+        onClick={() => {
+          if (
+            window.confirm("Reset all scene settings to the demo defaults?")
+          ) {
+            set({ ...defaults });
+            setCopyStatus("");
+          }
+        }}
         className="mt-2 w-full rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         Reset to demo
