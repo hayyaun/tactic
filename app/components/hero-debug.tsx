@@ -216,6 +216,39 @@ export default function HeroDebug({
         },
         { collapsed: true },
       ),
+      Background: folder(
+        {
+          backgroundNoise: {
+            label: "Grain",
+            value: defaults.backgroundNoise,
+            min: 0,
+            max: 0.25,
+            step: 0.005,
+          },
+          backgroundRadius: {
+            label: "Glow radius",
+            value: defaults.backgroundRadius,
+            min: 0.5,
+            max: 1.6,
+            step: 0.025,
+          },
+          backgroundFade: {
+            label: "Outer fade",
+            value: defaults.backgroundFade,
+            min: 0.3,
+            max: 0.85,
+            step: 0.025,
+          },
+          backgroundIntensity: {
+            label: "Intensity",
+            value: defaults.backgroundIntensity,
+            min: 0,
+            max: 0.6,
+            step: 0.01,
+          },
+        },
+        { collapsed: true },
+      ),
       Quality: folder({
         exposure: {
           label: "Exposure",

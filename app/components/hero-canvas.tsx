@@ -12,6 +12,7 @@ import {
   OrthographicCamera,
   ScreenQuad,
   useGLTF,
+  useTexture,
   useBoxProjectedEnv,
 } from "@react-three/drei";
 import {
@@ -39,15 +40,20 @@ import {
   NeutralToneMapping,
   PMREMGenerator,
   Scene,
+  SRGBColorSpace,
+  Source,
+  type Texture,
   Vector3,
   type Group,
   type LineBasicMaterial,
   type LineSegments,
 } from "three";
+import { BACKGROUND_URL } from "./hero-background";
 import { adaptBoxProjectedShader } from "./box-projected-shader";
 import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
 
 type SceneProps = {
+  backgroundURL: string;
   active: boolean;
   reducedMotion: boolean;
   onReady: () => void;
@@ -212,33 +218,77 @@ function StudioEnvironment({
   );
 }
 
-// This small decorative shader matches the CSS radial background through glass.
-// ScreenQuad owns its geometry; Fiber owns the material and rendering lifecycle.
-function HeroBackdrop() {
+// CSS and the transmission pass share one backdrop, including its static grain.
+// Configure the cached color texture once; consumers never dispose that cache.
+function configureBackdrop(texture: Texture) {
+  texture.colorSpace = SRGBColorSpace;
+  texture.needsUpdate = true;
+}
+function updateBackdrop(texture: Texture, image: Texture["image"]) {
+  texture.image = image;
+  texture.needsUpdate = true;
+}
+function HeroBackdrop({ backgroundURL }: { backgroundURL: string }) {
+  const source = useTexture(BACKGROUND_URL, configureBackdrop);
+  // One owned texture is updated for temporary debug images; never mutate or
+  // dispose the loader's shared texture, or cache every slider position.
+  const texture = useMemo(() => {
+    const owned = source.clone();
+    owned.source = new Source(source.image);
+    owned.colorSpace = SRGBColorSpace;
+    return owned;
+  }, [source]);
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => () => texture.dispose(), [texture]);
+  useEffect(() => {
+    if (backgroundURL === BACKGROUND_URL) {
+      updateBackdrop(texture, source.image);
+      invalidate();
+      return;
+    }
+    const image = new Image();
+    image.onload = () => {
+      updateBackdrop(texture, image);
+      invalidate();
+    };
+    image.onerror = () =>
+      console.warn("Could not update the debug background.");
+    image.src = backgroundURL;
+    return () => {
+      image.onload = null;
+      image.onerror = null;
+    };
+  }, [backgroundURL, source, texture, invalidate]);
   const size = useThree((state) => state.size);
-  const top = size.top + window.scrollY;
+  const gl = useThree((state) => state.gl);
+  const bounds = gl.domElement.closest("section")?.getBoundingClientRect();
+  const offset = size.top - (bounds?.top ?? 0);
+  const height = bounds?.height ?? size.height + offset;
   const uniforms = useMemo(
-    () => ({ stage: { value: new Vector3(size.width, size.height, top) } }),
-    [size.width, size.height, top],
+    () => ({
+      backdrop: { value: texture },
+      stage: { value: new Vector3(height, offset, size.height) },
+    }),
+    [texture, height, offset, size.height],
   );
   return (
-    <ScreenQuad renderOrder={-1000} raycast={() => {}}>
+    <ScreenQuad name="hero-backdrop" renderOrder={-1000} raycast={() => {}}>
       <shaderMaterial
         depthTest={false}
         depthWrite={false}
         toneMapped={false}
         uniforms={uniforms}
         vertexShader={`varying vec2 uvScreen; void main(){uvScreen=position.xy*.5+.5;gl_Position=vec4(position.xy,1.,1.);}`}
-        fragmentShader={`uniform vec3 stage; varying vec2 uvScreen;
-      float glow(vec2 p,vec2 center,float radius){float d=length(p-center)/radius;return d<.45?mix(.32,.095,d/.45):mix(.095,0.,clamp((d-.45)/.55,0.,1.));}
-      void main(){float h=stage.y+stage.z;vec2 p=vec2(uvScreen.x*stage.x,(1.-uvScreen.y)*stage.y+stage.z);vec3 c=vec3(16.,18.,17.)/255.;c=mix(c,vec3(128.,230.,80.)/255.,glow(p,vec2(-.08*stage.x,.8*h),.65*stage.x));c=mix(c,vec3(255.,44.,75.)/255.,glow(p,vec2(1.08*stage.x,.8*h),.65*stage.x));gl_FragColor=sRGBTransferEOTF(vec4(c,1.));
-#include <colorspace_fragment>
-}`}
+        fragmentShader={`uniform sampler2D backdrop; uniform vec3 stage; varying vec2 uvScreen;
+        void main(){
+          vec2 uv=vec2(uvScreen.x,1.-((1.-uvScreen.y)*stage.z+stage.y)/stage.x);
+          gl_FragColor=texture2D(backdrop,uv);
+          #include <colorspace_fragment>
+        }`}
       />
     </ScreenQuad>
   );
 }
-
 // Read cached GLTF buffers without changing their shared bounding-box metadata.
 function geometryBounds(geometry: BufferGeometry) {
   const bounds = new Box3();
@@ -916,7 +966,7 @@ export default function HeroCanvas(props: SceneProps) {
         transmissionResolutionScale: props.settings.transmissionResolution,
       }}
     >
-      <HeroBackdrop />
+      <HeroBackdrop backgroundURL={props.backgroundURL} />
       <directionalLight
         color="white"
         intensity={props.settings.keyLight}

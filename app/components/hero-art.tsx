@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { BACKGROUND_URL, createBackgroundURL } from "./hero-background";
 import { HeroDebugGate } from "./hero-debug-gate";
 import { DEFAULT_SCENE_SETTINGS, type SceneSettings } from "./hero-settings";
 const HeroCanvas = dynamic(() => import("./hero-canvas"), { ssr: false });
@@ -64,6 +65,37 @@ export function HeroArt({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<SceneSettings>(
     DEFAULT_SCENE_SETTINGS,
   );
+  const [backgroundURL, setBackgroundURL] = useState(BACKGROUND_URL);
+  const {
+    backgroundNoise,
+    backgroundRadius,
+    backgroundFade,
+    backgroundIntensity,
+  } = settings;
+  useEffect(() => {
+    // Debug edits are discrete work, never part of the animation loop. Debounce
+    // expensive pixel generation while dragging; production uses the static PNG.
+    const timer = window.setTimeout(() => {
+      setBackgroundURL(
+        createBackgroundURL({
+          backgroundNoise,
+          backgroundRadius,
+          backgroundFade,
+          backgroundIntensity,
+        }),
+      );
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [backgroundNoise, backgroundRadius, backgroundFade, backgroundIntensity]);
+  useEffect(() => {
+    const section = stage.current?.closest("section");
+    if (!section) return;
+    const previous = section.style.backgroundImage;
+    section.style.backgroundImage = `url("${backgroundURL}")`;
+    return () => {
+      section.style.backgroundImage = previous;
+    };
+  }, [backgroundURL]);
   const onSettingsChange = useCallback(
     (settings: SceneSettings) => setSettings(settings),
     [],
@@ -108,6 +140,7 @@ export function HeroArt({ children }: { children: ReactNode }) {
                 onReady={onReady}
                 onContextLost={onFailure}
                 settings={settings}
+                backgroundURL={backgroundURL}
               />
             </SceneBoundary>
           )}

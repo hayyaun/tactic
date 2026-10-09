@@ -1,6 +1,9 @@
+import { BACKGROUND_DEFAULTS } from "./hero-background";
+
 export const SCENE_FRAMING = { minHeight: 3.6, minWidth: 4.7 };
 
 export const DEFAULT_SCENE_SETTINGS = {
+  ...BACKGROUND_DEFAULTS,
   cameraX: 4,
   cameraY: 36,
   cameraZ: 55,

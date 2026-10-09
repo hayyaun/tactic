@@ -119,3 +119,53 @@ test("production loads debug modules only with the debug query", async ({
   expect(debug).toContain("Settings copied.");
   expect(debug).toContain("leva__");
 });
+
+test("background controls update, copy, and restore the shared backdrop", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/?debug");
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  const backdropScreenshot = () =>
+    page.screenshot({
+      clip: { x: 16, y: 650, width: 48, height: 48 },
+    });
+  const originalBackdrop = await backdropScreenshot();
+  await page.getByText("Background", { exact: true }).click();
+  const noise = page.locator('input[id="Background.backgroundNoise"]');
+  await noise.fill("0.05");
+  await noise.press("Enter");
+  const radius = page.locator('input[id="Background.backgroundRadius"]');
+  await radius.fill("1.2");
+  await radius.press("Enter");
+  const fade = page.locator('input[id="Background.backgroundFade"]');
+  await fade.fill("0.75");
+  await fade.press("Enter");
+  const background = () =>
+    page
+      .locator("section.hero-atmosphere")
+      .evaluate((element) => (element as HTMLElement).style.backgroundImage);
+  await expect.poll(background).toContain("data:image/png");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  await page.getByRole("button", { name: "Copy settings" }).click();
+  await expect(page.getByRole("status")).toHaveText("Settings copied.");
+  const copied = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText()),
+  );
+  expect(copied.backgroundNoise).toBe(0.05);
+  expect(copied.backgroundRadius).toBe(1.2);
+  expect(copied.backgroundFade).toBe(0.75);
+  expect(copied.backgroundIntensity).toBe(0.32);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Reset to demo" }).click();
+  await expect.poll(background).toContain("/studio/hero-background.png");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  await expect
+    .poll(async () => (await backdropScreenshot()).equals(originalBackdrop))
+    .toBe(true);
+  expect(errors).toEqual([]);
+});

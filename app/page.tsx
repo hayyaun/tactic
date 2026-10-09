@@ -42,7 +42,7 @@ export default function Home() {
 
       <main id="main">
         <section
-          className="relative isolate flex h-svh min-h-220 flex-col items-center overflow-hidden bg-background bg-[radial-gradient(circle_at_108%_80%,rgb(255_44_75/0.32),rgb(255_44_75/0.095)_29.25vw,transparent_65vw),radial-gradient(circle_at_-8%_80%,rgb(128_230_80/0.32),rgb(128_230_80/0.095)_29.25vw,transparent_65vw)] px-5 pt-33 pb-0 text-center min-[360px]:px-6 min-[600px]:pt-36.5 min-[960px]:pt-37.5 [@media(max-height:_740px)_and_(max-width:_700px)]:min-h-140 [@media(max-height:_740px)_and_(max-width:_700px)]:pt-26.25"
+          className="hero-atmosphere relative isolate flex h-svh min-h-220 flex-col items-center overflow-hidden bg-background px-5 pt-33 pb-0 text-center min-[360px]:px-6 min-[600px]:pt-36.5 min-[960px]:pt-37.5 [@media(max-height:_740px)_and_(max-width:_700px)]:min-h-140 [@media(max-height:_740px)_and_(max-width:_700px)]:pt-26.25"
           aria-labelledby="hero-title"
         >
           <div
