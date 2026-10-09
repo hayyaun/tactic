@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { studies, type Study } from "../studies";
+import { takeDialogOpening } from "./dialog-opening";
 
 function StudioDialog(props: ComponentProps<"dialog">) {
   return (
@@ -43,9 +44,10 @@ export function Dialogs() {
   function opening(event: React.ToggleEvent<HTMLDialogElement>) {
     if (event.newState !== "open") return;
     const active = document.activeElement;
-    opener.current = active instanceof HTMLElement ? active : null;
-    const selected = opener.current?.dataset.study;
-    if (selected && selected in studies) setStudy(selected as Study);
+    const opening = takeDialogOpening(event.currentTarget);
+    opener.current =
+      opening?.opener ?? (active instanceof HTMLElement ? active : null);
+    if (opening?.study) setStudy(opening.study);
     if (opener.current?.closest("#mobile-menu"))
       opener.current =
         document.querySelector<HTMLButtonElement>("#navigation-toggle");

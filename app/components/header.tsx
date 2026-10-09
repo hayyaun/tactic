@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContactButton } from "./dialog-buttons";
 const navigation = [
   { href: "#capabilities", label: "What we do", number: "01" },
@@ -10,11 +10,18 @@ const navigation = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const media = window.matchMedia("(min-width: 960px)");
     const close = () => setOpen(false);
     const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (
+        e.key === "Escape" &&
+        toggle.current?.getAttribute("aria-expanded") === "true"
+      ) {
+        close();
+        toggle.current.focus({ preventScroll: true });
+      }
     };
     media.addEventListener("change", close);
     document.addEventListener("keydown", key);
@@ -60,6 +67,7 @@ export function Header() {
           </svg>
         </ContactButton>
         <button
+          ref={toggle}
           id="navigation-toggle"
           className="group/menu-toggle flex h-11 w-10 flex-[0_0_40px] flex-col items-center justify-center gap-1.25 bg-transparent p-2.5 min-[960px]:hidden"
           aria-expanded={open}

@@ -41,3 +41,16 @@ Use `npm run format` to format authored files and sort Tailwind classes. Browser
 ## Content and launch requirements
 
 Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form validates locally and prepares a copyable brief; it does not send or persist personal information. Connect a real studio inbox or submission endpoint before launch.
+
+## Browser regressions
+
+Install Chromium once with `npx playwright install chromium`, then run:
+
+```sh
+npm run build
+npm run test:e2e
+```
+
+Playwright starts and stops a production server on port 3100, leaving the development server on 3000 alone. Set `PLAYWRIGHT_BASE_URL` to test an already running server, and optionally `PLAYWRIGHT_CHANNEL=msedge` to use installed Edge. CI installs Chromium with its system dependencies and runs lint, formatting, build, and the browser suite. Failed browser checks retain traces and screenshots in `test-results/`.
+
+The suite covers study identity and focus, mobile navigation, debug gating and responsive overflow, delayed model loading, unsupported WebGL, shader compilation, and context restoration while idle or offscreen. Recovery rebuilds the environment and reveals the canvas only after complete frames. `box-projected-shader.ts` checks the installed Three/Drei shader anchors; dependency upgrades require reviewing that adapter and comparing the rendered glass. Context recovery tests compare the scene before and after restoration within the same browser session.

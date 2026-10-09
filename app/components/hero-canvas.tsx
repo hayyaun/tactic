@@ -42,12 +42,14 @@ import {
   type LineBasicMaterial,
   type LineSegments,
 } from "three";
+import { adaptBoxProjectedShader } from "./box-projected-shader";
 import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
 
 type SceneProps = {
   active: boolean;
   reducedMotion: boolean;
   onReady: () => void;
+  onContextLost: () => void;
   settings: SceneSettings;
 };
 type PointerMotion = { yaw: number; inside: boolean; event: Event | null };
@@ -131,9 +133,11 @@ function StudioPanel({
 function StudioEnvironment({
   blur,
   intensity,
+  contextVersion,
 }: {
   blur: number;
   intensity: number;
+  contextVersion: number;
 }) {
   const room = useMemo(() => new Scene(), []);
   const gl = useThree((state) => state.gl);
@@ -167,7 +171,7 @@ function StudioEnvironment({
         scene.environment = previous;
       environment.dispose();
     };
-  }, [gl, get, room, invalidate, blur]);
+  }, [gl, get, room, invalidate, blur, contextVersion]);
   return createPortal(
     <>
       <color attach="background" args={["#0c0e0d"]} />
@@ -437,41 +441,7 @@ function GlassBody({
         {...projection}
         onBeforeCompile={(shader) => {
           projection.onBeforeCompile(shader);
-          // Namespace Drei 10.7.9's varying: Three r186 also declares
-          // vWorldPosition for transmission. Preserve both shader paths.
-          shader.vertexShader = shader.vertexShader
-            .replace(
-              "varying vec3 vWorldPosition;",
-              "varying vec3 vBoxWorldPosition;",
-            )
-            .replace(
-              "#ifdef BOX_PROJECTED_ENV_MAP\n    vWorldPosition =",
-              "#ifdef BOX_PROJECTED_ENV_MAP\n    vBoxWorldPosition =",
-            );
-          shader.fragmentShader = shader.fragmentShader
-            .replaceAll("vWorldPosition", "vBoxWorldPosition")
-            .replace(
-              "vec3 nDir = normalize( v );",
-              `vec3 boxCenter = cubePos - vec3(0., .3, 0.);
-             if(any(lessThan(vBoxWorldPosition, boxCenter - .5 * cubeSize)) ||
-                any(greaterThan(vBoxWorldPosition, boxCenter + .5 * cubeSize))) return v;
-             vec3 nDir = normalize(v);
-             vec3 safeDir = (step(vec3(0.), nDir) * 2. - 1.) * max(abs(nDir), vec3(.000001));`,
-            )
-            .replaceAll("cubeSize + cubePos", "cubeSize + boxCenter")
-            .replaceAll("/ nDir;", "/ safeDir;")
-            .replaceAll("nDir.x > 0.", "nDir.x >= 0.")
-            .replaceAll("nDir.y > 0.", "nDir.y >= 0.")
-            .replaceAll("nDir.z > 0.", "nDir.z >= 0.")
-            .replace("nDir * correction", "nDir * max(correction, 0.)")
-            .replace(
-              "return boxIntersection - cubePos;",
-              "return normalize(boxIntersection - cubePos);",
-            )
-            .replace(
-              "reflectVec = transformDirectionByInverseViewMatrix( reflectVec, viewMatrix );",
-              "reflectVec = transformDirectionByInverseViewMatrix( reflectVec, viewMatrix );\nreflectVec = parallaxCorrectNormal(reflectVec, envMapSize, envMapPosition);",
-            );
+          adaptBoxProjectedShader(shader);
         }}
         customProgramCacheKey={() =>
           projection.customProgramCacheKey() + "-transmission-r186-safe-rays"
@@ -503,8 +473,10 @@ function Sculpture({
   onReady,
   motion,
   settings,
+  contextVersion,
 }: SceneProps & {
   motion: RefObject<PointerMotion>;
+  contextVersion: number;
 }) {
   const { nodes } = useGLTF("/studio/tactic-mark.glb") as MarkGLTF;
   const bodies = [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front];
@@ -514,6 +486,10 @@ function Sculpture({
   const events = useThree((state) => state.events);
   const invalidate = useThree((state) => state.invalidate);
   const readyFrames = useRef(0);
+  useLayoutEffect(() => {
+    readyFrames.current = 0;
+    invalidate();
+  }, [contextVersion, invalidate]);
   const bounds = useMemo(() => {
     const bounds = new Box3();
     for (const node of [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front])
@@ -563,6 +539,7 @@ function Sculpture({
     };
   }, [invalidate, events.connected, motion]);
   useFrame((state, delta) => {
+    if (state.gl.getContext().isContextLost()) return;
     // Reveal only after the complete scene has produced its first frame.
     if (readyFrames.current === 0) {
       readyFrames.current = 1;
@@ -645,6 +622,40 @@ function Sculpture({
         </group>
       </group>
     </>
+  );
+}
+
+function RestorableScene(
+  props: SceneProps & { motion: RefObject<PointerMotion> },
+) {
+  const gl = useThree((state) => state.gl);
+  const [contextVersion, setContextVersion] = useState(0);
+  const onContextLost = props.onContextLost;
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const lost = (event: Event) => {
+      event.preventDefault();
+      onContextLost();
+    };
+    // Three restores its renderer first; the next commit rebakes the environment
+    // and schedules frames before Sculpture reveals the recovered scene.
+    const restored = () => setContextVersion((version) => version + 1);
+    canvas.addEventListener("webglcontextlost", lost);
+    canvas.addEventListener("webglcontextrestored", restored);
+    return () => {
+      canvas.removeEventListener("webglcontextlost", lost);
+      canvas.removeEventListener("webglcontextrestored", restored);
+    };
+  }, [gl, onContextLost]);
+  return (
+    <Suspense fallback={null}>
+      <StudioEnvironment
+        blur={props.settings.environmentBlur}
+        intensity={props.settings.environmentIntensity}
+        contextVersion={contextVersion}
+      />
+      <Sculpture {...props} contextVersion={contextVersion} />
+    </Suspense>
   );
 }
 
@@ -732,13 +743,7 @@ export default function HeroCanvas(props: SceneProps) {
         intensity={props.settings.redLight}
         position={[6, 5, 2]}
       />
-      <Suspense fallback={null}>
-        <StudioEnvironment
-          blur={props.settings.environmentBlur}
-          intensity={props.settings.environmentIntensity}
-        />
-        <Sculpture {...props} motion={motion} />
-      </Suspense>
+      <RestorableScene {...props} motion={motion} />
     </Canvas>
   );
 }

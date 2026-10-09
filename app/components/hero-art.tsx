@@ -99,13 +99,14 @@ export function HeroArt({ children }: { children: ReactNode }) {
         aria-hidden="true"
       >
         {children}
-        <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-600 group-data-[ready=true]/scene:opacity-100 motion-reduce:transition-none">
+        <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-0 group-data-[ready=true]/scene:opacity-100 group-data-[ready=true]/scene:duration-600 motion-reduce:transition-none">
           {webGL && (
             <SceneBoundary onFailure={onFailure}>
               <HeroCanvas
                 active={visible && pageVisible}
                 reducedMotion={reducedMotion}
                 onReady={onReady}
+                onContextLost={onFailure}
                 settings={settings}
               />
             </SceneBoundary>

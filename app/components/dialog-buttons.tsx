@@ -2,19 +2,18 @@
 
 import type { ButtonHTMLAttributes } from "react";
 import type { Study } from "../studies";
+import { openDialog } from "./dialog-opening";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
-function openDialog(id: string) {
-  const dialog = document.getElementById(id);
-  if (dialog instanceof HTMLDialogElement) dialog.showModal();
-}
 
 export function ContactButton(props: ButtonProps) {
   return (
     <button
       {...props}
       type="button"
-      onClick={() => openDialog("contact-dialog")}
+      onClick={(event) =>
+        openDialog("contact-dialog", { opener: event.currentTarget })
+      }
     />
   );
 }
@@ -30,7 +29,9 @@ export function StudyButton({
       {...props}
       type="button"
       data-study={study}
-      onClick={() => openDialog("study-dialog")}
+      onClick={(event) =>
+        openDialog("study-dialog", { opener: event.currentTarget, study })
+      }
     />
   );
 }
