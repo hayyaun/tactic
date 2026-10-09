@@ -236,13 +236,6 @@ export default function HeroDebug({
             max: 0.25,
             step: 0.005,
           },
-          backgroundSmoothing: {
-            label: "Gradient blur",
-            value: defaults.backgroundSmoothing,
-            min: 0,
-            max: 40,
-            step: 0.5,
-          },
           backgroundRadius: {
             label: "Glow radius",
             value: defaults.backgroundRadius,

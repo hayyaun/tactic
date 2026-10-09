@@ -76,7 +76,6 @@ export function HeroArt({ children }: { children: ReactNode }) {
   const [backgroundURL, setBackgroundURL] = useState(BACKGROUND_URL);
   const {
     backgroundNoise,
-    backgroundSmoothing,
     backgroundRadius,
     backgroundFade,
     backgroundIntensity,
@@ -88,7 +87,6 @@ export function HeroArt({ children }: { children: ReactNode }) {
       setBackgroundURL(
         createBackgroundURL({
           backgroundNoise,
-          backgroundSmoothing,
           backgroundRadius,
           backgroundFade,
           backgroundIntensity,
@@ -96,13 +94,7 @@ export function HeroArt({ children }: { children: ReactNode }) {
       );
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [
-    backgroundNoise,
-    backgroundSmoothing,
-    backgroundRadius,
-    backgroundFade,
-    backgroundIntensity,
-  ]);
+  }, [backgroundNoise, backgroundRadius, backgroundFade, backgroundIntensity]);
   useEffect(() => {
     const section = stage.current?.closest("section");
     if (!section) return;

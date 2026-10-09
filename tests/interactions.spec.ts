@@ -134,7 +134,7 @@ test("background controls update, copy, and restore the shared backdrop", async 
   expect(svg).toContain("<feTurbulence");
   expect(svg).not.toContain("stop-opacity");
   expect(svg).toMatch(/mix-blend-mode:\s*screen/);
-  expect(svg).toContain('stdDeviation="12"');
+  expect(svg).not.toContain("softGradient");
   expect(svg.match(/<stop\s/g)).toHaveLength(18);
   expect(svg).not.toMatch(
     /<image|feDisplacementMap|data:image\/(png|webp|jpeg)/,
@@ -156,9 +156,6 @@ test("background controls update, copy, and restore the shared backdrop", async 
   const noise = page.locator('input[id="Background.backgroundNoise"]');
   await noise.fill("0.05");
   await noise.press("Enter");
-  const smoothing = page.locator('input[id="Background.backgroundSmoothing"]');
-  await smoothing.fill("0.8");
-  await smoothing.press("Enter");
   const radius = page.locator('input[id="Background.backgroundRadius"]');
   await radius.fill("1.2");
   await radius.press("Enter");
@@ -177,7 +174,7 @@ test("background controls update, copy, and restore the shared backdrop", async 
     await page.evaluate(() => navigator.clipboard.readText()),
   );
   expect(copied.backgroundNoise).toBe(0.05);
-  expect(copied.backgroundSmoothing).toBe(0.8);
+  expect(copied).not.toHaveProperty("backgroundSmoothing");
   expect(copied.backgroundRadius).toBe(1.2);
   expect(copied.backgroundFade).toBe(0.75);
   expect(copied.backgroundIntensity).toBe(0.32);
