@@ -1,7 +1,8 @@
 "use client";
 
-import { LevaPanel, folder, useControls, useCreateStore } from "leva";
+import { LevaPanel, folder, monitor, useControls, useCreateStore } from "leva";
 import { useEffect, useState } from "react";
+import { RENDER_QUALITIES, type SceneTelemetry } from "./hero-performance";
 import { createPortal } from "react-dom";
 import {
   DEFAULT_SCENE_SETTINGS as defaults,
@@ -10,8 +11,10 @@ import {
 
 export default function HeroDebug({
   onChange,
+  telemetry,
 }: {
   onChange: (settings: SceneSettings) => void;
+  telemetry: SceneTelemetry;
 }) {
   const store = useCreateStore();
   const [copyStatus, setCopyStatus] = useState("");
@@ -225,6 +228,13 @@ export default function HeroDebug({
             max: 0.25,
             step: 0.005,
           },
+          backgroundSmoothing: {
+            label: "Gradient blur",
+            value: defaults.backgroundSmoothing,
+            min: 0,
+            max: 40,
+            step: 0.5,
+          },
           backgroundRadius: {
             label: "Glow radius",
             value: defaults.backgroundRadius,
@@ -249,32 +259,63 @@ export default function HeroDebug({
         },
         { collapsed: true },
       ),
-      Quality: folder({
-        exposure: {
-          label: "Exposure",
-          value: defaults.exposure,
-          min: 0.2,
-          max: 2,
-          step: 0.01,
+      Quality: folder(
+        {
+          exposure: {
+            label: "Exposure",
+            value: defaults.exposure,
+            min: 0.2,
+            max: 2,
+            step: 0.01,
+          },
+          dprLimit: {
+            label: "DPR limit",
+            value: defaults.dprLimit,
+            min: 1,
+            max: 2,
+            step: 0.25,
+          },
+          transmissionResolution: {
+            label: "Refraction resolution",
+            value: defaults.transmissionResolution,
+            min: 0.25,
+            max: 1,
+            step: 0.25,
+          },
         },
-        dprLimit: {
-          label: "DPR limit",
-          value: defaults.dprLimit,
-          min: 1,
-          max: 2,
-          step: 0.25,
-        },
-        transmissionResolution: {
-          label: "Refraction resolution",
-          value: defaults.transmissionResolution,
-          min: 0.25,
-          max: 1,
-          step: 0.25,
-        },
-      }),
+        { collapsed: true },
+      ),
     }),
     { store },
   );
+  const [, setPerformance] = useControls(
+    () => ({
+      Performance: folder(
+        {
+          FPS: monitor(() => telemetry.getFPS(), {
+            graph: false,
+            interval: 1000,
+          }),
+          renderQuality: {
+            label: "Preset",
+            transient: false,
+            value: "High",
+            options: Object.keys(RENDER_QUALITIES),
+            onChange: (
+              quality: keyof typeof RENDER_QUALITIES,
+              _path,
+              context,
+            ) => {
+              if (!context.initial) set(RENDER_QUALITIES[quality]);
+            },
+          },
+        },
+        { collapsed: false, order: -1 },
+      ),
+    }),
+    { store },
+  );
+  useEffect(() => telemetry.start(), [telemetry]);
   useEffect(() => {
     onChange(settings);
   }, [settings, onChange]);
@@ -316,6 +357,7 @@ export default function HeroDebug({
           if (
             window.confirm("Reset all scene settings to the demo defaults?")
           ) {
+            setPerformance({ renderQuality: "High" });
             set({ ...defaults });
             setCopyStatus("");
           }

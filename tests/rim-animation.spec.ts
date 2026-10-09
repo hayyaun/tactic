@@ -46,13 +46,22 @@ test("idle rim shines, pauses offscreen, and resumes on return", async ({
   const after = await stage.screenshot();
   expect(after.equals(before)).toBe(false);
   expect(await drawCount(page)).toBeGreaterThan(initialDraws);
-  // The ten-second pass ends before the next fifteen-second cycle starts.
-  await page.waitForTimeout(6200);
-  const resting = await stage.screenshot();
+  // Observe the actual quiet period locally in the browser. Screenshot encoding
+  // and host round trips must not push this measurement into the next sweep.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const probe = (window as unknown as { rimProbe: { draws: number } })
+            .rimProbe;
+          const before = probe.draws;
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          return probe.draws === before;
+        }),
+      { timeout: 20_000 },
+    )
+    .toBe(true);
   const gapDraws = await drawCount(page);
-  await page.waitForTimeout(800);
-  expect((await stage.screenshot()).equals(resting)).toBe(true);
-  expect(await drawCount(page)).toBe(gapDraws);
   await expect.poll(() => drawCount(page)).toBeGreaterThan(gapDraws);
 
   await page.evaluate(() =>

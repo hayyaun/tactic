@@ -68,6 +68,7 @@ test("debug settings copy current values and reset requires confirmation", async
 }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/?debug");
+  await page.getByText("Quality", { exact: true }).click();
   const exposure = page.locator('input[id="Quality.exposure"]');
   await exposure.fill("1.25");
   await exposure.press("Enter");
@@ -125,6 +126,22 @@ test("background controls update, copy, and restore the shared backdrop", async 
   context,
 }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  const asset = await page.request.get("/studio/hero-background.svg");
+  expect(asset.ok()).toBe(true);
+  const svg = await asset.text();
+  expect(Buffer.byteLength(svg)).toBeLessThan(20_000);
+  expect(svg).toContain("<radialGradient");
+  expect(svg).toContain("<feTurbulence");
+  expect(svg).not.toContain("stop-opacity");
+  expect(svg).toMatch(/mix-blend-mode:\s*screen/);
+  expect(svg).toContain('stdDeviation="12"');
+  expect(svg.match(/<stop\s/g)).toHaveLength(18);
+  expect(svg).not.toMatch(
+    /<image|feDisplacementMap|data:image\/(png|webp|jpeg)/,
+  );
+  expect((await page.request.get("/studio/hero-background.png")).status()).toBe(
+    404,
+  );
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/?debug");
@@ -139,6 +156,9 @@ test("background controls update, copy, and restore the shared backdrop", async 
   const noise = page.locator('input[id="Background.backgroundNoise"]');
   await noise.fill("0.05");
   await noise.press("Enter");
+  const smoothing = page.locator('input[id="Background.backgroundSmoothing"]');
+  await smoothing.fill("0.8");
+  await smoothing.press("Enter");
   const radius = page.locator('input[id="Background.backgroundRadius"]');
   await radius.fill("1.2");
   await radius.press("Enter");
@@ -149,7 +169,7 @@ test("background controls update, copy, and restore the shared backdrop", async 
     page
       .locator("section.hero-atmosphere")
       .evaluate((element) => (element as HTMLElement).style.backgroundImage);
-  await expect.poll(background).toContain("data:image/png");
+  await expect.poll(background).toContain("data:image/svg+xml");
   await expect(stage).toHaveAttribute("data-ready", "true");
   await page.getByRole("button", { name: "Copy settings" }).click();
   await expect(page.getByRole("status")).toHaveText("Settings copied.");
@@ -157,15 +177,93 @@ test("background controls update, copy, and restore the shared backdrop", async 
     await page.evaluate(() => navigator.clipboard.readText()),
   );
   expect(copied.backgroundNoise).toBe(0.05);
+  expect(copied.backgroundSmoothing).toBe(0.8);
   expect(copied.backgroundRadius).toBe(1.2);
   expect(copied.backgroundFade).toBe(0.75);
   expect(copied.backgroundIntensity).toBe(0.32);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Reset to demo" }).click();
-  await expect.poll(background).toContain("/studio/hero-background.png");
+  await expect.poll(background).toContain("/studio/hero-background.svg");
   await expect(stage).toHaveAttribute("data-ready", "true");
   await expect
     .poll(async () => (await backdropScreenshot()).equals(originalBackdrop))
     .toBe(true);
   expect(errors).toEqual([]);
+});
+
+test("performance presets apply rendering settings and reset restores High", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/?debug");
+  const preset = page.locator('select[id="Performance.renderQuality"]');
+  await expect(preset).toBeVisible();
+  expect(
+    await page.locator('input[id="Quality.exposure"]').evaluate((element) => {
+      for (
+        let parent = element.parentElement;
+        parent;
+        parent = parent.parentElement
+      ) {
+        if (
+          getComputedStyle(parent).overflow === "hidden" &&
+          parent.getBoundingClientRect().height === 0
+        )
+          return true;
+      }
+      return false;
+    }),
+  ).toBe(true);
+  await expect(preset.locator("option")).toHaveText([
+    "Low",
+    "Balanced",
+    "High",
+  ]);
+  for (const [quality, dprLimit, transmissionResolution] of [
+    ["Low", 1, 0.25],
+    ["Balanced", 1.5, 0.5],
+    ["High", 2, 1],
+  ] as const) {
+    await preset.selectOption(quality);
+    await page.getByRole("button", { name: "Copy settings" }).click();
+    const settings = JSON.parse(
+      await page.evaluate(() => navigator.clipboard.readText()),
+    );
+    expect(settings.dprLimit).toBe(dprLimit);
+    expect(settings.transmissionResolution).toBe(transmissionResolution);
+    expect(settings).not.toHaveProperty("FPS");
+    expect(settings).not.toHaveProperty("renderQuality");
+  }
+  await expect(page.locator("[data-hero-art]")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  await expect(page.getByText("FPS", { exact: true })).toBeVisible();
+  await preset.selectOption("Low");
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Reset to demo" }).click();
+  await expect(preset.locator("option:checked")).toHaveText("High");
+});
+
+test("debug FPS reflects rendering and returns to zero offscreen", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/?debug");
+  await expect(page.locator("[data-hero-art]")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  const fpsRow = page
+    .getByText("FPS", { exact: true })
+    .locator("..")
+    .locator("..");
+  const fps = async () =>
+    Number((await fpsRow.textContent())?.replace("FPS", ""));
+  await expect.poll(fps).toBeGreaterThan(0);
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  );
+  await expect.poll(fps).toBe(0);
 });

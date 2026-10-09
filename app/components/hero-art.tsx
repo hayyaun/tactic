@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { BACKGROUND_URL, createBackgroundURL } from "./hero-background";
+import { createSceneTelemetry } from "./hero-performance";
 import { HeroDebugGate } from "./hero-debug-gate";
 import { DEFAULT_SCENE_SETTINGS, type SceneSettings } from "./hero-settings";
 const HeroCanvas = dynamic(() => import("./hero-canvas"), { ssr: false });
@@ -60,6 +61,7 @@ export function HeroArt({ children }: { children: ReactNode }) {
     () => false,
   );
   const stage = useRef<HTMLDivElement>(null);
+  const [telemetry] = useState(createSceneTelemetry);
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(true);
   const [settings, setSettings] = useState<SceneSettings>(
@@ -68,17 +70,19 @@ export function HeroArt({ children }: { children: ReactNode }) {
   const [backgroundURL, setBackgroundURL] = useState(BACKGROUND_URL);
   const {
     backgroundNoise,
+    backgroundSmoothing,
     backgroundRadius,
     backgroundFade,
     backgroundIntensity,
   } = settings;
   useEffect(() => {
     // Debug edits are discrete work, never part of the animation loop. Debounce
-    // expensive pixel generation while dragging; production uses the static PNG.
+    // texture uploads while dragging; production uses the small vector SVG.
     const timer = window.setTimeout(() => {
       setBackgroundURL(
         createBackgroundURL({
           backgroundNoise,
+          backgroundSmoothing,
           backgroundRadius,
           backgroundFade,
           backgroundIntensity,
@@ -86,7 +90,13 @@ export function HeroArt({ children }: { children: ReactNode }) {
       );
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [backgroundNoise, backgroundRadius, backgroundFade, backgroundIntensity]);
+  }, [
+    backgroundNoise,
+    backgroundSmoothing,
+    backgroundRadius,
+    backgroundFade,
+    backgroundIntensity,
+  ]);
   useEffect(() => {
     const section = stage.current?.closest("section");
     if (!section) return;
@@ -127,11 +137,11 @@ export function HeroArt({ children }: { children: ReactNode }) {
         ref={stage}
         data-hero-art
         data-ready={ready}
-        className="group/scene @container-size pointer-events-none absolute inset-x-0 top-113.75 bottom-0 overflow-hidden min-[960px]:top-80 [@media(max-height:740px)_and_(max-width:700px)]:top-72.5 [@media(max-height:740px)_and_(max-width:700px)]:bottom-2"
+        className="group/scene @container-size pointer-events-none absolute inset-x-0 top-(--scene-top) bottom-(--scene-bottom) [--scene-bottom:0px] [--scene-top:455px] min-[960px]:[--scene-top:320px] [@media(max-height:740px)_and_(max-width:700px)]:[--scene-bottom:8px] [@media(max-height:740px)_and_(max-width:700px)]:[--scene-top:290px]"
         aria-hidden="true"
       >
-        {children}
-        <div className="pointer-events-auto absolute inset-0 opacity-0 transition-opacity duration-0 group-data-[ready=true]/scene:opacity-100 group-data-[ready=true]/scene:duration-600 motion-reduce:transition-none">
+        <div className="absolute inset-0 overflow-hidden">{children}</div>
+        <div className="pointer-events-auto absolute inset-x-0 -top-(--scene-top) -bottom-(--scene-bottom) opacity-0 transition-opacity duration-0 group-data-[ready=true]/scene:opacity-100 group-data-[ready=true]/scene:duration-600 motion-reduce:transition-none">
           {webGL && (
             <SceneBoundary onFailure={onFailure}>
               <HeroCanvas
@@ -140,6 +150,7 @@ export function HeroArt({ children }: { children: ReactNode }) {
                 onReady={onReady}
                 onContextLost={onFailure}
                 settings={settings}
+                telemetry={telemetry}
                 backgroundURL={backgroundURL}
               />
             </SceneBoundary>
@@ -147,7 +158,7 @@ export function HeroArt({ children }: { children: ReactNode }) {
         </div>
       </div>
       <Suspense fallback={null}>
-        <HeroDebugGate onChange={onSettingsChange} />
+        <HeroDebugGate onChange={onSettingsChange} telemetry={telemetry} />
       </Suspense>
     </>
   );

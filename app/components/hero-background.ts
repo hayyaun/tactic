@@ -1,91 +1,82 @@
 export const BACKGROUND_DEFAULTS = {
   backgroundNoise: 0.1,
+  backgroundSmoothing: 12,
   backgroundRadius: 0.975,
   backgroundFade: 0.6,
   backgroundIntensity: 0.32,
 };
 export type BackgroundSettings = typeof BACKGROUND_DEFAULTS;
-export const BACKGROUND_URL = "/studio/hero-background.png";
-export const BACKGROUND_WIDTH = 1440;
-export const BACKGROUND_HEIGHT = 1000;
+export const BACKGROUND_URL = "/studio/hero-background.svg";
+const WIDTH = 1440;
+const HEIGHT = 1000;
 
-export function isDefaultBackground(settings: BackgroundSettings) {
+function isDefaultBackground(settings: BackgroundSettings) {
   return (
     Object.keys(BACKGROUND_DEFAULTS) as (keyof BackgroundSettings)[]
   ).every((key) => settings[key] === BACKGROUND_DEFAULTS[key]);
 }
 
-// Compose continuous light and centered noise BEFORE rounding to eight bits.
-// Adding grain after SVG opacity has been quantized preserves visible rings.
-export function createBackgroundPixels(settings: BackgroundSettings) {
-  const width = BACKGROUND_WIDTH;
-  const height = BACKGROUND_HEIGHT;
-  const pixels = new Uint8ClampedArray(width * height * 4);
-  const radius = settings.backgroundRadius * width;
-  const fade = settings.backgroundFade;
-  const start = 1 - fade;
+// Keep the background as vector gradients with plain SVG grain. No pixel buffer,
+// displacement filter, or raster image encoding is needed for debug edits.
+export function createBackgroundSVG(settings: BackgroundSettings) {
+  const start = 1 - settings.backgroundFade;
   const tailAlpha = 0.16 * 0.976;
-  // Match the inner derivative at the join, and flatten smoothly at the end.
-  const tailPower = (0.47232 * fade) / (start * tailAlpha);
-  function glow(distance: number) {
-    const t = distance / radius;
-    if (t >= 1) return 0;
-    if (t <= start) {
-      const inner = (t / start) * 0.6;
-      return (
-        settings.backgroundIntensity * (1 - inner) ** 2 * (1 - 0.04 * inner)
-      );
-    }
-    return (
-      settings.backgroundIntensity * tailAlpha * ((1 - t) / fade) ** tailPower
-    );
-  }
-  function random(seed: number) {
-    let bits = Math.imul(seed ^ (seed >>> 16), 0x45d9f3b);
-    bits = Math.imul(bits ^ (bits >>> 16), 0x45d9f3b);
-    return ((bits ^ (bits >>> 16)) >>> 0) / 4294967295;
-  }
-  const baseColor = [16, 18, 17];
-  const greenColor = [128, 230, 80];
-  const redColor = [255, 44, 75];
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const index = y * width + x;
-      const green = glow(Math.hypot(x + 115, y - 800));
-      const red = glow(Math.hypot(x - 1555, y - 800));
-      const noise =
-        (random(index + 11) + random(index ^ 0x9e3779b9) - 1) *
-        settings.backgroundNoise *
-        63.75;
-      for (let channel = 0; channel < 3; channel++) {
-        const base = baseColor[channel];
-
-        const lit = base + (greenColor[channel] - base) * green;
-        pixels[index * 4 + channel] = Math.round(
-          lit + (redColor[channel] - lit) * red + noise,
+  const tailPower = (0.47232 * settings.backgroundFade) / (start * tailAlpha);
+  const base = [16, 18, 17];
+  const stops = (color: number[], blend: "base" | "screen") =>
+    [
+      0,
+      start / 4,
+      start / 2,
+      (start * 3) / 4,
+      start,
+      start + settings.backgroundFade / 4,
+      start + settings.backgroundFade / 2,
+      start + (settings.backgroundFade * 3) / 4,
+      1,
+    ]
+      .map((t) => {
+        const inner = (t / start) * 0.6;
+        const alpha =
+          settings.backgroundIntensity *
+          (t <= start
+            ? (1 - inner) ** 2 * (1 - 0.04 * inner)
+            : tailAlpha * ((1 - t) / settings.backgroundFade) ** tailPower);
+        // Opaque RGB interpolation avoids quantizing a low-opacity gradient first.
+        // Screen contributions fade to black and preserve the base at the edges.
+        const rgb = color.map((channel, i) =>
+          blend === "base"
+            ? base[i] + alpha * (channel - base[i])
+            : (255 * alpha * (channel - base[i])) / (255 - base[i]),
         );
-      }
-      pixels[index * 4 + 3] = 255;
-    }
-  }
-  return pixels;
+        return `<stop offset="${t}" stop-color="rgb(${rgb.map((channel) => channel.toFixed(5)).join(" ")})"/>`;
+      })
+      .join("");
+  const noise = settings.backgroundNoise;
+  // Paint beyond the viewport so blur never samples a transparent SVG edge.
+  const padding = 120; // Three standard deviations at the maximum debug blur.
+  const backgroundPath = `M${-padding} ${-padding}h${WIDTH + padding * 2}v${HEIGHT + padding * 2}H${-padding}z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" preserveAspectRatio="none">
+  <defs>
+    <radialGradient id="green" gradientUnits="userSpaceOnUse" cx="-115" cy="800" r="${settings.backgroundRadius * WIDTH}" >${stops([128, 230, 80], "base")}</radialGradient>
+    <radialGradient id="red" gradientUnits="userSpaceOnUse" cx="1555" cy="800" r="${settings.backgroundRadius * WIDTH}" >${stops([255, 44, 75], "screen")}</radialGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="${settings.backgroundSmoothing}" edgeMode="duplicate" result="softGradient"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" seed="11" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 0 1" result="grayNoise"/>
+      <feComposite in="softGradient" in2="grayNoise" operator="arithmetic" k2="1" k3="${noise}" k4="${-noise / 2}" result="grainComposite"/>
+      <feGaussianBlur in="grainComposite" stdDeviation="0.5" edgeMode="duplicate"/>
+    </filter>
+  </defs>
+  <g filter="url(#grain)" style="isolation:isolate">
+    <path fill="#101211" d="${backgroundPath}"/>
+    <path fill="url(#green)" d="${backgroundPath}"/>
+    <path style="mix-blend-mode:screen" fill="url(#red)" d="${backgroundPath}"/>
+  </g>
+</svg>`;
 }
 
 export function createBackgroundURL(settings: BackgroundSettings) {
   if (isDefaultBackground(settings)) return BACKGROUND_URL;
-  const canvas = document.createElement("canvas");
-  canvas.width = BACKGROUND_WIDTH;
-  canvas.height = BACKGROUND_HEIGHT;
-  const context = canvas.getContext("2d");
-  if (!context) return BACKGROUND_URL;
-  context.putImageData(
-    new ImageData(
-      createBackgroundPixels(settings),
-      canvas.width,
-      canvas.height,
-    ),
-    0,
-    0,
-  );
-  return canvas.toDataURL("image/png");
+  return `data:image/svg+xml,${encodeURIComponent(createBackgroundSVG(settings))}`;
 }

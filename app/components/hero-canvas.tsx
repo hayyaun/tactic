@@ -48,12 +48,14 @@ import {
   type LineBasicMaterial,
   type LineSegments,
 } from "three";
+import type { SceneTelemetry } from "./hero-performance";
 import { BACKGROUND_URL } from "./hero-background";
 import { adaptBoxProjectedShader } from "./box-projected-shader";
 import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
 
 type SceneProps = {
   backgroundURL: string;
+  telemetry: SceneTelemetry;
   active: boolean;
   reducedMotion: boolean;
   onReady: () => void;
@@ -754,12 +756,21 @@ function Sculpture({
     const offset = Math.max(0, -bounds.clone().applyMatrix4(matrix).min.y);
     return { center, tilt, offset };
   }, [bounds, settings.tilt]);
+  // Extend the backdrop across the hero without changing the sculpture's
+  // original viewport scale or projected position.
+  const gl = useThree((state) => state.gl);
+  const artBounds = gl.domElement
+    .closest("[data-hero-art]")
+    ?.getBoundingClientRect();
+  const artHeight = Math.max(artBounds?.height ?? size.height, 1);
+  const artOffset = (artBounds?.top ?? size.top) - size.top;
   const viewHeight =
     Math.max(
       SCENE_FRAMING.minHeight,
-      (size.height / Math.max(size.width, 1)) * SCENE_FRAMING.minWidth,
+      (artHeight / Math.max(size.width, 1)) * SCENE_FRAMING.minWidth,
     ) / settings.zoom;
-  const viewWidth = (viewHeight * size.width) / Math.max(size.height, 1);
+  const viewWidth = (viewHeight * size.width) / artHeight;
+  const unitsPerPixel = viewHeight / artHeight;
   useEffect(() => {
     const reset = () => {
       setHovered(null);
@@ -825,8 +836,11 @@ function Sculpture({
         manual
         left={-viewWidth / 2}
         right={viewWidth / 2}
-        top={viewHeight / 2}
-        bottom={-viewHeight / 2}
+        top={viewHeight / 2 + artOffset * unitsPerPixel}
+        bottom={
+          -viewHeight / 2 -
+          (size.height - artOffset - artHeight) * unitsPerPixel
+        }
         near={0.1}
         far={200}
         position={[
@@ -908,6 +922,13 @@ function RestorableScene(
   );
 }
 
+function FrameTelemetry({ telemetry }: { telemetry: SceneTelemetry }) {
+  useFrame((state) => {
+    if (!state.gl.getContext().isContextLost()) telemetry.recordFrame();
+  });
+  return null;
+}
+
 export default function HeroCanvas(props: SceneProps) {
   const source = useRef<HTMLElement>(null);
   const motion = useRef<PointerMotion>({ yaw: 0, inside: false, event: null });
@@ -916,6 +937,10 @@ export default function HeroCanvas(props: SceneProps) {
       ...createPointerEvents(store),
       compute(event, state) {
         const bounds = state.gl.domElement.getBoundingClientRect();
+        const artBounds =
+          state.gl.domElement
+            .closest("[data-hero-art]")
+            ?.getBoundingClientRect() ?? bounds;
         const x = (event.clientX - bounds.left) / bounds.width;
         const y = (event.clientY - bounds.top) / bounds.height;
         // Repicking during animation reuses the last event; it must not undo a reset.
@@ -927,8 +952,8 @@ export default function HeroCanvas(props: SceneProps) {
               event.pointerType === "pen") &&
             x >= 0 &&
             x <= 1 &&
-            y >= 0 &&
-            y <= 1 &&
+            event.clientY >= artBounds.top &&
+            event.clientY <= artBounds.bottom &&
             !(
               event.target instanceof Element &&
               event.target.closest("a, button, nav")
@@ -966,6 +991,7 @@ export default function HeroCanvas(props: SceneProps) {
         transmissionResolutionScale: props.settings.transmissionResolution,
       }}
     >
+      <FrameTelemetry telemetry={props.telemetry} />
       <HeroBackdrop backgroundURL={props.backgroundURL} />
       <directionalLight
         color="white"

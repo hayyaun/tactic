@@ -131,3 +131,24 @@ test("unsupported WebGL keeps the preview", async ({ page }) => {
   await expect(stage.locator("canvas")).toHaveCount(0);
   await expect(stage.locator("img").first()).toBeVisible();
 });
+
+test("one loaded backdrop covers the entire hero on mobile and desktop", async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+    { width: 390, height: 667 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const stage = page.locator("[data-hero-art]");
+    await expect(stage).toHaveAttribute("data-ready", "true");
+    const hero = await page.locator("section.hero-atmosphere").boundingBox();
+    const canvas = await stage.locator("canvas").boundingBox();
+    expect(hero).not.toBeNull();
+    expect(canvas).not.toBeNull();
+    for (const key of ["x", "y", "width", "height"] as const)
+      expect(Math.abs(canvas![key] - hero![key])).toBeLessThan(1);
+  }
+});
