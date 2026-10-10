@@ -8,15 +8,15 @@ Indexing is off by default. Vercel production (`VERCEL_ENV=production`) is index
 
 This prevents accidental indexing; it is not access control. Use hosting deployment protection for confidential previews. Authenticate any future draft-preview endpoints; none are provided today.
 
-## Enquiry preparation and future delivery
+## Enquiry preparation and delivery
 
-`POST /api/enquiry` validates data and returns a prepared brief. **It does not send email, persist leads, or claim delivery.** The UI keeps entered values after failure and offers a retry. Server guards enforce field limits, a service allowlist, request origin, content type, streamed body size, honeypot, and rate checks. Responses are `no-store`. Never cache, log, or send these fields to analytics.
+`POST /api/enquiry` validates data and returns a prepared brief by default. A separate explicit `intent=send` request sends through Resend only when `CONTACT_DELIVERY_ENABLED=true` and server credentials are configured. The UI preserves the brief on failure and retries with the same UUID idempotency key; it confirms submission only after provider acceptance. It does not persist leads. Server guards enforce field limits, a service allowlist, request origin, content type, streamed body size, honeypot, and rate checks. Responses are `no-store`. Never cache, log, or send these fields to analytics.
 
-Production rate limiting uses Upstash Redis REST with an atomic, expiring shared bucket (30 requests per minute). It stores only a counter, not IP addresses or form contents. Set server-only `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. Missing/broken configuration fails closed with a temporary-unavailability message. Provider requests time out after three seconds. Provisioning and live verification remain a yellow/user setup dependency.
+Production rate limiting uses Upstash Redis REST with an atomic, expiring shared bucket (30 requests per minute). It stores only a counter, not IP addresses or form contents. Set server-only `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`, or Vercel integration aliases `KV_REST_API_URL` and writable `KV_REST_API_TOKEN`. Missing/broken configuration fails closed. Provider requests time out after three seconds. Local credentials passed a live write check; add them to Vercel before deployment.
 
 Development uses a process-local bucket. For production-server tests on your computer, set `CONTACT_LOCAL_RATE_LIMIT=true`; this fallback is restricted to loopback request hosts. Never enable this on public hosting.
 
-When Resend is configured, reuse these guards before delivery. Show a sent state only after provider acceptance; distinguish acceptance from inbox delivery. Add idempotency before retryable email sending, domain verification, reply-to checks, integration tests, and an approved privacy notice. No email credentials or invented recipient are included now.
+Sender-domain verification and forwarding for `admin@tacticforyou.com` are still pending, so keep delivery disabled on public hosting. See `docs/provider-setup.md` and `.env.example` for setup, privacy, and integration verification. Resend acceptance is distinct from confirmed inbox delivery.
 
 ## Security and debug behavior
 

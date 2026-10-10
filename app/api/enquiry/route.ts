@@ -1,6 +1,7 @@
 import "server-only";
 import { prepareBrief, validateEnquiry } from "../../lib/enquiry";
 import { allowEnquiry } from "../../lib/enquiry-rate-limit";
+import { sendEnquiry } from "../../lib/enquiry-delivery";
 
 const maxBytes = 16_384;
 function reply(
@@ -119,6 +120,33 @@ export async function POST(request: Request) {
       },
       422,
     );
-  // Preparation only. Replace this return with confirmed delivery when Resend is configured.
+  const record = input as Record<string, unknown>;
+  if (record.intent === "send") {
+    if (
+      typeof record.submissionId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        record.submissionId,
+      )
+    )
+      return reply(
+        { status: "error", message: "Please prepare your brief again." },
+        400,
+      );
+    try {
+      await sendEnquiry(checked.value, record.submissionId);
+      return reply({ status: "sent" }, 200);
+    } catch {
+      return reply(
+        {
+          status: "error",
+          message:
+            "We couldn’t confirm sending your enquiry. Your brief is saved here; try sending again.",
+        },
+        503,
+      );
+    }
+  }
+  if (record.intent !== undefined && record.intent !== "prepare")
+    return reply({ status: "error", message: "Unsupported form action." }, 400);
   return reply({ status: "prepared", brief: prepareBrief(checked.value) }, 200);
 }

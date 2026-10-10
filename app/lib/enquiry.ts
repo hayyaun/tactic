@@ -13,6 +13,7 @@ export type Enquiry = {
 };
 export type EnquiryResult =
   | { status: "prepared"; brief: string }
+  | { status: "sent" }
   | {
       status: "error";
       message: string;

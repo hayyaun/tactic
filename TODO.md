@@ -33,13 +33,13 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 ## Contact & enquiries
 
-- [ ] 🟡 Next.js Server Actions + Resend: implement enquiry delivery to your inbox.
+- [x] 🟡 Next.js Route Handler + Resend: implement gated enquiry sending with idempotent retries; enable after domain/inbox setup.
 - [ ] 🔵 Resend: create an account and verify the sending domain.
 - [x] 🟢 Server-side validation: validate and limit submitted fields.
 - [x] 🟢 Spam protection: implement honeypot and server-side rate limiting.
-- [ ] 🟡 Configure and verify production Upstash Redis rate limiting; needs your account and server credentials.
+- [x] 🟡 Support Upstash/Vercel KV variables and verify writable Redis credentials; add them to Vercel before deployment.
 - [x] 🟢 Add pending, success, error, and retry states for brief preparation.
-- [ ] 🟡 Connect sending and sent-confirmation states after Resend setup.
+- [x] 🟡 Connect and test sending, confirmed-submission, failure, and retry states; public delivery remains disabled.
 - [ ] 🟡 Add a visible backup email address once supplied.
 - [ ] 🔵 Email provider: choose the receiving inbox and configure branded email.
 - [ ] 🔵 DNS: configure SPF, DKIM, and DMARC as appropriate.
@@ -48,17 +48,19 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 ## Analytics & monitoring
 
-- [ ] 🔵 Plausible or Google Analytics 4: choose one and create the site/property.
-- [ ] 🟡 Install the chosen analytics integration.
-- [ ] 🟡 Track successful enquiries and important CTA interactions.
-- [ ] 🟡 Exclude your own/test traffic where practical.
+- [x] 🔵 Decide visitor analytics: omit GA4/Plausible; keep Clarity with consent.
+- [x] 🟡 Leave GA4/Plausible integration disabled, as requested.
+- [x] 🟡 Leave visitor/enquiry/CTA analytics events disabled, as requested.
+- [x] 🟡 Exclude development and previews from Clarity/Sentry unless explicitly configured for QA.
 - [ ] 🔵 Use UTM links for campaigns.
-- [ ] 🔵 Sentry: create a project and choose alert recipients.
-- [ ] 🟡 Integrate Sentry error tracking and configure alerts.
-- [ ] 🟡 Filter personal information from analytics and error reports.
+- [x] 🔵 Sentry: create project tactic in organization hayyanhami using the wizard.
+- [x] 🟡 Integrate Sentry error tracking; repair local placeholders and verify ingestion.
+- [ ] 🔵 Sentry: choose alert recipients and confirm alert rules in the dashboard.
+- [x] 🟡 Filter personal information from error reports; disable Sentry replay/tracing and drop logs/metrics.
 - [ ] 🔵 Uptime monitor: configure downtime alerts.
-- [ ] 🔵 Optional: Microsoft Clarity account for heatmaps and recordings.
-- [ ] 🟡 Optional: integrate Microsoft Clarity with masking and consent support.
+- [x] 🔵 Microsoft Clarity: supply project ID yvn7ipejec.
+- [x] 🟡 Integrate Microsoft Clarity with form masking, consent, and withdrawal support.
+- [ ] 🔵 Microsoft Clarity: review dashboard masking, retention, and access settings.
 
 ## Accessibility & performance
 
@@ -78,22 +80,22 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟢 Keep secrets server-side.
 - [x] 🟢 Review dependencies for security issues.
 - [x] 🟢 Review security headers.
-- [ ] 🔵 Supply or approve a privacy notice matching actual data collection.
-- [ ] 🟡 Publish the approved privacy notice.
-- [ ] 🔵 Decide applicable tracking consent and data-collection settings.
-- [ ] 🟡 Configure consent controls and recording masking.
+- [x] 🔵 Supply business facts: TACTIC, based in Iran; authorize privacy implementation.
+- [x] 🟡 Add /privacy with confirmed business facts and actual provider/consent behavior; review mailbox retention before launch.
+- [x] 🔵 Choose consent-controlled Clarity and omit GA4/Plausible.
+- [x] 🟡 Configure consent controls, withdrawal, and form/brief recording masking.
 - [ ] 🔵 Define enquiry-data retention and deletion.
 - [x] 🟢 Restrict production/debug controls as appropriate.
 
 ## Deployment & verification
 
-- [ ] 🔵 Vercel or compatible hosting: choose provider and connect the Git repository.
-- [ ] 🟡 Prepare production deployment configuration.
+- [x] 🔵 Vercel: choose provider and connect the project (confirmed by you).
+- [x] 🟡 Prepare Vercel production configuration and an environment-variable template.
 - [ ] 🔵 Connect domain, DNS, and HTTPS.
 - [x] 🔵 Choose a primary domain: tacticforyou.com.
-- [ ] 🟡 Configure redirects for alternate domains.
+- [x] 🟡 Configure and test www.tacticforyou.com redirects to the canonical domain, preserving paths and query strings.
 - [ ] 🔵 Configure production and preview environment variables and secrets.
-- [ ] 🟡 Verify support for your installed Next.js features.
+- [x] 🟡 Verify installed Next.js features and Sentry compile together locally; deployed smoke checks remain below.
 - [x] 🟢 GitHub Actions: maintain automated deployment checks.
 - [ ] 🔴 Run lint, formatting, build, and Playwright tests with final content.
 - [x] 🟢 Extend tests for unpublished routes, content templates, and real brief-preparation requests; email delivery tests remain dependent on Resend.
@@ -113,4 +115,4 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 Existing foundations: basic metadata, GitHub Actions, Playwright tests, and 3D fallbacks. Extend and verify these rather than rebuilding them.
 
-Implementation notes: see docs/content-handoff.md and docs/launch-operations.md. Production email sending is not enabled. Development-tool audit findings are recorded in the operations guide.
+Implementation notes: see docs/content-handoff.md, docs/launch-operations.md, and docs/provider-setup.md. Production email sending remains disabled until domain verification and inbox forwarding work. Redis credentials and Resend/Sentry test acceptance are verified; inbox delivery, dashboard alerts, and deployed settings remain user/launch tasks. Development-tool audit findings are recorded in the operations guide.

@@ -7,11 +7,17 @@ const script =
 let localWindow = { until: 0, count: 0 };
 
 export async function allowEnquiry(request: Request) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const hostname = new URL(`http://${request.headers.get("host") ?? "invalid"}`)
+    .hostname;
+  const localHost = ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+  const localOverride =
+    localHost && process.env.CONTACT_LOCAL_RATE_LIMIT === "true";
+  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
   const windowSeconds = 60;
   const limit = 30;
-  if (url && token) {
+  if (url && token && !localOverride) {
     const endpoint = new URL(url);
     if (endpoint.protocol !== "https:")
       throw new Error("Invalid rate-limit configuration");
@@ -36,9 +42,6 @@ export async function allowEnquiry(request: Request) {
       throw new Error("Rate limiter unavailable");
     return result.result <= limit;
   }
-  const hostname = new URL(`http://${request.headers.get("host") ?? "invalid"}`)
-    .hostname;
-  const localHost = ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
   if (
     !localHost ||
     (process.env.NODE_ENV === "production" &&

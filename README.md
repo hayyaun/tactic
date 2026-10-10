@@ -44,7 +44,7 @@ Use `npm run format` to format authored files and sort Tailwind classes. Browser
 
 See `docs/content-handoff.md` for content/asset fields and `docs/launch-operations.md` for indexing, enquiry safeguards, CI, and rollback. The canonical domain is `tacticforyou.com`. Unfinished content stays unpublished.
 
-Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form validates through a guarded server endpoint and prepares a copyable brief; it does not send email or persist personal information. Configure production rate limiting and connect a real studio inbox before launch.
+Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form prepares a copyable brief and offers a separate Resend send step when `CONTACT_DELIVERY_ENABLED=true`. Delivery stays disabled until sender verification and receiving-email setup are complete. Redis credentials support both Upstash and Vercel KV names. Clarity requires visitor consent; GA4/Plausible are omitted. See `docs/provider-setup.md` and `.env.example` for setup and verified provider checks.
 
 ## Browser regressions
 

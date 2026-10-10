@@ -27,7 +27,11 @@ function StudioDialog(props: ComponentProps<"dialog">) {
     />
   );
 }
-export function Dialogs() {
+export function Dialogs({
+  deliveryEnabled = false,
+}: {
+  deliveryEnabled?: boolean;
+}) {
   const contact = useRef<HTMLDialogElement>(null);
   const studyDialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -39,6 +43,8 @@ export function Dialogs() {
   const [status, setStatus] = useState("");
   const [pending, setPending] = useState(false);
   const [formError, setFormError] = useState("");
+  const [sent, setSent] = useState(false);
+  const submissionId = useRef("");
   useEffect(
     () => () => {
       document.body.classList.remove("modal-open");
@@ -83,7 +89,11 @@ export function Dialogs() {
   async function copy() {
     try {
       await navigator.clipboard.writeText(brief);
-      setStatus("Project brief copied. Nothing has been sent.");
+      setStatus(
+        sent
+          ? "Project brief copied."
+          : "Project brief copied. Nothing has been sent.",
+      );
     } catch {
       if (preview.current) {
         const range = document.createRange();
@@ -100,6 +110,7 @@ export function Dialogs() {
       <StudioDialog
         ref={contact}
         id="contact-dialog"
+        data-clarity-mask="true"
         aria-labelledby="contact-dialog-title"
         {...dialogEvents}
       >
@@ -173,6 +184,8 @@ export function Dialogs() {
               const result: EnquiryResult = await response.json();
               if (response.ok && result.status === "prepared") {
                 setBrief(result.brief);
+                submissionId.current = crypto.randomUUID();
+                setSent(false);
                 setStatus("");
               } else {
                 if (result.status === "error") {
@@ -282,8 +295,11 @@ export function Dialogs() {
             <br />A good first move.
           </h3>
           <p className="text-[12px] leading-[1.7] text-muted">
-            This brief is ready to copy. The studio’s contact details will be
-            connected when the website goes live.
+            {sent
+              ? "Your enquiry has been submitted. We’ll reply by email."
+              : deliveryEnabled
+                ? "Review your brief, then send it to the studio."
+                : "This brief is ready to copy. Sending will become available when the website goes live."}
           </p>
           <pre
             className="mx-0 my-5 rounded-xl border border-line bg-[rgba(255,255,255,0.02)] p-4.5 font-mono text-[11px] leading-[1.8] wrap-anywhere whitespace-pre-wrap text-foreground"
@@ -292,6 +308,60 @@ export function Dialogs() {
           >
             {brief}
           </pre>
+          {deliveryEnabled && !sent && (
+            <div className="mb-4">
+              <DialogActionButton
+                disabled={pending}
+                onClick={async () => {
+                  if (pending || !form.current) return;
+                  const data = new FormData(form.current);
+                  const field = (name: string) =>
+                    String(data.get(name) ?? "").trim();
+                  setPending(true);
+                  setFormError("");
+                  try {
+                    const response = await fetch("/api/enquiry", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name: field("name"),
+                        email: field("email"),
+                        service: field("service"),
+                        message: field("message"),
+                        website: field("website"),
+                        intent: "send",
+                        submissionId: submissionId.current,
+                      }),
+                      signal: AbortSignal.timeout(15_000),
+                    });
+                    const result: EnquiryResult = await response.json();
+                    if (response.ok && result.status === "sent") {
+                      setSent(true);
+                      setStatus("Enquiry submitted. We’ll reply by email.");
+                    } else
+                      setFormError(
+                        result.status === "error"
+                          ? result.message
+                          : "We couldn’t confirm sending. Please try again.",
+                      );
+                  } catch {
+                    setFormError(
+                      "We couldn’t confirm sending. Please retry with this same brief.",
+                    );
+                  } finally {
+                    setPending(false);
+                  }
+                }}
+              >
+                {pending ? "Sending enquiry…" : "Send enquiry"}
+              </DialogActionButton>
+              {formError && (
+                <p role="alert" className="mt-3 text-sm text-coral">
+                  {formError}
+                </p>
+              )}
+            </div>
+          )}
           <DialogActionButton
             ref={copyButton}
 
@@ -303,8 +373,11 @@ export function Dialogs() {
           <button
             className="mx-auto mt-4.5 mb-0 block rounded-[22px] bg-[rgba(255,255,255,0.07)] px-4.5 py-2.75 text-[12px]"
             id="edit-brief"
+            disabled={pending}
             onClick={() => {
               setBrief("");
+              setSent(false);
+              setFormError("");
               requestAnimationFrame(() =>
                 form.current?.querySelector<HTMLInputElement>("input")?.focus(),
               );

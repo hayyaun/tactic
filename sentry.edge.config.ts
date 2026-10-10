@@ -4,17 +4,22 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { filterErrorEvent } from "./app/lib/sentry-privacy";
 
 Sentry.init({
-  dsn: "https://99a6eb851202382d3a90da1fda8cc5ae@o4506331902443520.ingest.us.sentry.io/4512233282338816",
-
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  enabled:
+    process.env.NODE_ENV === "production" &&
+    process.env.VERCEL_ENV === "production",
+  beforeSend: filterErrorEvent,
+  beforeSendLog: () => null,
+  beforeSendMetric: () => null,
 
   dataCollection: {
-    // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#dataCollection
-    // userInfo: false,
-    // httpBodies: [],
+    userInfo: false,
+    httpBodies: [],
+    cookies: false,
+    httpHeaders: false,
+    urlQueryParams: false,
   },
 });

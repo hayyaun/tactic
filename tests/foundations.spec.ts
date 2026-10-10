@@ -102,6 +102,14 @@ test("public SEO endpoints and security headers are ready", async ({
   expect(rss.headers()["content-type"]).toContain("application/rss+xml");
   expect(await rss.text()).toContain("<channel>");
   expect(await rss.text()).not.toContain("<item>");
+  const alternateDomain = await request.get("/privacy?ref=check", {
+    headers: { Host: "www.tacticforyou.com" },
+    maxRedirects: 0,
+  });
+  expect(alternateDomain.status()).toBe(308);
+  expect(alternateDomain.headers().location).toBe(
+    "https://tacticforyou.com/privacy?ref=check",
+  );
 });
 
 test("unpublished routes show a useful recovery link", async ({ page }) => {
@@ -226,6 +234,26 @@ test("keyboard skip link, contact focus, and reduced motion work", async ({
       () => getComputedStyle(document.documentElement).scrollBehavior,
     ),
   ).toBe("auto");
+});
+
+test("email delivery cannot be accidentally enabled by supplying a key", async ({
+  request,
+  baseURL,
+}) => {
+  test.skip(
+    process.env.CONTACT_DELIVERY_ENABLED === "true",
+    "This check verifies the disabled-delivery configuration.",
+  );
+  const response = await request.post("/api/enquiry", {
+    headers: { Origin: baseURL! },
+    data: {
+      ...valid,
+      intent: "send",
+      submissionId: "12345678-1234-4123-8123-123456789abc",
+    },
+  });
+  expect(response.status()).toBe(503);
+  expect((await response.json()).status).toBe("error");
 });
 
 test("enquiry limiter bounds repeated attempts", async ({

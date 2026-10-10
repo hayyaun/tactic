@@ -6,6 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   if (!isIndexable()) return [];
   return [
     { url: site.url },
+    { url: absoluteUrl("/privacy") },
     ...publishedPages().map((page) => ({
       url: absoluteUrl(page.path),
       ...(page.updatedAt || page.publishedAt

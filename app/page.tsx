@@ -5,6 +5,7 @@ import { StudyCard } from "./components/study-card";
 import { SectionLabel, StudioPrinciples } from "./components/studio-content";
 import { ContactButton } from "./components/dialog-buttons";
 import { Dialogs } from "./components/interactions";
+import { enquiryDeliveryEnabled } from "./lib/enquiry-delivery";
 import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
 import { HeroArt } from "./components/hero-art";
@@ -256,7 +257,7 @@ export default function Home() {
           </Link>
         </div>
       </footer>
-      <Dialogs />
+      <Dialogs deliveryEnabled={enquiryDeliveryEnabled()} />
     </>
   );
 }

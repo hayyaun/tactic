@@ -11,9 +11,9 @@ export function ContactButton(props: ButtonProps) {
     <button
       {...props}
       type="button"
-      onClick={(event) =>
-        openDialog("contact-dialog", { opener: event.currentTarget })
-      }
+      onClick={(event) => {
+        openDialog("contact-dialog", { opener: event.currentTarget });
+      }}
     />
   );
 }

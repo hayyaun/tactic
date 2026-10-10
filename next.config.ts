@@ -10,7 +10,15 @@ const permanentRedirects: {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  redirects: () => permanentRedirects,
+  redirects: () => [
+    ...permanentRedirects,
+    {
+      source: "/:path*",
+      has: [{ type: "host" as const, value: "www.tacticforyou.com" }],
+      destination: "https://tacticforyou.com/:path*",
+      permanent: true,
+    },
+  ],
   headers: () => [
     {
       source: "/:path*",
@@ -48,9 +56,9 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "hayyanhami",
+  org: process.env.SENTRY_ORG ?? "hayyanhami",
 
-  project: "tactic",
+  project: process.env.SENTRY_PROJECT ?? "tactic",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -65,7 +73,7 @@ export default withSentryConfig(nextConfig, {
   // This can increase your server load as well as your hosting bill.
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: "/monitoring",
+  // Direct reporting avoids adding a publicly callable relay endpoint.
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
@@ -79,5 +87,10 @@ export default withSentryConfig(nextConfig, {
       // Automatically tree-shake Sentry logger statements to reduce bundle size
       removeDebugLogging: true,
     },
+  },
+  sourcemaps: {
+    disable:
+      !process.env.SENTRY_AUTH_TOKEN ||
+      !(process.env.CI || process.env.VERCEL_ENV === "production"),
   },
 });

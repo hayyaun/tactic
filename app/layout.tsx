@@ -5,6 +5,8 @@ import { organizationSchema, serializeJsonLd } from "./lib/structured-data";
 import "./globals.css";
 import "./base.css";
 import "./artwork.css";
+import { Suspense } from "react";
+import { PrivacyControls } from "./components/privacy-controls";
 
 const geist = localFont({
   src: "../public/studio/geist-latin.woff2",
@@ -41,6 +43,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         {children}
+        <Suspense fallback={null}>
+          <PrivacyControls />
+        </Suspense>
       </body>
     </html>
   );
