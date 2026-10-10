@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { isIndexable, site } from "./lib/site";
+import { organizationSchema, serializeJsonLd } from "./lib/structured-data";
 import "./globals.css";
 import "./base.css";
 import "./artwork.css";
@@ -17,16 +19,29 @@ const mono = localFont({
   display: "swap",
 });
 export const metadata: Metadata = {
-  title: "TACTIC — Every move matters.",
+  metadataBase: new URL(site.url),
+  title: { default: "TACTIC — Every move matters.", template: "%s | TACTIC" },
   description:
     "TACTIC is an independent creative studio. Clear thinking, distinctive identities, and considered digital experiences.",
   icons: { icon: "/studio/mark.svg" },
+  robots: isIndexable()
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
+  alternates: { types: { "application/rss+xml": "/rss.xml" } },
 };
 export const viewport: Viewport = { themeColor: "#101211" };
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geist.variable} ${mono.variable}`}>
-      <body id="top">{children}</body>
+      <body id="top">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd(organizationSchema()),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

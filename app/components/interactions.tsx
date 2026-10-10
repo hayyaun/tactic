@@ -13,12 +13,17 @@ import {
 
 import { studies, type Study } from "../studies";
 import { takeDialogOpening } from "./dialog-opening";
+import {
+  enquiryLimits,
+  enquiryServices,
+  type EnquiryResult,
+} from "../lib/enquiry";
 
 function StudioDialog(props: ComponentProps<"dialog">) {
   return (
     <dialog
       {...props}
-      className="max-h-[calc(100dvh-32px)] w-[calc(100%-24px)] max-w-170 overflow-auto rounded-[22px] border border-line bg-[#1b201c] p-6.5 text-foreground backdrop:bg-black/60 backdrop:backdrop-blur-[9px] min-[600px]:p-9"
+      className="m-auto max-h-[calc(100dvh-32px)] w-[calc(100%-24px)] max-w-170 overflow-auto rounded-[22px] border border-line bg-[#1b201c] p-6.5 text-foreground backdrop:bg-black/60 backdrop:backdrop-blur-[9px] min-[600px]:p-9"
     />
   );
 }
@@ -32,6 +37,8 @@ export function Dialogs() {
   const [study, setStudy] = useState<Study>("pathways");
   const [brief, setBrief] = useState("");
   const [status, setStatus] = useState("");
+  const [pending, setPending] = useState(false);
+  const [formError, setFormError] = useState("");
   useEffect(
     () => () => {
       document.body.classList.remove("modal-open");
@@ -124,12 +131,16 @@ export function Dialogs() {
             const input = event.target;
             if (
               input instanceof HTMLInputElement ||
-              input instanceof HTMLTextAreaElement
+              input instanceof HTMLTextAreaElement ||
+              input instanceof HTMLSelectElement
             )
               input.setCustomValidity("");
           }}
-          onSubmit={(event) => {
+          aria-busy={pending}
+          onSubmit={async (event) => {
             event.preventDefault();
+            if (pending) return;
+            const currentForm = event.currentTarget;
             const data = new FormData(event.currentTarget);
             const field = (name: string) => String(data.get(name) ?? "").trim();
             for (const name of ["name", "message"]) {
@@ -144,19 +155,52 @@ export function Dialogs() {
                 if (!input.reportValidity()) return;
               }
             }
-            setBrief(
-              [
-                "TACTIC — Project enquiry",
-                "",
-                `Name: ${field("name")}`,
-                `Email: ${field("email")}`,
-                `Interested in: ${field("service")}`,
-                "",
-                "About the project:",
-                field("message"),
-              ].join("\n"),
-            );
-            setStatus("");
+            setPending(true);
+            setFormError("");
+            try {
+              const response = await fetch("/api/enquiry", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name: field("name"),
+                  email: field("email"),
+                  service: field("service"),
+                  message: field("message"),
+                  website: field("website"),
+                }),
+                signal: AbortSignal.timeout(15_000),
+              });
+              const result: EnquiryResult = await response.json();
+              if (response.ok && result.status === "prepared") {
+                setBrief(result.brief);
+                setStatus("");
+              } else {
+                if (result.status === "error") {
+                  setFormError(result.message);
+                  for (const [name, message] of Object.entries(
+                    result.fields ?? {},
+                  )) {
+                    const input = currentForm.elements.namedItem(name);
+                    if (
+                      input instanceof HTMLInputElement ||
+                      input instanceof HTMLTextAreaElement ||
+                      input instanceof HTMLSelectElement
+                    )
+                      input.setCustomValidity(message ?? "");
+                  }
+                  currentForm.reportValidity();
+                } else
+                  setFormError(
+                    "Could not prepare your brief. Please try again.",
+                  );
+              }
+            } catch {
+              setFormError(
+                "Could not connect. Your details have not been sent. Please try again.",
+              );
+            } finally {
+              setPending(false);
+            }
           }}
         >
           <div className="grid gap-0 min-[600px]:grid-cols-[1fr_1fr] min-[600px]:gap-4.5">
@@ -164,48 +208,68 @@ export function Dialogs() {
               Your name
               <input
                 name="name"
+                disabled={pending}
                 autoComplete="name"
                 placeholder="Alex Morgan"
                 required
+                maxLength={enquiryLimits.name}
               />
             </label>
             <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
               Email address
               <input
                 type="email"
+                disabled={pending}
                 name="email"
                 autoComplete="email"
                 placeholder="alex@yourstudio.com"
                 required
+                maxLength={enquiryLimits.email}
               />
             </label>
           </div>
           <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
             What are you thinking about?
-            <select name="service" required defaultValue="">
+            <select name="service" required defaultValue="" disabled={pending}>
               <option value="" disabled>
                 Select a starting point
               </option>
-              <option>Brand & design</option>
-              <option>Web & apps</option>
-              <option>AI ad films</option>
-              <option>A little of everything</option>
+              {enquiryServices.map((service) => (
+                <option key={service}>{service}</option>
+              ))}
             </select>
           </label>
           <label className="mb-5 flex flex-col gap-2.5 text-[11px] text-foreground">
             A little about your project
             <textarea
               name="message"
+              disabled={pending}
               rows={3}
               placeholder="The idea, the challenge, the ambition…"
               required
+              maxLength={enquiryLimits.message}
             />
           </label>
-          <p className="mb-4.25 font-mono text-[9px] leading-[1.7] font-normal tracking-normal text-muted normal-case">
+          <div className="hidden" aria-hidden="true">
+            <label>
+              Leave this empty
+              <input name="website" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+          {formError && (
+            <p role="alert" className="mb-4 text-sm leading-relaxed text-coral">
+              {formError}
+            </p>
+          )}
+          <p className="mb-4.25 text-xs leading-relaxed text-muted">
             Prepare a project brief below. Nothing is sent.
           </p>
-          <DialogActionButton type="submit">
-            Prepare project brief
+          <DialogActionButton type="submit" disabled={pending}>
+            {pending
+              ? "Preparing your brief…"
+              : formError
+                ? "Try preparing again"
+                : "Prepare project brief"}
           </DialogActionButton>
         </form>
         <div id="brief-result" hidden={!brief}>

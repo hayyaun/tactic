@@ -1,4 +1,6 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { site } from "./lib/site";
 import { StudyCard } from "./components/study-card";
 import { SectionLabel, StudioPrinciples } from "./components/studio-content";
 import { ContactButton } from "./components/dialog-buttons";
@@ -7,6 +9,12 @@ import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
 import { HeroArt } from "./components/hero-art";
 import { HeroPreview } from "./components/hero-preview";
+export const metadata: Metadata = {
+  alternates: {
+    canonical: site.url,
+    types: { "application/rss+xml": "/rss.xml" },
+  },
+};
 export default function Home() {
   return (
     <>
@@ -40,7 +48,7 @@ export default function Home() {
       </Link>
       <Header />
 
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <section
           className="hero-atmosphere relative isolate flex h-svh min-h-220 flex-col items-center overflow-hidden bg-background px-5 pt-33 pb-0 text-center min-[360px]:px-6 min-[600px]:pt-36.5 min-[960px]:pt-37.5 [@media(max-height:_740px)_and_(max-width:_700px)]:min-h-140 [@media(max-height:_740px)_and_(max-width:_700px)]:pt-26.25"
           aria-labelledby="hero-title"

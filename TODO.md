@@ -6,7 +6,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 ## Content & pages
 
 - [ ] 🔴 Finalize homepage copy, audience, and service offers.
-- [ ] 🟢 Build reusable page layouts and define content fields for the asset handoff.
+- [x] 🟢 Build reusable page layouts and define content fields for the asset handoff.
 - [ ] 🔴 Create services listing and individual service pages.
 - [ ] 🔴 Create portfolio listing and individual case studies.
 - [ ] 🔴 Create about and contact pages.
@@ -19,24 +19,27 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 ## SEO & sharing
 
 - [ ] 🔴 Add unique page titles and meta descriptions.
-- [ ] 🟡 Set production metadataBase and canonical URL templates.
+- [x] 🟡 Set production metadataBase and canonical URL templates for tacticforyou.com.
 - [ ] 🔴 Add final Open Graph/Twitter metadata and sharing images.
-- [ ] 🟢 Add robots.txt.
-- [ ] 🟢 Generate XML sitemap with published pages.
-- [ ] 🟢 Add blog RSS feed.
-- [ ] 🟢 Prepare JSON-LD templates; populate with final data when available.
+- [x] 🟢 Add robots.txt.
+- [x] 🟢 Generate XML sitemap with published pages.
+- [x] 🟢 Add blog RSS feed.
+- [x] 🟢 Prepare JSON-LD templates; populate with final data when available.
 - [ ] 🔴 Review headings, alt text, internal links, and URL structure.
 - [ ] 🔵 Google Search Console: verify domain and submit sitemap after deployment.
-- [ ] 🟢 Prevent indexing of drafts and preview deployments.
-- [ ] 🟢 Add redirects when existing URLs change.
+- [x] 🟢 Prevent indexing of drafts and preview deployments.
+- [x] 🟢 Prepare permanent-redirect configuration; no existing URLs changed.
+- [ ] 🔴 Add redirect mappings if final content changes existing URLs.
 
 ## Contact & enquiries
 
 - [ ] 🟡 Next.js Server Actions + Resend: implement enquiry delivery to your inbox.
 - [ ] 🔵 Resend: create an account and verify the sending domain.
-- [ ] 🟢 Server-side validation: validate and limit submitted fields.
-- [ ] 🟢 Spam protection: add a honeypot and server-side rate limiting.
-- [ ] 🟢 Add sending, success, error, and retry states.
+- [x] 🟢 Server-side validation: validate and limit submitted fields.
+- [x] 🟢 Spam protection: implement honeypot and server-side rate limiting.
+- [ ] 🟡 Configure and verify production Upstash Redis rate limiting; needs your account and server credentials.
+- [x] 🟢 Add pending, success, error, and retry states for brief preparation.
+- [ ] 🟡 Connect sending and sent-confirmation states after Resend setup.
 - [ ] 🟡 Add a visible backup email address once supplied.
 - [ ] 🔵 Email provider: choose the receiving inbox and configure branded email.
 - [ ] 🔵 DNS: configure SPF, DKIM, and DMARC as appropriate.
@@ -61,42 +64,42 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 - [ ] 🔴 Check mobile, tablet, and desktop layouts with final content.
 - [ ] 🔴 Check major browsers and real phones.
-- [ ] 🟢 Verify keyboard navigation, focus, dialogs, and form labels.
-- [ ] 🟢 Check contrast, text readability, and reduced motion.
+- [x] 🟢 Verify keyboard navigation, focus, dialogs, and form labels.
+- [x] 🟢 Review current contrast, text readability, and reduced motion; improve the form notice.
 - [ ] 🔴 Optimize final images, fonts, videos, and JavaScript.
 - [ ] 🔴 Lighthouse/PageSpeed Insights: check final performance and accessibility.
 - [ ] 🔵 Monitor Core Web Vitals after launch.
-- [ ] 🟢 Verify 3D loading, fallback, recovery, and mobile performance.
+- [x] 🟢 Verify 3D loading, fallback, recovery, and idle behavior in desktop/mobile browser emulation; real-phone checks remain below final-asset tasks.
 - [ ] 🔴 Check final links and browser-console errors.
 
 ## Reliability, security & privacy
 
-- [ ] 🟢 Add useful 404, error, and loading states.
-- [ ] 🟢 Keep secrets server-side.
-- [ ] 🟢 Review dependencies for security issues.
-- [ ] 🟢 Review security headers.
+- [x] 🟢 Add useful 404, error, and loading states.
+- [x] 🟢 Keep secrets server-side.
+- [x] 🟢 Review dependencies for security issues.
+- [x] 🟢 Review security headers.
 - [ ] 🔵 Supply or approve a privacy notice matching actual data collection.
 - [ ] 🟡 Publish the approved privacy notice.
 - [ ] 🔵 Decide applicable tracking consent and data-collection settings.
 - [ ] 🟡 Configure consent controls and recording masking.
 - [ ] 🔵 Define enquiry-data retention and deletion.
-- [ ] 🟢 Restrict production/debug controls as appropriate.
+- [x] 🟢 Restrict production/debug controls as appropriate.
 
 ## Deployment & verification
 
 - [ ] 🔵 Vercel or compatible hosting: choose provider and connect the Git repository.
 - [ ] 🟡 Prepare production deployment configuration.
 - [ ] 🔵 Connect domain, DNS, and HTTPS.
-- [ ] 🔵 Choose a primary domain.
+- [x] 🔵 Choose a primary domain: tacticforyou.com.
 - [ ] 🟡 Configure redirects for alternate domains.
 - [ ] 🔵 Configure production and preview environment variables and secrets.
 - [ ] 🟡 Verify support for your installed Next.js features.
-- [ ] 🟢 GitHub Actions: maintain automated deployment checks.
+- [x] 🟢 GitHub Actions: maintain automated deployment checks.
 - [ ] 🔴 Run lint, formatting, build, and Playwright tests with final content.
-- [ ] 🟢 Extend tests to cover new pages and actual form submission.
+- [x] 🟢 Extend tests for unpublished routes, content templates, and real brief-preparation requests; email delivery tests remain dependent on Resend.
 - [ ] 🔴 Test the deployed site's forms, metadata, sitemap, robots, and RSS.
 - [ ] 🟡 Verify analytics, Sentry, and uptime alerts after account setup and deployment.
-- [ ] 🟢 Document rollback and content-backup procedures.
+- [x] 🟢 Document rollback and content-backup procedures.
 - [ ] 🔵 Confirm access to rollback and backup tools.
 
 ## Audience & ongoing work
@@ -109,3 +112,5 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [ ] 🔵 Optional later: Sanity CMS, newsletter, and booking integration.
 
 Existing foundations: basic metadata, GitHub Actions, Playwright tests, and 3D fallbacks. Extend and verify these rather than rebuilding them.
+
+Implementation notes: see docs/content-handoff.md and docs/launch-operations.md. Production email sending is not enabled. Development-tool audit findings are recorded in the operations guide.

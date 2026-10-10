@@ -26,6 +26,8 @@ Fiber v9 matches React 19. Check Fiber/Drei/Three compatibility before dependenc
 
 Open `http://localhost:3000/?debug` to load Leva controls for camera framing, lighting, glass, mouse interaction, and renderer quality. The Rim folder controls the slow idle shimmer, its repeat interval, sweep duration, and strength; reduced-motion preferences disable it. Reset restores the reference defaults. Controls are not persisted; removing `debug` restores defaults and removes the panel. The normal URL does not load Leva.
 
+Production builds disable these controls unless explicitly built with `NEXT_PUBLIC_ENABLE_SCENE_DEBUG=true`. Keep that flag unset for public deployments.
+
 The loading preview uses actual scene captures in `public/studio/hero-preview-*.webp`, with desktop, portrait, and short-screen variants. `hero-preview.json` records their shared crop and orthographic capture dimensions. The preview and live camera share framing constants, so geometry scales and aligns at different viewport sizes. The preview remains visible until the first complete live frames render, and remains the fallback when WebGL is unavailable. Recapture the images when changing baseline geometry, camera, materials, or lighting; reference viewports are recorded in the metadata.
 
 ## Validation
@@ -40,7 +42,9 @@ Use `npm run format` to format authored files and sort Tailwind classes. Browser
 
 ## Content and launch requirements
 
-Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form validates locally and prepares a copyable brief; it does not send or persist personal information. Connect a real studio inbox or submission endpoint before launch.
+See `docs/content-handoff.md` for content/asset fields and `docs/launch-operations.md` for indexing, enquiry safeguards, CI, and rollback. The canonical domain is `tacticforyou.com`. Unfinished content stays unpublished.
+
+Capability boards and brand studies are studio concepts rather than client projects. The AI film board contains concept stills, not playable video. The enquiry form validates through a guarded server endpoint and prepares a copyable brief; it does not send email or persist personal information. Configure production rate limiting and connect a real studio inbox before launch.
 
 ## Browser regressions
 
@@ -48,7 +52,9 @@ Install Chromium once with `npx playwright install chromium`, then run:
 
 ```sh
 npm run build
-npm run test:e2e
+CONTACT_LOCAL_RATE_LIMIT=true npm run test:e2e -- tests/foundations.spec.ts
+NEXT_PUBLIC_ENABLE_SCENE_DEBUG=true npm run build
+NEXT_PUBLIC_ENABLE_SCENE_DEBUG=true CONTACT_LOCAL_RATE_LIMIT=true npm run test:e2e
 ```
 
 Playwright starts and stops a production server on port 3100, leaving the development server on 3000 alone. Set `PLAYWRIGHT_BASE_URL` to test an already running server, and optionally `PLAYWRIGHT_CHANNEL=msedge` to use installed Edge. CI installs Chromium with its system dependencies and runs lint, formatting, build, and the browser suite. Failed browser checks retain traces and screenshots in `test-results/`.

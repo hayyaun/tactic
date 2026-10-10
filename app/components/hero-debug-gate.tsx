@@ -19,7 +19,10 @@ export function HeroDebugGate({
   onQualityChange: (quality: RenderQuality) => void;
 }) {
   const params = useSearchParams();
-  return params.has("debug") ? (
+  const enabled =
+    process.env.NODE_ENV !== "production" ||
+    process.env.NEXT_PUBLIC_ENABLE_SCENE_DEBUG === "true";
+  return enabled && params.has("debug") ? (
     <HeroDebug
       onChange={onChange}
       telemetry={telemetry}

@@ -23,9 +23,9 @@ export function DialogActionButton({
     <button
       {...props}
       type={type}
-      className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green"
+      className="flex w-full items-center justify-between gap-5 rounded-[22px] bg-foreground p-3.75 text-[12px] font-medium text-background hover:bg-[rgb(213,231,206)] focus-visible:outline-green disabled:cursor-wait disabled:opacity-60"
     >
-      {children} <span>↗</span>
+      {children} <span aria-hidden="true">↗</span>
     </button>
   );
 }
