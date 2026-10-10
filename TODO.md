@@ -26,26 +26,27 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟢 Add blog RSS feed.
 - [x] 🟢 Prepare JSON-LD templates; populate with final data when available.
 - [ ] 🔴 Review headings, alt text, internal links, and URL structure.
-- [ ] 🔵 Google Search Console: verify domain and submit sitemap after deployment.
+- [x] 🔵 Google Search Console: verify domain, submit sitemap, and complete homepage inspection/indexing steps (confirmed by you).
 - [x] 🟢 Prevent indexing of drafts and preview deployments.
 - [x] 🟢 Prepare permanent-redirect configuration; no existing URLs changed.
 - [ ] 🔴 Add redirect mappings if final content changes existing URLs.
 
 ## Contact & enquiries
 
-- [x] 🟡 Next.js Route Handler + Resend: implement gated enquiry sending with idempotent retries; enable after domain/inbox setup.
+- [x] 🟡 Next.js Route Handler + Resend: implement gated enquiry sending with idempotent retries; enabled after domain/inbox setup (confirmed by you).
 - [x] 🔵 Resend: create an account and add the supplied DNS records (confirmed by you and the DNS export).
-- [ ] 🔵 Resend: confirm the sending domain shows Verified in the dashboard; local API status check returned HTTP 401.
+- [x] 🔵 Resend: confirm the sending domain shows Verified in the dashboard (confirmed by you).
 - [x] 🟢 Server-side validation: validate and limit submitted fields.
 - [x] 🟢 Spam protection: implement honeypot and server-side rate limiting.
-- [x] 🟡 Support Upstash/Vercel KV variables and verify writable Redis credentials; add them to Vercel before deployment.
+- [x] 🟡 Support Upstash/Vercel KV variables and verify writable Redis credentials; Vercel environment setup and redeployment confirmed by you.
 - [x] 🟢 Add pending, success, error, and retry states for brief preparation.
-- [x] 🟡 Connect and test sending, confirmed-submission, failure, and retry states; public delivery remains disabled.
+- [x] 🟡 Connect and test sending, confirmed-submission, failure, and retry states; sending enabled and contact-form issue resolved (confirmed by you).
 - [ ] 🟡 Add a visible backup email address once supplied.
-- [x] 🔵 Configure Cloudflare forwarding to Outlook and disable Resend Receiving (confirmed by you); inbox delivery still needs testing.
+- [x] 🔵 Configure Cloudflare forwarding to Outlook, disable Resend Receiving, and confirm forwarding reaches Outlook (confirmed by you).
 - [ ] 🔵 DNS: configure SPF, DKIM, and DMARC as appropriate.
-- [ ] 🟡 Test delivery, reply-to behavior, and failure handling after account setup.
-- [x] 🟡 Confirm the pre-domain Resend test reached Outlook (confirmed by you); branded sending and forwarding remain pending.
+- [x] 🟡 Test contact-form sending after account setup; issue resolved (confirmed by you).
+- [ ] 🟡 Confirm a real enquiry's Reply action addresses the visitor; failure/retry handling already passed local checks.
+- [x] 🟡 Confirm the pre-domain Resend test reached Outlook (confirmed by you).
 - [ ] 🔵 Spreadsheet or CRM: track enquiries and follow-ups.
 
 ## Analytics & monitoring
@@ -57,12 +58,14 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [ ] 🔵 Use UTM links for campaigns.
 - [x] 🔵 Sentry: create project tactic in organization hayyanhami using the wizard.
 - [x] 🟡 Integrate Sentry error tracking; repair local placeholders and verify ingestion.
-- [ ] 🔵 Sentry: choose alert recipients and confirm alert rules in the dashboard.
+- [x] 🔵 Sentry: enable email alert rules in the dashboard (confirmed by you).
+- [ ] 🟡 Verify Sentry alert delivery with a test notification or controlled event.
 - [x] 🟡 Filter personal information from error reports; disable Sentry replay/tracing and drop logs/metrics.
 - [ ] 🔵 Uptime monitor: configure downtime alerts.
 - [x] 🔵 Microsoft Clarity: supply project ID yvn7ipejec.
 - [x] 🟡 Integrate Microsoft Clarity with form masking, consent, and withdrawal support.
-- [ ] 🔵 Microsoft Clarity: review dashboard masking, retention, and access settings.
+- [x] 🔵 Microsoft Clarity: select strict masking and review dashboard access (confirmed by you).
+- [ ] 🔵 Microsoft Clarity: review provider retention settings/policy.
 
 ## Accessibility & performance
 
@@ -97,7 +100,8 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟡 Verify public HTTPS and resolve the live redirect loop: apex serves HTTP 200 and www resolves to the apex (verified 2026-10-11).
 - [x] 🔵 Choose a primary domain: tacticforyou.com.
 - [x] 🟡 Configure and locally test www.tacticforyou.com redirects to the canonical domain, preserving paths and query strings; live www-to-apex routing also verified 2026-10-11.
-- [ ] 🔵 Configure production and preview environment variables and secrets.
+- [x] 🔵 Configure production environment variables and secrets, enable contact delivery, and redeploy (confirmed by you).
+- [ ] 🔵 Review preview environment variables and secrets separately.
 - [x] 🟡 Verify installed Next.js features and Sentry compile together locally; deployed smoke checks remain below.
 - [x] 🟢 GitHub Actions: maintain automated deployment checks.
 - [ ] 🔴 Run lint, formatting, build, and Playwright tests with final content.
@@ -118,4 +122,4 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 Existing foundations: basic metadata, GitHub Actions, Playwright tests, and 3D fallbacks. Extend and verify these rather than rebuilding them.
 
-Implementation notes: see docs/content-handoff.md, docs/launch-operations.md, and docs/provider-setup.md. Local production-email configuration remains gated until domain verification and inbox forwarding work; deployed environment settings are not yet confirmed. Redis credentials, Resend/Sentry test acceptance, and the Outlook test receipt are verified. Cloudflare forwarding setup is confirmed by you; branded delivery and forwarding receipt still need testing. On 2026-10-11, the redirect loop was resolved and the homepage, robots.txt, sitemap.xml, and rss.xml returned HTTP 200; this does not complete final SEO or form validation. Development-tool audit findings are recorded in the operations guide.
+Implementation notes: see docs/content-handoff.md, docs/launch-operations.md, and docs/provider-setup.md. Updated 2026-10-11 with your confirmations: Resend domain verified, Cloudflare forwarding received in Outlook, production variables added and redeployed, delivery enabled, contact-form issue fixed, Search Console setup completed, and Sentry alerts enabled. Real-inbox reply-to and Sentry alert delivery remain unconfirmed. Redis credentials and Resend/Sentry test acceptance were verified earlier. The redirect loop was resolved and the homepage, robots.txt, sitemap.xml, and rss.xml returned HTTP 200; this does not complete final SEO or form validation. Development-tool audit findings are recorded in the operations guide.
