@@ -34,16 +34,18 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 ## Contact & enquiries
 
 - [x] 🟡 Next.js Route Handler + Resend: implement gated enquiry sending with idempotent retries; enable after domain/inbox setup.
-- [ ] 🔵 Resend: create an account and verify the sending domain.
+- [x] 🔵 Resend: create an account and add the supplied DNS records (confirmed by you and the DNS export).
+- [ ] 🔵 Resend: confirm the sending domain shows Verified in the dashboard; local API status check returned HTTP 401.
 - [x] 🟢 Server-side validation: validate and limit submitted fields.
 - [x] 🟢 Spam protection: implement honeypot and server-side rate limiting.
 - [x] 🟡 Support Upstash/Vercel KV variables and verify writable Redis credentials; add them to Vercel before deployment.
 - [x] 🟢 Add pending, success, error, and retry states for brief preparation.
 - [x] 🟡 Connect and test sending, confirmed-submission, failure, and retry states; public delivery remains disabled.
 - [ ] 🟡 Add a visible backup email address once supplied.
-- [ ] 🔵 Email provider: choose the receiving inbox and configure branded email.
+- [x] 🔵 Configure Cloudflare forwarding to Outlook and disable Resend Receiving (confirmed by you); inbox delivery still needs testing.
 - [ ] 🔵 DNS: configure SPF, DKIM, and DMARC as appropriate.
 - [ ] 🟡 Test delivery, reply-to behavior, and failure handling after account setup.
+- [x] 🟡 Confirm the pre-domain Resend test reached Outlook (confirmed by you); branded sending and forwarding remain pending.
 - [ ] 🔵 Spreadsheet or CRM: track enquiries and follow-ups.
 
 ## Analytics & monitoring
@@ -91,9 +93,10 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 - [x] 🔵 Vercel: choose provider and connect the project (confirmed by you).
 - [x] 🟡 Prepare Vercel production configuration and an environment-variable template.
-- [ ] 🔵 Connect domain, DNS, and HTTPS.
+- [x] 🔵 Buy tacticforyou.com, move DNS to Cloudflare, and add Vercel domain records (confirmed by you and the DNS export).
+- [x] 🟡 Verify public HTTPS and resolve the live redirect loop: apex serves HTTP 200 and www resolves to the apex (verified 2026-10-11).
 - [x] 🔵 Choose a primary domain: tacticforyou.com.
-- [x] 🟡 Configure and test www.tacticforyou.com redirects to the canonical domain, preserving paths and query strings.
+- [x] 🟡 Configure and locally test www.tacticforyou.com redirects to the canonical domain, preserving paths and query strings; live www-to-apex routing also verified 2026-10-11.
 - [ ] 🔵 Configure production and preview environment variables and secrets.
 - [x] 🟡 Verify installed Next.js features and Sentry compile together locally; deployed smoke checks remain below.
 - [x] 🟢 GitHub Actions: maintain automated deployment checks.
@@ -115,4 +118,4 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 Existing foundations: basic metadata, GitHub Actions, Playwright tests, and 3D fallbacks. Extend and verify these rather than rebuilding them.
 
-Implementation notes: see docs/content-handoff.md, docs/launch-operations.md, and docs/provider-setup.md. Production email sending remains disabled until domain verification and inbox forwarding work. Redis credentials and Resend/Sentry test acceptance are verified; inbox delivery, dashboard alerts, and deployed settings remain user/launch tasks. Development-tool audit findings are recorded in the operations guide.
+Implementation notes: see docs/content-handoff.md, docs/launch-operations.md, and docs/provider-setup.md. Local production-email configuration remains gated until domain verification and inbox forwarding work; deployed environment settings are not yet confirmed. Redis credentials, Resend/Sentry test acceptance, and the Outlook test receipt are verified. Cloudflare forwarding setup is confirmed by you; branded delivery and forwarding receipt still need testing. On 2026-10-11, the redirect loop was resolved and the homepage, robots.txt, sitemap.xml, and rss.xml returned HTTP 200; this does not complete final SEO or form validation. Development-tool audit findings are recorded in the operations guide.

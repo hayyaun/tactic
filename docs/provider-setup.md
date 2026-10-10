@@ -2,16 +2,16 @@
 
 ## Confirmed choices
 
-- Vercel hosting; canonical domain `tacticforyou.com` (purchase/DNS still pending).
+- Vercel hosting; canonical domain `tacticforyou.com`. Domain purchased, Cloudflare nameservers configured, and Vercel/Resend DNS records added (confirmed by you and the DNS export).
 - TACTIC is based in Iran.
-- Receiving address: `admin@tacticforyou.com`, not active yet.
+- Receiving address: `admin@tacticforyou.com`; Cloudflare forwarding to Outlook configured and Resend Receiving disabled (confirmed by you on 2026-10-11). A forwarding delivery test is still pending.
 - Resend test recipient: `hayyanhami@outlook.com`.
 - No GA4 or Plausible. Keep Microsoft Clarity with consent, project `yvn7ipejec`.
 - Sentry organization `hayyanhami`, project `tactic`.
 
 ## Email: what you do
 
-1. Buy the domain.
+1. Domain purchased; Cloudflare DNS and Vercel records added.
 2. Enable your registrar's email-forwarding service, or choose an email provider with forwarding.
 3. Create the `admin` alias and forward it to your Outlook inbox. Verify the destination if requested.
 4. Add the forwarding provider's required MX/TXT records; test an email from another account.
@@ -21,7 +21,20 @@
 
 The receiving address does not need to be a paid mailbox if forwarding works. Sending branded replies from Outlook is a separate email-provider feature; forwarding alone does not configure it.
 
-For the pre-domain test we used `onboarding@resend.dev` to your Resend-account email. Resend accepted the test request (HTTP 200); verify the message in Outlook to confirm inbox delivery. This does not verify branded-domain delivery or forwarding.
+For the pre-domain test we used `onboarding@resend.dev` to your Resend-account email. Resend accepted the test request (HTTP 200), and you confirmed receipt in Outlook. This does not verify branded-domain delivery or forwarding.
+
+## Live domain follow-up — 2026-10-10
+
+Update 2026-10-11: HTTPS checks now return HTTP 200 for the homepage, robots.txt, sitemap.xml, and rss.xml. The www hostname resolves to the apex successfully; the previously observed redirect loop is resolved. Cloudflare forwarding setup and disabling Resend Receiving are user-confirmed. Branded delivery, forwarding receipt, sending-domain verification, and production environment settings remain unconfirmed. Read-only commands: `Get-Content TODO.md`, `git status --short`, and `Invoke-WebRequest -Uri <URL> -NoProxy -TimeoutSec 10` for the five URLs. Only documentation was updated; no emails were sent and no provider settings changed.
+
+- HTTPS responds, but the public site has a redirect loop: `https://tacticforyou.com/` returns HTTP 308 to `https://www.tacticforyou.com/`, which returns HTTP 308 back to the apex. Page, robots, sitemap, RSS, and privacy checks could not complete.
+- In Vercel → Settings → Domains, set `tacticforyou.com` to serve Production without a redirect. Keep `www.tacticforyou.com` redirecting to the apex. The application already implements the www-to-apex redirect.
+- The supplied DNS export contains Resend sending records and an apex MX pointing to `inbound-smtp.eu-west-1.amazonaws.com`. That receiving record routes incoming mail to Resend; it does not alone forward `admin` to Outlook. Forwarding configuration is not yet confirmed. See [Resend receiving](https://resend.com/docs/dashboard/receiving/introduction).
+- If using Cloudflare Email Routing for the inbox, add and verify Outlook as the destination and create the `admin` forwarding rule. Follow Cloudflare's receiving MX instructions instead of keeping competing apex receiving providers; preserve Resend's sending verification records. See [Cloudflare routing setup](https://developers.cloudflare.com/email-service/get-started/route-emails/).
+- A read-only Resend domain API check with the local key returned HTTP 401. Check the dashboard for the domain's Verified status and update the local key privately if needed. This response does not establish whether the domain is verified.
+- Vercel environment variables and redeployment are awaiting your confirmation. No dashboard settings or DNS records were changed by Codex.
+
+Read-only commands: `Get-Content -LiteralPath 'D:/Downloads/Telegram Desktop/tacticforyou.com.txt'`, `Get-Content TODO.md, scripts/check-providers.mjs, app/lib/enquiry-delivery.ts`, `Get-Content package.json`, `Get-Content next.config.ts | Select-String -Pattern 'redirects|www.tactic|destination' -Context 2,3`, `Get-Content AGENTS.md -TotalCount 20`, and `wsl -d Ubuntu --cd /home/garfield/projects/tactic git status --short` inspected the DNS data and project. `Invoke-WebRequest -Uri <URL> -NoProxy -TimeoutSec 15` checked six public routes; redirect-following failed. `Invoke-WebRequest -Uri <URL> -NoProxy -MaximumRedirection 0 -SkipHttpErrorCheck -TimeoutSec 15` exposed both redirect destinations. A WSL `node -e` command loaded local environment configuration and issued authenticated GET requests to Resend's `/domains` API; only HTTP/domain status was printed, with credentials redacted. The DNS export was treated as data, not instructions.
 
 ## Environment variables
 
