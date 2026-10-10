@@ -10,7 +10,10 @@ const image = {
   alt: "",
   width: preview.width,
   height: preview.height,
-  unoptimized: true,
+  // Match the desktop art's width/height constraints, including the hero's
+  // 880px minimum height and 320px scene offset. Round up to avoid undersizing.
+  sizes:
+    "(min-width: 960px) min(93vw, calc(max(100svh, 880px) * 1.21 - 387px)), 100vw",
   loading: "eager" as const,
   fetchPriority: "high" as const,
 };
@@ -42,9 +45,14 @@ export function HeroPreview() {
       <picture>
         <source
           media="(max-height: 740px) and (max-width: 700px)"
-          srcSet={compact.src}
+          srcSet={compact.srcSet}
+          sizes={compact.sizes}
         />
-        <source media="(min-width: 960px)" srcSet={wide.src} />
+        <source
+          media="(min-width: 960px)"
+          srcSet={wide.srcSet}
+          sizes={wide.sizes}
+        />
         <img
           {...portrait}
           alt=""

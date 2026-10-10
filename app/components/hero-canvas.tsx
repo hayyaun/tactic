@@ -927,8 +927,42 @@ function RestorableScene(
         contextVersion={contextVersion}
       />
       <Sculpture {...props} contextVersion={contextVersion} />
+      <SceneWarmup key={contextVersion} active={props.active} />
     </Suspense>
   );
+}
+
+// Keep the preview visible while the driver compiles the scene's programs.
+// compileAsync polls parallel compilation instead of forcing a synchronous
+// shader-info query on the first visible frame.
+function SceneWarmup({ active }: { active: boolean }) {
+  const get = useThree((state) => state.get);
+  const setFrameloop = useThree((state) => state.setFrameloop);
+  const invalidate = useThree((state) => state.invalidate);
+  const [compiled, setCompiled] = useState(false);
+  const [failure, setFailure] = useState<Error | null>(null);
+  useLayoutEffect(() => {
+    setFrameloop(compiled && active ? "demand" : "never");
+    if (compiled && active) invalidate();
+  }, [compiled, active, setFrameloop, invalidate]);
+  useEffect(() => {
+    let cancelled = false;
+    const { gl, scene, camera } = get();
+    gl.compileAsync(scene, camera).then(
+      () => {
+        if (!cancelled) setCompiled(true);
+      },
+      () => {
+        if (!cancelled)
+          setFailure(new Error("Scene shader compilation failed"));
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [get]);
+  if (failure) throw failure;
+  return null;
 }
 
 function FrameTelemetry({ telemetry }: { telemetry: SceneTelemetry }) {
@@ -989,7 +1023,7 @@ export default function HeroCanvas(props: SceneProps) {
         if (source.current) state.events.connect?.(source.current);
       }}
       className="absolute inset-0 size-full"
-      frameloop={props.active ? "demand" : "never"}
+      frameloop="never"
       dpr={[1, props.settings.dprLimit]}
       gl={{
         antialias: true,
