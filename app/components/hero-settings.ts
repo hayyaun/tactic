@@ -29,7 +29,7 @@ export const DEFAULT_SCENE_SETTINGS = {
   redTint: "#ff0000",
   contours: true,
   rimShimmer: true,
-  rimShimmerInterval: 7,
+  rimShimmerInterval: 15,
   rimShimmerDuration: 7.5,
   rimShimmerStrength: 1.95,
   parallax: true,

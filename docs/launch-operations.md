@@ -74,3 +74,91 @@ After account setup and final content, verify domain/HTTPS and domain redirects;
 - `git diff --check` checks patch whitespace. Only local source/documentation changed; no deployment, DNS, provider settings, or emails were triggered. A fresh deployed PageSpeed run is still needed to quantify the result; remaining rendering stalls are not claimed resolved.
 
 Final verification: the rebuilt desktop page selected width 828 for an approximately 820px image; its optimized response was 25,526 bytes versus the original 167,506 bytes (about 85% smaller). Mobile selected width 640; both pages had no JavaScript errors. The refined-size build and lint passed. Temporary production servers and the loopback proxy were stopped with Ctrl+C; the user's existing development server was preserved.
+
+## Hero blocking follow-up — 2026-10-11
+
+The follow-up PageSpeed report still scored 60, with 30,550ms TBT and 33.5 seconds of main-thread work. The image warning disappeared; CSS offered only 50ms savings. The first warmup did not resolve the dominant rendering work.
+
+### Result and rendering behavior
+
+- Check WebGL2 with `failIfMajorPerformanceCaveat` before importing Three. Known software renderers (SwiftShader, llvmpipe, softpipe, lavapipe, software rasterizer) keep the existing static preview. This is a device-capability decision for every visitor, without user-agent or audit detection. If renderer information is unavailable, existing frame-rate adaptation remains the fallback.
+- Hardware rendering uses the original 256-resolution studio lighting, prepared offline as a 768×1024 cubeUV half-float atlas. Lossless spatial/channel prediction and gzip reduce its download to 383,057 bytes. The loader validates its dimensions, encoding, and Three revision; loading/decoding failures use the preview. Each canvas owns its GPU texture, while cached CPU pixels survive context restoration.
+- Warm the main shader programs and r186's linear-target, BackSide, untone-mapped glass-pass variants before drawing. Temporary renderer/material state is restored synchronously before awaiting completion. Production skips shader diagnostic queries; development diagnostics and shader-adapter anchor validation remain enabled.
+- Shimmer keeps its 7.5-second sweep but repeats every 15 seconds. It sleeps with a timeout during the quiet period and stops when offscreen or hidden. Reduced motion stays static.
+
+### Measurements and limits
+
+The earlier `--enable-unsafe-swiftshader` launch still selected Intel UHD 620 hardware. Forced software rendering also requires `--use-angle=swiftshader`.
+
+Sequential 20-second local production profiles used the same desktop viewport, JavaScript sampler, WebGL timing probe, and long-task observer. Summing each observed task's excess above 50ms gave 7,260ms before and 1,100ms after on forced SwiftShader (about 85% less). Software visits downloaded no hero 3D bundle/model/environment and issued no scene draw calls. Intel hardware profiles gave 1,533ms before and 390ms after (about 75% less); the longest task fell from 817ms to 192ms. These are local observer measurements, not Lighthouse TBT or a predicted PageSpeed score. Probe/context creation and some texture-upload work still remain. Hardware and network differences can change results.
+
+Desktop 1440×1000 and mobile 390×844 reduced-motion captures before/after prepared lighting and final shader warmup had zero changed pixels. All 11 final browser checks passed in 53.2 seconds: loading preview, software/unsupported/caveat fallback, environment failure, context restoration idle/offscreen, mobile/desktop backdrop dimensions, reduced motion, shader anchors, and default shimmer quiet periods. A final production build and lint passed. Deployment and a fresh public PageSpeed run remain unverified.
+
+### Commands and state changes
+
+Commands below ran from the repository; `node` denotes the bundled Windows runtime at `C:/Users/Hayyaun/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe` for browser/bake scripts. Linux npm commands used `wsl -d Ubuntu --cd /home/garfield/projects/tactic`.
+
+```powershell
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git status --short
+Get-Content package.json, next.config.ts, AGENTS.md
+Get-Content app/components/hero-canvas.tsx
+Get-Content app/components/hero-art.tsx, app/components/hero-performance.ts, app/components/hero-settings.ts
+rg --files tests scripts docs
+rg --files node_modules/next/dist/docs | rg 'lazy-loading|production-checklist|server-and-client|caching|cache-components'
+Get-Content node_modules/next/dist/docs/01-app/02-guides/lazy-loading.md
+Get-Content node_modules/next/dist/docs/01-app/02-guides/production-checklist.md
+Get-Content playwright.config.ts
+Get-Content tests/scene.spec.ts
+Get-Content tests/rim-animation.spec.ts
+Get-Content app/components/hero-debug-gate.tsx
+Get-Content app/components/hero-webgl.ts
+Get-Content app/components/hero-shader-warmup.ts
+Get-Content app/components/studio-environment.ts
+Get-Content eslint.config.mjs
+Get-Content scripts/bake-studio-environment.mjs
+Get-Content public/studio/studio-environment-r186.json
+Get-Content docs/launch-operations.md
+Get-Content TODO.md
+rg -n 'compileAsync|KHR_parallel_shader_compile|renderTransmissionPass' node_modules/three/src/renderers/WebGLRenderer.js
+Get-Content node_modules/three/src/renderers/WebGLRenderer.js
+Get-Content node_modules/three/src/renderers/webgl/WebGLPrograms.js
+Get-Content node_modules/three/src/renderers/webgl/WebGLProgram.js
+Get-Content node_modules/three/src/extras/PMREMGenerator.js
+Get-Content node_modules/three/src/renderers/webgl/WebGLEnvironments.js
+Get-Content node_modules/three/src/textures/DataTexture.js
+rg -n 'StudioEnvironment|failIfMajor|wake =|checkShader' app/components/hero-canvas.tsx app/components/hero-webgl.ts
+Get-Command npm.cmd -ErrorAction SilentlyContinue | Select-Object Source
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff --stat
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff -- app/components/hero-canvas.tsx app/components/studio-environment.ts app/components/hero-art.tsx app/components/hero-webgl.ts
+```
+
+Read-only inspection checked installed Next/Fiber/Three guidance, dependencies, renderer internals, and tests. Some reads selected relevant line windows with `Select-Object -Skip/-First/-Last`; `rg` located matching definitions. Initial guesses for `tests/helpers.ts`, `tests/scene-probe.ts`, and obsolete Three source filenames were absent; correct files were subsequently located. No Windows `npm.cmd` was available. Official Fiber introduction/installation/scaling and Three renderer/PMREM/DataTexture documentation were also read.
+
+```powershell
+node C:/Users/Hayyaun/AppData/Local/Temp/tactic-gpu-admission.cjs
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run start -- --port 3100
+node C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs
+node C:/Users/Hayyaun/AppData/Local/Temp/tactic-profile.cjs http://127.0.0.1:3101
+node C:/Users/Hayyaun/AppData/Local/Temp/tactic-profile-software.cjs http://127.0.0.1:3101
+node C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-verify.cjs
+Copy-Item -LiteralPath $env:TEMP/tactic-perf-1440.png -Destination $env:TEMP/tactic-perf-before-1440.png
+Copy-Item -LiteralPath $env:TEMP/tactic-perf-390.png -Destination $env:TEMP/tactic-perf-before-390.png
+node scripts/bake-studio-environment.mjs
+node --check scripts/bake-studio-environment.mjs
+node node_modules/prettier/bin/prettier.cjs scripts/bake-studio-environment.mjs --write
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npx prettier --write app/components/hero-webgl.ts app/components/hero-art.tsx app/components/hero-settings.ts app/components/hero-canvas.tsx app/components/studio-environment.ts
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npx prettier --write app/components/hero-shader-warmup.ts
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npx prettier --write TODO.md docs/launch-operations.md
+wsl -d Ubuntu --cd /home/garfield/projects/tactic node node_modules/prettier/bin/prettier.cjs --write tests/scene.spec.ts tests/rim-animation.spec.ts
+wsl -d Ubuntu --cd /home/garfield/projects/tactic node node_modules/eslint/bin/eslint.js tests/scene.spec.ts tests/rim-animation.spec.ts
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run lint
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run build
+$env:PLAYWRIGHT_BASE_URL = 'http://127.0.0.1:3101'
+$env:PLAYWRIGHT_CHANNEL = 'msedge'
+node node_modules/@playwright/test/cli.js test tests/scene.spec.ts tests/rim-animation.spec.ts -g 'shader adapter|loading preview|WebGL restores|unsupported WebGL|software WebGL|major WebGL|studio environment|one loaded backdrop|reduced motion keeps|default rim'
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff --check
+```
+
+The profiling script was copied to a temporary software version by replacing its launch flags with `--use-angle=swiftshader --enable-unsafe-swiftshader` via `Get-Content -Raw`, `.Replace`, and `Set-Content`. Temporary Node comparison snippets measured compression alternatives; only the final 256-resolution lossless atlas is included. The first bake's favicon 404, initial CommonJS lint errors, and test mock's TypeScript overload error were corrected before final validation. The first all-main-program warmup still left a transmission query stall; the final variant warmup removed it in the local profile.
+
+State changes: `apply_patch` edited local components, tests, TODO, and these notes; Prettier formatted them; the bake wrote local lighting assets; builds regenerated `.next`. Temporary production servers, test browser processes, and a loopback proxy were launched for validation and stopped afterward. No dependencies were upgraded, and no live deployment, provider settings, DNS, email, or environment secrets were changed.

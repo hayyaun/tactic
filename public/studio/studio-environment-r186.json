@@ -1,0 +1,109 @@
+{
+  "generator": "scripts/bake-studio-environment.mjs",
+  "settings": {
+    "threeRevision": 186,
+    "background": "#0c0e0d",
+    "size": 256,
+    "sigma": 0.09,
+    "near": 0.1,
+    "far": 100,
+    "capturePosition": [
+      0,
+      3.3,
+      0
+    ],
+    "panels": [
+      {
+        "position": [
+          -7,
+          3,
+          0
+        ],
+        "target": [
+          0,
+          3,
+          0
+        ],
+        "width": 18,
+        "height": 20,
+        "kind": 0
+      },
+      {
+        "position": [
+          7,
+          3,
+          0
+        ],
+        "target": [
+          0,
+          3,
+          0
+        ],
+        "width": 18,
+        "height": 20,
+        "kind": 1
+      },
+      {
+        "position": [
+          0,
+          13,
+          0
+        ],
+        "target": [
+          0,
+          3.3,
+          0
+        ],
+        "width": 14,
+        "height": 18,
+        "kind": 2
+      },
+      {
+        "position": [
+          0,
+          3,
+          9
+        ],
+        "target": [
+          0,
+          3,
+          0
+        ],
+        "width": 14,
+        "height": 20,
+        "kind": 3
+      }
+    ]
+  },
+  "atlas": {
+    "width": 768,
+    "height": 1024,
+    "mapping": "CubeUVReflectionMapping",
+    "format": "RGBAFormat",
+    "type": "HalfFloatType",
+    "colorSpace": "LinearSRGBColorSpace",
+    "minFilter": "LinearFilter",
+    "magFilter": "LinearFilter",
+    "generateMipmaps": false,
+    "flipY": false,
+    "rowOrder": "bottom-to-top (WebGL readback y=0 first)",
+    "channels": "RGBA IEEE 754 binary16, little-endian"
+  },
+  "binary": {
+    "file": "studio-environment-r186.bin.gz",
+    "compression": "gzip, level 9",
+    "headerBytes": 16,
+    "header": "TPMG (4 ASCII bytes), uint32 LE revision, width, height",
+    "payload": "Channel-major uint16 LE planes: R, (G-R) mod65536, (B-R) mod65536, A. Each plane stores (value-left-up+upperLeft) mod65536; outside-row/column neighbors are zero. Decode planes first, then restore G/B with R. All operations use binary16 bits without quantization.",
+    "uncompressedBytes": 6291472,
+    "compressedBytes": 383057,
+    "sha256": "971899328b5b88ac6d1cc3bc705e7bdfb6de00df261cf9710b00cae009b44f8f",
+    "decodedPixelsSha256": "5b40ba3c9c2cc8cd7d1717b5fce3ef55fefa7c8ee10d0f6532a82d13339f2162"
+  },
+  "channelRange": {
+    "minimum": 0,
+    "maximum": 5.29296875,
+    "nonzeroChannels": 1501276
+  },
+  "browser": "155.0.4283.45"
+}

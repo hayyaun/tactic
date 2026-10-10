@@ -19,6 +19,7 @@ import {
 } from "./hero-performance";
 import { HeroDebugGate } from "./hero-debug-gate";
 import { DEFAULT_SCENE_SETTINGS, type SceneSettings } from "./hero-settings";
+import { canRenderHero } from "./hero-webgl";
 const HeroCanvas = dynamic(() => import("./hero-canvas"), { ssr: false });
 function subscribeMotion(callback: () => void) {
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -32,10 +33,7 @@ function subscribeVisibility(callback: () => void) {
 let webGLAvailable: boolean | undefined;
 function subscribeWebGL(callback: () => void) {
   if (webGLAvailable === undefined) {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("webgl2");
-    webGLAvailable = !!context;
-    context?.getExtension("WEBGL_lose_context")?.loseContext();
+    webGLAvailable = canRenderHero();
   }
   callback();
   return () => {};

@@ -5,6 +5,7 @@ import {
   createPortal,
   events as createPointerEvents,
   useFrame,
+  useLoader,
   useThree,
   type ThreeEvent,
 } from "@react-three/fiber";
@@ -52,6 +53,12 @@ import type { SceneTelemetry } from "./hero-performance";
 import { BACKGROUND_URL } from "./hero-background";
 import { adaptBoxProjectedShader } from "./box-projected-shader";
 import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
+import { warmHeroShaders } from "./hero-shader-warmup";
+import {
+  createStudioEnvironment,
+  STUDIO_ENVIRONMENT_URL,
+  StudioEnvironmentLoader,
+} from "./studio-environment";
 
 type SceneProps = {
   backgroundURL: string;
@@ -140,7 +147,7 @@ function StudioPanel({
   );
 }
 
-function StudioEnvironment({
+function LiveStudioEnvironment({
   blur,
   intensity,
   contextVersion,
@@ -217,6 +224,46 @@ function StudioEnvironment({
       </group>
     </>,
     room,
+  );
+}
+
+function BakedStudioEnvironment({
+  intensity,
+  contextVersion,
+}: {
+  intensity: number;
+  contextVersion: number;
+}) {
+  const pixels = useLoader(StudioEnvironmentLoader, STUDIO_ENVIRONMENT_URL);
+  const texture = useMemo(() => createStudioEnvironment(pixels), [pixels]);
+  const get = useThree((state) => state.get);
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => () => texture.dispose(), [texture]);
+  useLayoutEffect(() => {
+    const scene = get().scene;
+    const previous = scene.environment;
+    const previousIntensity = scene.environmentIntensity;
+    scene.environment = texture;
+    scene.environmentIntensity = intensity;
+    invalidate();
+    return () => {
+      if (scene.environment === texture) scene.environment = previous;
+      scene.environmentIntensity = previousIntensity;
+    };
+  }, [get, intensity, texture, invalidate, contextVersion]);
+  return null;
+}
+
+function StudioEnvironment(props: {
+  blur: number;
+  intensity: number;
+  contextVersion: number;
+}) {
+  // Preserve the lighting editor; ordinary visits use the exact prefiltered map.
+  return props.blur === 0.09 ? (
+    <BakedStudioEnvironment {...props} />
+  ) : (
+    <LiveStudioEnvironment {...props} />
   );
 }
 
@@ -716,6 +763,7 @@ function Sculpture({
     let previous = performance.now();
     let wasSweeping = false;
     let timer = 0;
+    let wake = 0;
     const tick = () => {
       const now = performance.now();
       shimmerTime.current += (now - previous) / 1000;
@@ -726,12 +774,22 @@ function Sculpture({
       telemetry.setAnimating(sweeping);
       if (sweeping || wasSweeping) invalidate();
       wasSweeping = sweeping;
-      timer = window.requestAnimationFrame(tick);
+      if (sweeping) {
+        timer = window.requestAnimationFrame(tick);
+      } else {
+        // Sleep through the quiet interval rather than polling every frame.
+        const phase = shimmerTime.current % settings.rimShimmerInterval;
+        wake = window.setTimeout(
+          tick,
+          Math.max(1, (settings.rimShimmerInterval - phase) * 1000),
+        );
+      }
     };
     timer = window.requestAnimationFrame(tick);
     invalidate();
     return () => {
       window.cancelAnimationFrame(timer);
+      window.clearTimeout(wake);
       telemetry.setAnimating(false);
     };
   }, [
@@ -909,7 +967,7 @@ function RestorableScene(
       event.preventDefault();
       onContextLost();
     };
-    // Three restores its renderer first; the next commit rebakes the environment
+    // Three restores its renderer first; the next commit reuploads the environment
     // and schedules frames before Sculpture reveals the recovered scene.
     const restored = () => setContextVersion((version) => version + 1);
     canvas.addEventListener("webglcontextlost", lost);
@@ -933,8 +991,8 @@ function RestorableScene(
 }
 
 // Keep the preview visible while the driver compiles the scene's programs.
-// compileAsync polls parallel compilation instead of forcing a synchronous
-// shader-info query on the first visible frame.
+// Prepare both main and transmission programs before allowing the first draw.
+// Software renderers use the preview before this component loads.
 function SceneWarmup({ active }: { active: boolean }) {
   const get = useThree((state) => state.get);
   const setFrameloop = useThree((state) => state.setFrameloop);
@@ -948,7 +1006,7 @@ function SceneWarmup({ active }: { active: boolean }) {
   useEffect(() => {
     let cancelled = false;
     const { gl, scene, camera } = get();
-    gl.compileAsync(scene, camera).then(
+    warmHeroShaders(gl, scene, camera, () => cancelled).then(
       () => {
         if (!cancelled) setCompiled(true);
       },
@@ -1019,6 +1077,8 @@ export default function HeroCanvas(props: SceneProps) {
       eventSource={source}
       events={events}
       onCreated={(state) => {
+        state.gl.debug.checkShaderErrors =
+          process.env.NODE_ENV !== "production";
         source.current = state.gl.domElement.closest("section");
         if (source.current) state.events.connect?.(source.current);
       }}
@@ -1029,6 +1089,7 @@ export default function HeroCanvas(props: SceneProps) {
         antialias: true,
         alpha: false,
         powerPreference: "high-performance",
+        failIfMajorPerformanceCaveat: true,
         toneMapping: NeutralToneMapping,
         toneMappingExposure: props.settings.exposure,
         transmissionResolutionScale: props.settings.transmissionResolution,

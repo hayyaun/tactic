@@ -132,6 +132,118 @@ test("unsupported WebGL keeps the preview", async ({ page }) => {
   await expect(stage.locator("img").first()).toBeVisible();
 });
 
+test("software WebGL keeps the preview without downloading the 3D scene", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  const sceneAssets: string[] = [];
+  const sceneBundles: string[] = [];
+  const inspectedBundles: Promise<void>[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("request", (request) => {
+    if (/tactic-mark\.glb|studio-environment-r186\.bin\.gz/.test(request.url()))
+      sceneAssets.push(request.url());
+  });
+  page.on("response", (response) => {
+    if (!/\/_next\/static\/chunks\/.*\.js(?:\?|$)/.test(response.url())) return;
+    inspectedBundles.push(
+      response.text().then((source) => {
+        // Use an existing scene shader marker rather than a build-specific hash.
+        if (source.includes("transmission-r186-safe-rays"))
+          sceneBundles.push(response.url());
+      }),
+    );
+  });
+  await page.addInitScript(() => {
+    const getExtension = WebGL2RenderingContext.prototype.getExtension;
+    Object.defineProperty(WebGL2RenderingContext.prototype, "getExtension", {
+      value: function (this: WebGL2RenderingContext, name: string) {
+        if (name === "WEBGL_debug_renderer_info")
+          return {
+            UNMASKED_VENDOR_WEBGL: 0x9245,
+            UNMASKED_RENDERER_WEBGL: 0x9246,
+          };
+        return Reflect.apply(getExtension, this, [name]);
+      },
+    });
+    const getParameter = WebGL2RenderingContext.prototype.getParameter;
+    WebGL2RenderingContext.prototype.getParameter = function (name: number) {
+      if (name === 0x9246)
+        return "ANGLE (Google, SwiftShader Device (Subzero), SwiftShader driver)";
+      return getParameter.call(this, name);
+    };
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "false");
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await expect(stage.locator("img").first()).toBeVisible();
+  await Promise.all(inspectedBundles);
+  expect(sceneAssets).toEqual([]);
+  expect(sceneBundles).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test("a major WebGL performance caveat keeps the preview", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  await page.addInitScript(() => {
+    const probe = { refused: 0 };
+    Object.assign(window, { caveatProbe: probe });
+    const original = HTMLCanvasElement.prototype.getContext;
+    Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
+      value: function (
+        this: HTMLCanvasElement,
+        ...args: Parameters<typeof original>
+      ) {
+        const options = args[1] as WebGLContextAttributes | undefined;
+        if (args[0] === "webgl2" && options?.failIfMajorPerformanceCaveat) {
+          probe.refused++;
+          return null;
+        }
+        return Reflect.apply(original, this, args);
+      },
+    });
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "false");
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await expect(stage.locator("img").first()).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as unknown as { caveatProbe: { refused: number } }).caveatProbe
+          .refused,
+    ),
+  ).toBeGreaterThan(0);
+  expect(errors).toEqual([]);
+});
+
+test("an unavailable studio environment keeps the preview", async ({
+  page,
+}) => {
+  const fallback = page.waitForEvent("console", {
+    predicate: (message) =>
+      message.text().includes("TACTIC 3D scene unavailable"),
+  });
+  await page.route("**/studio-environment-r186.bin.gz", (route) =>
+    route.fulfill({ status: 503, body: "Environment temporarily unavailable" }),
+  );
+  await page.goto("/");
+  await fallback;
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await expect(stage).toHaveAttribute("data-ready", "false");
+  await expect(stage.locator("img").first()).toBeVisible();
+});
+
 test("one loaded backdrop covers the entire hero on mobile and desktop", async ({
   page,
 }) => {

@@ -75,6 +75,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟢 Review current contrast, text readability, and reduced motion; improve the form notice.
 - [ ] 🔴 Optimize final images, fonts, videos, and JavaScript.
 - [x] 🟢 Profile the current hero, add asynchronous shader warmup, and serve responsive preview images; production-compatible scene checks passed.
+- [x] 🟢 Avoid 3D startup on software renderers, use prepared lighting, warm glass-pass shaders, and give shimmer actual idle periods; local blocking measurements improved. Recheck deployed PageSpeed after release.
 - [ ] 🔴 Lighthouse/PageSpeed Insights: check final performance and accessibility.
 - [ ] 🔵 Monitor Core Web Vitals after launch.
 - [x] 🟢 Verify 3D loading, fallback, recovery, and idle behavior in desktop/mobile browser emulation; real-phone checks remain below final-asset tasks.

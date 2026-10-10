@@ -120,6 +120,38 @@ test("reduced motion keeps the rim static and the renderer idle", async ({
   expect(errors).toEqual([]);
 });
 
+test("the default rim animation rests between sweeps", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const errors = await observeScene(page);
+  await page.goto("/");
+  const stage = page.locator("[data-hero-art]");
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  const initialDraws = await drawCount(page);
+  await expect.poll(() => drawCount(page)).toBeGreaterThan(initialDraws);
+  // Measure within the browser so screenshots and host latency cannot turn a
+  // genuinely quiet interval into a sample spanning the next animation pass.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const probe = (window as unknown as { rimProbe: { draws: number } })
+            .rimProbe;
+          const before = probe.draws;
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+          return probe.draws === before;
+        }),
+      { timeout: 20_000 },
+    )
+    .toBe(true);
+  const gapDraws = await drawCount(page);
+  await expect.poll(() => drawCount(page)).toBeGreaterThan(gapDraws);
+  // Falling back to a static preview would also stop draws, so verify that the
+  // original live scene survived the quiet interval and resumed on its timer.
+  await expect(stage).toHaveAttribute("data-ready", "true");
+  await expect(stage.locator("canvas")).toHaveCount(1);
+  expect(errors).toEqual([]);
+});
+
 test("both rims fade to zero through the handoff", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
