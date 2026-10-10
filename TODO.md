@@ -1,7 +1,7 @@
 # TACTIC launch checklist
 
-Legend: 🟢 Codex can implement · 🔵 Needs your action · 🔴 Finish after assets and data arrive.
-Checkboxes track completion; green indicates ownership, not completed work.
+Legend: 🟢 Codex can complete independently · 🟡 Codex implements; needs your setup, decisions, or access · 🔵 Needs your action · 🔴 Finish after assets and data arrive.
+Checkboxes track completion; colors indicate responsibility and dependencies, not completed work.
 
 ## Content & pages
 
@@ -19,7 +19,7 @@ Checkboxes track completion; green indicates ownership, not completed work.
 ## SEO & sharing
 
 - [ ] 🔴 Add unique page titles and meta descriptions.
-- [ ] 🟢 Set production metadataBase and canonical URL templates.
+- [ ] 🟡 Set production metadataBase and canonical URL templates.
 - [ ] 🔴 Add final Open Graph/Twitter metadata and sharing images.
 - [ ] 🟢 Add robots.txt.
 - [ ] 🟢 Generate XML sitemap with published pages.
@@ -32,30 +32,30 @@ Checkboxes track completion; green indicates ownership, not completed work.
 
 ## Contact & enquiries
 
-- [ ] 🟢 Next.js Server Actions + Resend: implement enquiry delivery to your inbox.
+- [ ] 🟡 Next.js Server Actions + Resend: implement enquiry delivery to your inbox.
 - [ ] 🔵 Resend: create an account and verify the sending domain.
 - [ ] 🟢 Server-side validation: validate and limit submitted fields.
 - [ ] 🟢 Spam protection: add a honeypot and server-side rate limiting.
 - [ ] 🟢 Add sending, success, error, and retry states.
-- [ ] 🟢 Add a visible backup email address once supplied.
+- [ ] 🟡 Add a visible backup email address once supplied.
 - [ ] 🔵 Email provider: choose the receiving inbox and configure branded email.
 - [ ] 🔵 DNS: configure SPF, DKIM, and DMARC as appropriate.
-- [ ] 🟢 Test delivery, reply-to behavior, and failure handling after account setup.
+- [ ] 🟡 Test delivery, reply-to behavior, and failure handling after account setup.
 - [ ] 🔵 Spreadsheet or CRM: track enquiries and follow-ups.
 
 ## Analytics & monitoring
 
 - [ ] 🔵 Plausible or Google Analytics 4: choose one and create the site/property.
-- [ ] 🟢 Install the chosen analytics integration.
-- [ ] 🟢 Track successful enquiries and important CTA interactions.
-- [ ] 🟢 Exclude your own/test traffic where practical.
+- [ ] 🟡 Install the chosen analytics integration.
+- [ ] 🟡 Track successful enquiries and important CTA interactions.
+- [ ] 🟡 Exclude your own/test traffic where practical.
 - [ ] 🔵 Use UTM links for campaigns.
 - [ ] 🔵 Sentry: create a project and choose alert recipients.
-- [ ] 🟢 Integrate Sentry error tracking and configure alerts.
-- [ ] 🟢 Filter personal information from analytics and error reports.
+- [ ] 🟡 Integrate Sentry error tracking and configure alerts.
+- [ ] 🟡 Filter personal information from analytics and error reports.
 - [ ] 🔵 Uptime monitor: configure downtime alerts.
 - [ ] 🔵 Optional: Microsoft Clarity account for heatmaps and recordings.
-- [ ] 🟢 Optional: integrate Microsoft Clarity with masking and consent support.
+- [ ] 🟡 Optional: integrate Microsoft Clarity with masking and consent support.
 
 ## Accessibility & performance
 
@@ -76,26 +76,26 @@ Checkboxes track completion; green indicates ownership, not completed work.
 - [ ] 🟢 Review dependencies for security issues.
 - [ ] 🟢 Review security headers.
 - [ ] 🔵 Supply or approve a privacy notice matching actual data collection.
-- [ ] 🟢 Publish the approved privacy notice.
+- [ ] 🟡 Publish the approved privacy notice.
 - [ ] 🔵 Decide applicable tracking consent and data-collection settings.
-- [ ] 🟢 Configure consent controls and recording masking.
+- [ ] 🟡 Configure consent controls and recording masking.
 - [ ] 🔵 Define enquiry-data retention and deletion.
 - [ ] 🟢 Restrict production/debug controls as appropriate.
 
 ## Deployment & verification
 
 - [ ] 🔵 Vercel or compatible hosting: choose provider and connect the Git repository.
-- [ ] 🟢 Prepare production deployment configuration.
+- [ ] 🟡 Prepare production deployment configuration.
 - [ ] 🔵 Connect domain, DNS, and HTTPS.
 - [ ] 🔵 Choose a primary domain.
-- [ ] 🟢 Configure redirects for alternate domains.
+- [ ] 🟡 Configure redirects for alternate domains.
 - [ ] 🔵 Configure production and preview environment variables and secrets.
-- [ ] 🟢 Verify support for your installed Next.js features.
+- [ ] 🟡 Verify support for your installed Next.js features.
 - [ ] 🟢 GitHub Actions: maintain automated deployment checks.
 - [ ] 🔴 Run lint, formatting, build, and Playwright tests with final content.
 - [ ] 🟢 Extend tests to cover new pages and actual form submission.
 - [ ] 🔴 Test the deployed site's forms, metadata, sitemap, robots, and RSS.
-- [ ] 🟢 Verify analytics, Sentry, and uptime alerts after account setup and deployment.
+- [ ] 🟡 Verify analytics, Sentry, and uptime alerts after account setup and deployment.
 - [ ] 🟢 Document rollback and content-backup procedures.
 - [ ] 🔵 Confirm access to rollback and backup tools.
 
