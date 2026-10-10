@@ -6,7 +6,7 @@
 - TACTIC is based in Iran.
 - Receiving address: `admin@tacticforyou.com`; Cloudflare forwarding to Outlook configured and Resend Receiving disabled (confirmed by you on 2026-10-11). A forwarding delivery test is still pending.
 - Resend test recipient: `hayyanhami@outlook.com`.
-- No GA4 or Plausible. Keep Microsoft Clarity with consent, project `yvn7ipejec`.
+- No GA4 or Plausible. Microsoft Clarity now defaults on with a saved opt-out, project `yvn7ipejec` (requested 2026-10-11).
 - Sentry organization `hayyanhami`, project `tactic`.
 
 ## Email: what you do
@@ -51,7 +51,7 @@ The Sentry wizard created a valid build token in ignored `.env.sentry-build-plug
 
 ## Clarity and privacy
 
-Clarity is off on development/preview deployments unless explicitly enabled for QA, and is off for visitors until they choose **Allow recordings**. **Reject recordings** and withdrawal keep the recorder unloaded. Withdrawal deletes accessible first-party Clarity cookies and reloads the page to stop recording. The whole contact dialog, including its brief preview, has explicit masking. In Clarity settings, select strict masking and review retention/access settings; dashboard configuration has not been changed by Codex.
+Clarity is off on development/preview deployments unless explicitly enabled for QA. On production it loads by default after browser preferences are checked, unless a saved rejection or Global Privacy Control prevents it. **Reject recordings** saves an opt-out for 180 days, deletes accessible first-party Clarity cookies, and reloads to stop the recorder. Existing rejections remain respected. Default activation sends analytics storage denied; only an explicit **Allow recordings** sends granted, and advertising storage remains denied. Provider region/consent restrictions still apply; this implementation does not certify compliance with US or other laws. The whole contact dialog, including its brief preview, has explicit masking. In Clarity settings, select strict masking and review retention/access settings; dashboard configuration has not been changed by Codex.
 
 Sentry replay, performance tracing, and logs/metrics are disabled or dropped. Request bodies, headers, cookies, URL queries, user information, breadcrumbs, contexts, and error message text are excluded from error events. Enquiry-route events are dropped entirely. Technical stacks remain useful for debugging.
 

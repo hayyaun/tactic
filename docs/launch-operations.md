@@ -162,3 +162,68 @@ wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff --check
 The profiling script was copied to a temporary software version by replacing its launch flags with `--use-angle=swiftshader --enable-unsafe-swiftshader` via `Get-Content -Raw`, `.Replace`, and `Set-Content`. Temporary Node comparison snippets measured compression alternatives; only the final 256-resolution lossless atlas is included. The first bake's favicon 404, initial CommonJS lint errors, and test mock's TypeScript overload error were corrected before final validation. The first all-main-program warmup still left a transmission query stall; the final variant warmup removed it in the local profile.
 
 State changes: `apply_patch` edited local components, tests, TODO, and these notes; Prettier formatted them; the bake wrote local lighting assets; builds regenerated `.next`. Temporary production servers, test browser processes, and a loopback proxy were launched for validation and stopped afterward. No dependencies were upgraded, and no live deployment, provider settings, DNS, email, or environment secrets were changed.
+
+## Compact privacy control (2026-10-11)
+
+The consent panel now starts collapsed behind a small shield-and-label Privacy button at the bottom left. The panel opens on request and closes with its close button or Escape, restoring focus to its opener. Opening or closing it does not grant consent; Clarity still requires an explicit Allow recordings choice. The existing footer privacy settings link and consent withdrawal behavior remain available.
+
+Validation: lint passed; the tracking-enabled QA build passed; all three integration tests passed, including initial collapse, no tracking before consent, keyboard close/focus, consent, and withdrawal. Browser screenshots were inspected at 1440×1000 and 390×844, and viewport bounds plus close/focus were checked at those sizes and 320×667. The normal build was run again after stopping the temporary test servers. The user separately confirmed deployed PageSpeed performance reached 100 before this change; that score was not rerun for this change.
+
+Command recap (PowerShell; repository commands use the WSL directory `/home/garfield/projects/tactic`):
+
+```powershell
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git status --short
+Get-Content package.json
+Get-Content C:/Users/Hayyaun/.codex/skills/tailwind-v4/SKILL.md
+Get-Content node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md | Select-Object -First 100
+Get-Content app/components/privacy-controls.tsx
+Get-Content tests/integrations.spec.ts
+Get-Content app/globals.css | Select-Object -First 180
+Get-Content next.config.ts | Select-Object -First 90
+rg -n 'consent|Consent|Clarity' app/components app/lib tests/integrations.spec.ts
+rg -n 'PrivacyControls|privacy-controls' app
+Get-Content app/components/dialog.tsx
+Get-Content playwright.config.ts
+Get-Content docs/launch-operations.md -Tail 65
+Get-Content TODO.md -Tail 60
+Get-Content C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npx prettier --write app/components/privacy-controls.tsx tests/integrations.spec.ts
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run lint
+wsl -d Ubuntu --cd /home/garfield/projects/tactic env NEXT_PUBLIC_ENABLE_TRACKING_PREVIEW=true npm run build
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run start -- --port 3100
+& 'C:/Users/Hayyaun/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs
+$env:PLAYWRIGHT_BASE_URL='http://127.0.0.1:3101'
+$env:PLAYWRIGHT_CHANNEL='msedge'
+& 'C:/Users/Hayyaun/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' node_modules/@playwright/test/cli.js test tests/integrations.spec.ts
+& 'C:/Users/Hayyaun/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' C:/Users/Hayyaun/AppData/Local/Temp/tactic-privacy-visual.cjs
+wsl -d Ubuntu --cd /home/garfield/projects/tactic npm run build
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff --stat
+wsl -d Ubuntu --cd /home/garfield/projects/tactic git diff --check
+```
+
+Read-only commands inspected source, configuration, installed guidance, and existing tests; the guessed `app/components/dialog.tsx` path was absent. A temporary Playwright visual script was written with a PowerShell literal here-string piped to `Set-Content -LiteralPath C:/Users/Hayyaun/AppData/Local/Temp/tactic-privacy-visual.cjs`. It intercepted tracking-provider requests, captured collapsed/open views, and checked viewport bounds and focus restoration. `view_image` inspected the screenshots. Official Tailwind documentation was also consulted.
+
+State changes: `apply_patch` edited the privacy component, integration test, TODO, and operations notes; Prettier formatted source/test files; builds regenerated `.next`. The tracking-preview flag applied only to the QA build command; no `.env` or provider setting was changed. The temporary server and loopback proxy were stopped with Ctrl+C before the normal build. No deployment or account setting was changed.
+
+## Default-on Clarity with opt-out (2026-10-11)
+
+At the user's request, this supersedes the opt-in activation described above. Production loads Clarity after browser preferences are checked, unless an unexpired saved rejection or Global Privacy Control prevents it. Rejecting saves the choice for 180 days and reloads to stop the recorder; prior rejections remain valid. Default activation does not assert consent: analytics storage is denied until an explicit Allow recordings choice, and advertising storage remains denied. Microsoft regional restrictions still apply. This change is not a certification of US legal compliance. The compact button remains, and the public privacy notice and provider guide describe the new behavior.
+
+Validation: `npm run lint` and the tracking-enabled QA build passed. Four integration tests passed: default activation without a fabricated granted signal, rejection persistence and re-enabling, Global Privacy Control, privacy/error monitoring checks. Tracking requests were intercepted in browser QA. The updated panel fit 1440×1000, 390×844, and 320×667; mobile screenshots were inspected. The normal build was restored after stopping the temporary test server/proxy.
+
+Commands run (repository command prefix: `wsl -d Ubuntu --cd /home/garfield/projects/tactic`):
+
+- `git status --short`, `git diff --check`: inspect local changes and whitespace; existing compact-button changes preserved.
+- `Get-Content app/components/privacy-controls.tsx`, `Get-Content app/privacy/page.tsx`, `Get-Content tests/integrations.spec.ts`, `Get-Content package.json`, `Get-Content next.config.ts`, `Get-Content node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md -TotalCount 65`: inspected implementation, framework config, and installed guidance.
+- `rg -n 'until|consent|opt-in|permission|recording' app/privacy docs/provider-setup.md TODO.md`: found outdated behavior descriptions.
+- `$taskPath='app/privacy/page.tsx'; Get-Content $taskPath -Tail 20; Get-Content docs/provider-setup.md -TotalCount 60`: inspected related notice and provider instructions.
+- `npx prettier --write app/components/privacy-controls.tsx app/privacy/page.tsx tests/integrations.spec.ts`: formatted edits.
+- `npm run lint`, `env NEXT_PUBLIC_ENABLE_TRACKING_PREVIEW=true npm run build`: lint and production-mode QA build passed.
+- `npm run start -- --port 3100`: started temporary QA server, later stopped with Ctrl+C.
+- Windows bundled Node (`C:/Users/Hayyaun/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe`) ran `C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs`: temporary loopback proxy, later stopped with Ctrl+C.
+- `$env:PLAYWRIGHT_BASE_URL='http://127.0.0.1:3101'; $env:PLAYWRIGHT_CHANNEL='msedge'`; bundled Node ran `node_modules/@playwright/test/cli.js test tests/integrations.spec.ts`: four checks passed.
+- Bundled Node ran `C:/Users/Hayyaun/AppData/Local/Temp/tactic-privacy-visual.cjs`: verified three viewport sizes and close/focus behavior.
+- `npm run build`: restored normal build with QA override unset.
+- `npx prettier --write TODO.md docs/provider-setup.md docs/launch-operations.md`, `git diff --check`: final documentation formatting and whitespace validation.
+
+Tool actions: `apply_patch` changed local privacy behavior, tests, and TODO/provider documentation; this note was appended with a literal PowerShell here-string through `Add-Content -LiteralPath docs/launch-operations.md`. `view_image` inspected browser screenshots. Official Microsoft Consent Mode documentation was read. Builds regenerated `.next`; no `.env`, provider dashboard settings, DNS, dependencies, or deployment was changed.

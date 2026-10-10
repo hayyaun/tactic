@@ -51,7 +51,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 
 ## Analytics & monitoring
 
-- [x] 🔵 Decide visitor analytics: omit GA4/Plausible; keep Clarity with consent.
+- [x] 🔵 Decide visitor analytics: omit GA4/Plausible; enable Clarity by default with opt-out (requested 2026-10-11).
 - [x] 🟡 Leave GA4/Plausible integration disabled, as requested.
 - [x] 🟡 Leave visitor/enquiry/CTA analytics events disabled, as requested.
 - [x] 🟡 Exclude development and previews from Clarity/Sentry unless explicitly configured for QA.
@@ -63,7 +63,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟡 Filter personal information from error reports; disable Sentry replay/tracing and drop logs/metrics.
 - [ ] 🔵 Uptime monitor: configure downtime alerts.
 - [x] 🔵 Microsoft Clarity: supply project ID yvn7ipejec.
-- [x] 🟡 Integrate Microsoft Clarity with form masking, consent, and withdrawal support.
+- [x] 🟡 Integrate Microsoft Clarity with form masking, opt-out, explicit cookie consent, and Global Privacy Control support.
 - [x] 🔵 Microsoft Clarity: select strict masking and review dashboard access (confirmed by you).
 - [ ] 🔵 Microsoft Clarity: review provider retention settings/policy.
 
@@ -75,7 +75,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟢 Review current contrast, text readability, and reduced motion; improve the form notice.
 - [ ] 🔴 Optimize final images, fonts, videos, and JavaScript.
 - [x] 🟢 Profile the current hero, add asynchronous shader warmup, and serve responsive preview images; production-compatible scene checks passed.
-- [x] 🟢 Avoid 3D startup on software renderers, use prepared lighting, warm glass-pass shaders, and give shimmer actual idle periods; local blocking measurements improved. Recheck deployed PageSpeed after release.
+- [x] 🟢 Avoid 3D startup on software renderers, use prepared lighting, warm glass-pass shaders, and give shimmer actual idle periods; you confirmed deployed PageSpeed performance reached 100.
 - [ ] 🔴 Lighthouse/PageSpeed Insights: check final performance and accessibility.
 - [ ] 🔵 Monitor Core Web Vitals after launch.
 - [x] 🟢 Verify 3D loading, fallback, recovery, and idle behavior in desktop/mobile browser emulation; real-phone checks remain below final-asset tasks.
@@ -89,8 +89,9 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟢 Review security headers.
 - [x] 🔵 Supply business facts: TACTIC, based in Iran; authorize privacy implementation.
 - [x] 🟡 Add /privacy with confirmed business facts and actual provider/consent behavior; review mailbox retention before launch.
-- [x] 🔵 Choose consent-controlled Clarity and omit GA4/Plausible.
-- [x] 🟡 Configure consent controls, withdrawal, and form/brief recording masking.
+- [x] 🔵 Choose default-on Clarity with opt-out and omit GA4/Plausible (requested 2026-10-11).
+- [x] 🟡 Configure opt-out, cookie-consent controls, and form/brief recording masking.
+- [x] 🟢 Collapse privacy controls into a compact Privacy button; verify desktop/mobile layout and keyboard controls.
 - [ ] 🔵 Define enquiry-data retention and deletion.
 - [x] 🟢 Restrict production/debug controls as appropriate.
 

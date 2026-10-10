@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           { type: "heading", text: "Optional recordings and heatmaps" },
           {
             type: "paragraph",
-            text: "Microsoft Clarity provides heatmaps and session recordings to help us improve the website. It loads only if you allow recordings in Privacy settings. Advertising storage is denied. Contact-form contents and brief previews are masked for recordings. We do not use Google Analytics or Plausible.",
+            text: "Microsoft Clarity is enabled by default to provide heatmaps and session recordings that help us improve the website, subject to provider restrictions. You can stop it by choosing Reject recordings in Privacy settings. We honor Global Privacy Control by keeping Clarity unloaded when that browser signal is enabled. Advertising storage is denied. Contact-form contents and brief previews are masked for recordings. We do not use Google Analytics or Plausible.",
           },
           { type: "heading", text: "Reliability and spam prevention" },
           {
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           { type: "heading", text: "Cookies and choices" },
           {
             type: "paragraph",
-            text: "We store your privacy choices in your browser for up to 180 days. Clarity may use cookies when you allow it. You can revisit Privacy settings at any time to reject recordings. Withdrawing permission stops future recording and clears accessible first-party Clarity cookies; it does not automatically remove information already processed by providers.",
+            text: "We store your privacy choices in your browser for up to 180 days. Clarity analytics storage is denied unless you choose Allow recordings; default activation is not treated as consent to cookies. You can revisit Privacy settings at any time to reject recordings. Rejecting stops future recording and clears accessible first-party Clarity cookies; it does not automatically remove information already processed by providers. When a saved choice expires, the default applies again.",
           },
           { type: "heading", text: "Providers and retention" },
           {

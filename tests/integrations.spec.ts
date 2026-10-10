@@ -46,7 +46,7 @@ test("error reports remove personal data, request bodies, and URL queries", () =
   ).toBeNull();
 });
 
-test("Clarity waits for consent and stops after withdrawal; GA4 is absent", async ({
+test("Clarity starts by default and stays stopped after rejection; GA4 is absent", async ({
   page,
 }) => {
   const requests: string[] = [];
@@ -59,24 +59,50 @@ test("Clarity waits for consent and stops after withdrawal; GA4 is absent", asyn
     });
   });
   await page.goto("/?privateQuery=never-track-this");
+  const privacyButton = page.getByRole("button", {
+    name: "Privacy choices",
+    exact: true,
+  });
+  await expect(page.locator("#privacy-settings")).toHaveCount(0);
+  await expect(privacyButton).toBeVisible();
+  await expect
+    .poll(() => requests.some((url) => url.includes("clarity.ms")))
+    .toBe(true);
+  expect(
+    await page.evaluate(() =>
+      Array.from(
+        (window.clarity as unknown as { q: ArrayLike<unknown>[] }).q[0],
+      ),
+    ),
+  ).toEqual([
+    "consentv2",
+    { analytics_Storage: "denied", ad_Storage: "denied" },
+  ]);
+  await privacyButton.click();
   await expect(
     page.getByRole("heading", { name: "Your privacy choices" }),
   ).toBeVisible();
-  expect(requests).toEqual([]);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#privacy-settings")).toHaveCount(0);
+  await expect(privacyButton).toBeFocused();
+  const beforeRejection = requests.length;
+  await privacyButton.click();
   await page
     .getByRole("button", { name: "Reject recordings", exact: true })
     .click();
   await expect(page.locator("#privacy-settings")).toHaveCount(0);
-  expect(requests).toEqual([]);
+  await expect(page.locator("#tactic-clarity")).toHaveCount(0);
+  await page.reload();
+  await expect(privacyButton).toBeVisible();
+  await expect(page.locator("#tactic-clarity")).toHaveCount(0);
+  expect(requests.length).toBe(beforeRejection);
   await page
     .getByRole("button", { name: "Privacy settings", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Allow recordings", exact: true })
     .click();
-  await expect
-    .poll(() => requests.some((url) => url.includes("clarity.ms")))
-    .toBe(true);
+  await expect.poll(() => requests.length).toBeGreaterThan(beforeRejection);
   expect(requests.some((url) => url.includes("googletagmanager.com"))).toBe(
     false,
   );
@@ -98,6 +124,30 @@ test("Clarity waits for consent and stops after withdrawal; GA4 is absent", asyn
   ).toBeVisible();
   await expect(page.locator("#tactic-clarity")).toHaveCount(0);
   expect(requests.length).toBe(beforeWithdrawal);
+});
+
+test("Global Privacy Control keeps Clarity unloaded", async ({ page }) => {
+  await page.addInitScript(() =>
+    Object.defineProperty(navigator, "globalPrivacyControl", { value: true }),
+  );
+  const requests: string[] = [];
+  await page.route(/clarity\.ms/, (route) => {
+    requests.push(route.request().url());
+    return route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: "",
+    });
+  });
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Privacy choices", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Allow recordings", exact: true }),
+  ).toBeDisabled();
+  await expect(page.locator("#tactic-clarity")).toHaveCount(0);
+  expect(requests).toEqual([]);
 });
 
 test("privacy notice is reachable and wizard test endpoints are closed in production", async ({
