@@ -43,3 +43,6 @@ next-env.d.ts
 /assets/
 /test-results/
 /playwright-report/
+
+# Sentry Config File
+.env.sentry-build-plugin
