@@ -1,5 +1,32 @@
 /* Bespoke illustration details. Layout lives in Tailwind utilities. */
 @layer components {
+  @keyframes services-orbit {
+    to {
+      rotate: 1turn;
+    }
+  }
+  @keyframes services-orbit-label {
+    to {
+      rotate: -1turn;
+    }
+  }
+  .services-orbit {
+    animation: services-orbit 120s linear infinite;
+  }
+  .services-orbit-label {
+    transform-box: view-box;
+    animation: services-orbit-label 120s linear infinite;
+  }
+  .services-explore:is(:hover, :focus-visible)
+    :is(.services-orbit, .services-orbit-label) {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .services-orbit,
+    .services-orbit-label {
+      animation: none;
+    }
+  }
   .social-feed-piece {
     transform: translate(0, 0) rotate(0deg);
     transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);

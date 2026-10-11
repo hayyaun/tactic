@@ -1,5 +1,6 @@
 import { expect, test } from "./scene-fixture";
 import { studies } from "../app/studies";
+import { BACKGROUND_DEFAULTS } from "../app/components/hero-background";
 
 test.use({ sceneBrowserGroup: "interactions" });
 
@@ -153,25 +154,27 @@ test("background controls update, copy, and restore the shared backdrop", async 
   await page.goto("/?debug");
   const stage = page.locator("[data-hero-art]");
   await expect(stage).toHaveAttribute("data-ready", "true");
-  const backdropScreenshot = () =>
-    page.screenshot({
-      clip: { x: 16, y: 650, width: 48, height: 48 },
-    });
-  const originalBackdrop = await backdropScreenshot();
-  await page.getByText("Background", { exact: true }).click();
-  const noise = page.locator('input[id="Background.backgroundNoise"]');
-  await noise.fill("0.05");
-  await noise.press("Enter");
-  const radius = page.locator('input[id="Background.backgroundRadius"]');
-  await radius.fill("1.2");
-  await radius.press("Enter");
-  const fade = page.locator('input[id="Background.backgroundFade"]');
-  await fade.fill("0.75");
-  await fade.press("Enter");
   const background = () =>
     page
       .locator("section.hero-atmosphere")
       .evaluate((element) => (element as HTMLElement).style.backgroundImage);
+  await expect.poll(background).toContain("/studio/hero-background.svg");
+  const originalBackground = await background();
+  await page.getByText("Background", { exact: true }).click();
+  const noise = page.locator('input[id="Background.backgroundNoise"]');
+  const radius = page.locator('input[id="Background.backgroundRadius"]');
+  const fade = page.locator('input[id="Background.backgroundFade"]');
+  // Leva rounds displayed values (0.725 is shown as 0.72). Check the restored
+  // display separately from the exact exported settings below.
+  const originalValues = await Promise.all(
+    [noise, radius, fade].map((input) => input.inputValue()),
+  );
+  await noise.fill("0.05");
+  await noise.press("Enter");
+  await radius.fill("1.2");
+  await radius.press("Enter");
+  await fade.fill("0.75");
+  await fade.press("Enter");
   await expect.poll(background).toContain("data:image/svg+xml");
   await expect(stage).toHaveAttribute("data-ready", "true");
   await page.getByRole("button", { name: "Copy settings" }).click();
@@ -190,11 +193,16 @@ test("background controls update, copy, and restore the shared backdrop", async 
   expect(copied.backgroundIntensity).toBe(0.6);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Reset to demo" }).click();
-  await expect.poll(background).toContain("/studio/hero-background.svg");
+  await expect.poll(background).toBe(originalBackground);
   await expect(stage).toHaveAttribute("data-ready", "true");
-  await expect
-    .poll(async () => (await backdropScreenshot()).equals(originalBackdrop))
-    .toBe(true);
+  for (const [index, input] of [noise, radius, fade].entries()) {
+    await expect(input).toHaveValue(originalValues[index]);
+  }
+  await page.getByRole("button", { name: "Copy settings" }).click();
+  const restored = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText()),
+  );
+  expect(restored).toMatchObject(BACKGROUND_DEFAULTS);
   expect(errors).toEqual([]);
 });
 
@@ -257,12 +265,16 @@ test("performance presets apply rendering settings and reset restores High", asy
 test("debug FPS reflects rendering and returns to zero offscreen", async ({
   page,
 }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 960, height: 740 });
   await page.goto("/?debug");
   await expect(page.locator("[data-hero-art]")).toHaveAttribute(
     "data-ready",
     "true",
   );
+  // Start animation only after loading, at bounded CPU render cost.
+  await page.getByLabel("Auto quality", { exact: true }).uncheck();
+  await page.getByLabel("Preset", { exact: true }).selectOption("Low");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
   const fpsRow = page
     .getByText("FPS", { exact: true })
     .locator("..")
@@ -271,7 +283,10 @@ test("debug FPS reflects rendering and returns to zero offscreen", async ({
     Number((await fpsRow.textContent())?.replace("FPS", ""));
   await expect.poll(fps).toBeGreaterThan(0);
   await page.evaluate(() =>
-    window.scrollTo(0, document.documentElement.scrollHeight),
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    }),
   );
   await expect.poll(fps).toBe(0);
 });
@@ -297,10 +312,14 @@ test("sustained slow frames lower quality and idle does not", async ({
   context,
 }) => {
   test.setTimeout(90_000);
+  await page.setViewportSize({ width: 960, height: 740 });
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/?debug");
   const stage = page.locator("[data-hero-art]");
   await expect(stage).toHaveAttribute("data-ready", "true");
+  // One real automatic transition verifies the browser integration. The full
+  // quality chain and telemetry timing are tested without GPU timing elsewhere.
+  await page.getByLabel("Preset", { exact: true }).selectOption("Low");
   const threshold = page.getByLabel("Minimum FPS", { exact: true });
   await threshold.fill("120");
   await threshold.press("Enter");
@@ -308,7 +327,7 @@ test("sustained slow frames lower quality and idle does not", async ({
   await duration.fill("1");
   await duration.press("Enter");
   await page.waitForTimeout(2200);
-  await expect(stage).toHaveAttribute("data-render-quality", "High");
+  await expect(stage).toHaveAttribute("data-render-quality", "Low");
   await page.getByRole("button", { name: "Copy settings" }).click();
   const settings = JSON.parse(
     await page.evaluate(() => navigator.clipboard.readText()),
@@ -321,27 +340,18 @@ test("sustained slow frames lower quality and idle does not", async ({
   const sweepDuration = page.getByLabel("Sweep duration (s)", { exact: true });
   await sweepDuration.fill("15");
   await sweepDuration.press("Enter");
-  // Pause at the first downgrade in the browser. A slow software renderer can
-  // reach Preview before a round-trip from the test runner clicks this control.
   const autoQuality = page.getByLabel("Auto quality", { exact: true });
-  await autoQuality.evaluate((input) => {
-    const stage = document.querySelector<HTMLElement>("[data-hero-art]")!;
-    const observer = new MutationObserver(() => {
-      if (stage.dataset.renderQuality === "Balanced") {
-        observer.disconnect();
-        (input as HTMLInputElement).click();
-      }
-    });
-    observer.observe(stage, {
-      attributes: true,
-      attributeFilter: ["data-render-quality"],
-    });
-  });
+  await autoQuality.uncheck();
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(autoQuality).not.toBeChecked();
-  await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
+  const fpsRow = page
+    .getByText("FPS", { exact: true })
+    .locator("..")
+    .locator("..");
+  await expect
+    .poll(async () => Number((await fpsRow.textContent())?.replace("FPS", "")))
+    .toBeGreaterThan(0);
   await page.waitForTimeout(2200);
-  await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
+  await expect(stage).toHaveAttribute("data-render-quality", "Low");
   await autoQuality.check();
   await expect(stage).toHaveAttribute("data-render-quality", "Preview", {
     timeout: 30_000,

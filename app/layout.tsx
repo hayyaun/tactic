@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   title: { default: "TACTIC — Every move matters.", template: "%s | TACTIC" },
   description:
     "TACTIC is an independent creative studio. Clear thinking, distinctive identities, and considered digital experiences.",
-  icons: { icon: "/studio/mark.svg" },
   robots: isIndexable()
     ? { index: true, follow: true }
     : { index: false, follow: false },

@@ -140,12 +140,12 @@ function SocialFeedArtwork() {
 function IdentityMarks() {
   return (
     <div
-      className="relative z-1 grid w-full max-w-160 grid-cols-3 items-center justify-items-center gap-x-8 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:grid-cols-5 min-[701px]:gap-9 min-[701px]:px-0"
+      className="relative z-1 grid w-full max-w-160 grid-cols-3 items-center justify-items-center gap-x-8 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:min-h-17 min-[701px]:grid-cols-5 min-[701px]:gap-9 min-[701px]:px-0"
       role="img"
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-12 w-full max-w-19 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1.5 min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-16"
+        className="h-9.5 w-full max-w-16 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1 min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-12"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -155,7 +155,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12.5 w-full max-w-19 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.5 min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-16.5"
+        className="h-10 w-full max-w-16 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.25 min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-12.5"
         viewBox="120 83 348 277"
         aria-hidden="true"
       >
@@ -165,7 +165,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-21 min-[701px]:-translate-y-0.5 min-[1001px]:h-17"
+        className="h-10.5 w-full max-w-17 min-[1001px]:h-13"
         viewBox="59 77 306 303"
         aria-hidden="true"
       >
@@ -175,7 +175,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12.5 w-full max-w-19 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.5 min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-16.5"
+        className="h-10 w-full max-w-16 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.25 min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-12.5"
         viewBox="0 0 100 100"
         aria-hidden="true"
       >
@@ -185,7 +185,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12 w-full max-w-19 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1.5 min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-16"
+        className="h-9.5 w-full max-w-16 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1 min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-12"
         viewBox="35 20 146 130"
         aria-hidden="true"
       >
@@ -366,10 +366,14 @@ export function Capabilities() {
 
         <Link
           href="/services"
-          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[#2e3731] bg-[linear-gradient(125deg,transparent_40%,rgb(189_136_129/38%)_100%)] p-6 text-chalk shadow-[inset_1px_1px_1px_rgb(171_194_146/24%),inset_-1px_-1px_1px_rgb(189_136_129/22%),0_12px_28px_rgb(0_0_0/0.28)] transition-[translate,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:brightness-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk focus-visible:brightness-[1.04] motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5 motion-reduce:transition-none min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="services-explore group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[#2e3731] bg-[linear-gradient(125deg,transparent_40%,rgb(189_136_129/38%)_100%)] p-6 text-chalk shadow-[inset_1px_1px_1px_rgb(171_194_146/24%),inset_-1px_-1px_1px_rgb(189_136_129/22%),0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-label="Explore our services"
         >
-          <div className="flex items-center gap-2 opacity-65">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,transparent_12%,rgb(189_136_129/22%)_100%)] opacity-0 transition-opacity duration-1200 ease-in-out group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+          />
+          <div className="relative z-1 flex items-center gap-2 opacity-65">
             <svg className="h-6 w-4.5" aria-hidden="true">
               <use href="#tactic-mark" />
             </svg>
@@ -378,7 +382,7 @@ export function Capabilities() {
             </span>
           </div>
           <svg
-            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-chalk transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:scale-[1.04] motion-safe:group-focus-visible:scale-[1.04] motion-reduce:transition-none min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
+            className="services-orbit pointer-events-none absolute top-1/2 right-5 z-1 h-28 w-28 -translate-y-1/2 text-chalk min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
             viewBox="0 0 112 112"
             aria-hidden="true"
           >
@@ -410,16 +414,36 @@ export function Capabilities() {
               textAnchor="middle"
               dominantBaseline="middle"
             >
-              <text x="26" y="26">
+              <text
+                className="services-orbit-label"
+                style={{ transformOrigin: "26px 26px" }}
+                x="26"
+                y="26"
+              >
                 Brand
               </text>
-              <text x="86" y="26">
+              <text
+                className="services-orbit-label"
+                style={{ transformOrigin: "86px 26px" }}
+                x="86"
+                y="26"
+              >
                 Film
               </text>
-              <text x="26" y="86">
+              <text
+                className="services-orbit-label"
+                style={{ transformOrigin: "26px 86px" }}
+                x="26"
+                y="86"
+              >
                 Social
               </text>
-              <text x="86" y="86">
+              <text
+                className="services-orbit-label"
+                style={{ transformOrigin: "86px 86px" }}
+                x="86"
+                y="86"
+              >
                 Digital
               </text>
             </g>
@@ -432,12 +456,14 @@ export function Capabilities() {
               opacity=".45"
             />
           </svg>
-          <p className="relative my-5 max-w-[65%] text-[28px] leading-[1.08] tracking-[-0.045em] min-[701px]:max-w-[62%] min-[1001px]:text-[34px]">
+          <p className="relative z-1 my-5 max-w-[65%] text-[28px] leading-[1.08] tracking-[-0.045em] min-[701px]:max-w-[62%] min-[1001px]:text-[34px]">
             Explore our
             <br />
-            <em className="font-editorial font-normal">services.</em>
+            <em className="inline-block origin-bottom-left font-editorial font-normal transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-skew-x-8 motion-safe:group-focus-visible:translate-x-1 motion-safe:group-focus-visible:-skew-x-8 motion-reduce:transition-none">
+              services.
+            </em>
           </p>
-          <span className="flex items-end justify-between gap-4">
+          <span className="relative z-1 flex items-end justify-between gap-4">
             <span className="font-mono text-[8px] leading-[1.7] tracking-[0.03em] opacity-65 min-[1001px]:text-[9px]">
               Four specialties. One direction.
             </span>

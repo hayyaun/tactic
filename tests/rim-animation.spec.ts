@@ -62,14 +62,9 @@ test("idle rim shines, pauses offscreen, and resumes on return", async ({
   await useShimmerTestTiming(page);
   const stage = page.locator("[data-hero-art]");
   await expect(stage).toHaveAttribute("data-ready", "true");
-  // Sample the independent glint during its ten-second pass.
-  await page.waitForTimeout(1800);
-  const before = await stage.screenshot();
+  // Observe actual rendering without assuming screenshot capture lands in a
+  // sweep. The handoff test separately verifies changing GPU glint attributes.
   const initialDraws = await drawCount(page);
-  await page.waitForTimeout(2500);
-  const after = await stage.screenshot();
-  expect(after.equals(before)).toBe(false);
-  // Slow screenshot encoding can land in the quiet interval between sweeps.
   await expect.poll(() => drawCount(page)).toBeGreaterThan(initialDraws);
   // Observe the actual quiet period locally in the browser. Screenshot encoding
   // and host round trips must not push this measurement into the next sweep.
