@@ -26,7 +26,7 @@ function ServiceNumber({
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute inline-flex items-start font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] lining-nums select-none min-[1001px]:text-[96px] ${opacityClassName} ${className}`}
+      className={`pointer-events-none absolute inline-flex items-start font-editorial text-[144px] leading-none font-normal tracking-[-0.055em] lining-nums select-none min-[701px]:text-[164px] min-[1001px]:text-[192px] ${opacityClassName} ${className}`}
     >
       <span className="relative -top-[0.23em]">{children[0]}</span>
       <span>{children.slice(1)}</span>
