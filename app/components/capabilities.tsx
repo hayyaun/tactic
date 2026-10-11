@@ -247,7 +247,7 @@ function CapabilityBackdrop({ card }: { card: "branding" | "social" }) {
 function IdentityMarks() {
   return (
     <div
-      className="relative z-1 grid w-full max-w-144 grid-cols-3 items-center justify-items-center gap-x-6 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:min-h-17 min-[701px]:grid-cols-5 min-[701px]:gap-7 min-[701px]:px-0"
+      className="relative z-1 grid w-full max-w-132 grid-cols-3 items-center justify-items-center gap-x-5 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:min-h-17 min-[701px]:grid-cols-5 min-[701px]:gap-6 min-[701px]:px-0 min-[1001px]:-translate-x-6"
       role="img"
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
