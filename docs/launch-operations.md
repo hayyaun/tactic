@@ -273,3 +273,30 @@ Command recap: repository commands use `wsl -d Ubuntu --cd /home/garfield/projec
 - `git diff --check`, `git diff --stat`, `npx prettier --write docs/launch-operations.md`: reviewed scope and documentation formatting.
 
 State changes: apply_patch changed the test only; this note was appended with Add-Content and formatted. Builds regenerated .next; temporary servers/browser sessions were used for validation. No live deployment, CI settings, environment files, or application behavior changed.
+
+## Allow recordings after rejection (2026-10-11)
+
+The user requested reversible choices. Global Privacy Control previously made Allow unavailable permanently while the signal remained enabled. GPC now determines the default; a saved explicit Allow recordings overrides that default for Clarity analytics only. Advertising storage remains denied. Reject still stops the recorder and is reversible. The status message and public/provider notices explain the choice. Storage changes/clearing in other tabs also re-evaluate the GPC default.
+
+Validation: lint and tracking-enabled builds passed; four integration tests passed, including GPC default-off, reject → allow, allowance after reload, and reject again with Allow still enabled. Normal build restored after QA server/proxy shutdown. Provider requests were intercepted. No production deployment changed. Unrelated concurrent changes to capabilities.tsx and an untracked phone illustration were preserved.
+
+Commands: repository prefix is `wsl -d Ubuntu --cd /home/garfield/projects/tactic`.
+
+- `Get-Content app/components/privacy-controls.tsx -TotalCount 160`, `Get-Content app/components/privacy-controls.tsx -Tail 75`, `Get-Content tests/integrations.spec.ts -Tail 70`, `Get-Content app/privacy/page.tsx`, `Get-Content package.json -TotalCount 45`, `Get-Content next.config.ts -TotalCount 60`, `Get-Content node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md -TotalCount 40`, `git status --short`: inspected existing behavior, framework guidance, and local changes.
+- `Get-Content docs/provider-setup.md -TotalCount 12`, `rg -n 'Global Privacy' docs/provider-setup.md TODO.md`: located documentation.
+- `npx prettier --write app/components/privacy-controls.tsx app/privacy/page.tsx tests/integrations.spec.ts`, `npm run lint`: formatting/lint passed, lint repeated after the cross-tab edit.
+- `env NEXT_PUBLIC_ENABLE_TRACKING_PREVIEW=true npm run build`: passed; repeated after the final cross-tab edit so QA used final code.
+- `npm run start -- --port 3100`: temporary QA server, stopped with Ctrl+C.
+- Windows bundled Node ran `C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs` and `node_modules/@playwright/test/cli.js test tests/integrations.spec.ts` with `$env:PLAYWRIGHT_BASE_URL='http://127.0.0.1:3101'; $env:PLAYWRIGHT_CHANNEL='msedge'`: four tests passed; proxy stopped with Ctrl+C.
+- `npm run build`: normal artifact restored with tracking-preview override unset.
+- `git diff --check`, `git diff --stat`, `npx prettier --write docs/provider-setup.md docs/launch-operations.md`: scope/formatting reviewed.
+
+State changes: apply_patch edited the component, privacy notice, and tests. A PowerShell Get-Content -Raw / .Replace / Set-Content -LiteralPath updated provider wording. An initial WriteAllText call failed due to a PowerShell provider-prefixed UNC path before writing; Set-Content corrected that. This note used Add-Content. Builds regenerated .next. No .env, account setting, dependency, DNS, or live deployment changed.
+
+## Restore the requested default-on toggle (2026-10-11)
+
+Supersedes the GPC override above: on production, no saved choice means Clarity enabled; Reject saves off; Allow saves on again. Browser privacy signals no longer change this application default or disable Allow. Hydration still checks saved choices before loading the recorder. Advertising storage remains denied. Privacy notice/provider notes/TODO updated. Existing unrelated capabilities and illustration edits preserved.
+
+Validation: lint and tracking-enabled QA build passed; all four integration checks passed, including default-on behavior with GPC present and reversible rejection/allowance across reloads. The normal build was restored after stopping the temporary QA server/proxy. No deployment changed.
+
+Commands/actions: `Get-Content app/components/privacy-controls.tsx -TotalCount 125`, `Get-Content tests/integrations.spec.ts -Tail 95`, `Get-Content app/privacy/page.tsx -TotalCount 45`, and `git status --short` inspected state. apply_patch edited component/tests/TODO; PowerShell Get-Content -Raw / .Replace / Set-Content -LiteralPath updated privacy/provider wording. Repository commands used `wsl -d Ubuntu --cd /home/garfield/projects/tactic`: `npx prettier --write app/components/privacy-controls.tsx app/privacy/page.tsx tests/integrations.spec.ts docs/provider-setup.md`, `npm run lint`, `env NEXT_PUBLIC_ENABLE_TRACKING_PREVIEW=true npm run build`, `npm run start -- --port 3100`, `npm run build`, `git diff --check`, and `npx prettier --write TODO.md docs/launch-operations.md`. Windows bundled Node ran `C:/Users/Hayyaun/AppData/Local/Temp/tactic-perf-proxy.cjs` and `node_modules/@playwright/test/cli.js test tests/integrations.spec.ts` with `$env:PLAYWRIGHT_BASE_URL='http://127.0.0.1:3101'; $env:PLAYWRIGHT_CHANNEL='msedge'`. Both temporary server and proxy were stopped with Ctrl+C. This note was appended through Add-Content. Builds regenerated .next; QA intercepted provider requests. No .env, provider setting, DNS, or dependency changed.

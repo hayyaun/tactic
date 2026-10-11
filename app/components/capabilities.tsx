@@ -1,43 +1,186 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { ContactButton } from "./dialog-buttons";
-function BoardCaption({ children }: { children: ReactNode }) {
+
+function ServiceHeading({ children, id }: { children: ReactNode; id: string }) {
   return (
-    <span className="absolute bottom-4.25 left-5 font-mono text-[7px] leading-normal tracking-[0.03em] text-inherit opacity-60 min-[701px]:bottom-5 min-[701px]:left-6 min-[701px]:text-[10px]">
+    <h3
+      id={id}
+      className="text-[25px] leading-[1.12] font-[450] tracking-[-0.035em] min-[701px]:text-[clamp(23px,2.15vw,30px)]"
+    >
+      {children}
+    </h3>
+  );
+}
+
+function ServiceNumber({
+  children,
+  className = "top-3 right-6",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute font-mono text-[82px] leading-none font-black tracking-[-0.09em] opacity-[0.09] select-none min-[1001px]:text-[96px] ${className}`}
+    >
       {children}
     </span>
   );
 }
-function BoardNote({ children }: { children: ReactNode }) {
+
+function SocialFeedArtwork() {
   return (
-    <p className="mt-3.75 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px] min-[701px]:leading-normal">
-      {children}
-    </p>
-  );
-}
-function CapabilityIntro({
-  title,
-  description,
-  index,
-}: {
-  title: string;
-  description: string;
-  index: string;
-}) {
-  return (
-    <div className="mb-6 grid grid-cols-[1fr_auto] items-start gap-x-3.75 gap-y-3 min-[701px]:mb-7 min-[701px]:grid-cols-[1fr_1.3fr_auto] min-[701px]:gap-10">
-      <h3 className="text-[22px] font-normal tracking-[-0.035em] min-[701px]:text-[23px]">
-        {title}
-      </h3>
-      <p className="col-span-2 row-start-2 max-w-90 text-[12px] leading-[1.75] text-muted min-[701px]:col-auto min-[701px]:row-auto min-[701px]:max-w-100 min-[701px]:text-[13px]">
-        {description}
-      </p>
-      <span className="col-start-2 row-start-1 pt-1.25 font-mono text-[10px] leading-normal tracking-[0.03em] text-muted min-[701px]:col-auto min-[701px]:row-auto">
-        {index}
+    <div
+      className="relative mx-auto my-4 h-62 w-full max-w-85"
+      aria-hidden="true"
+    >
+      <div className="absolute top-1 right-0 h-40 w-[54%] rotate-9 overflow-hidden rounded-xl border border-carbon/10 bg-carbon shadow-[0_8px_24px_rgb(32_34_30/0.12)]">
+        <Image
+          src="/studio/strategy.webp"
+          alt=""
+          fill
+          sizes="220px"
+          className="object-cover saturate-75"
+        />
+        <span className="absolute bottom-3 left-3 font-mono text-[7px] tracking-[0.06em] text-chalk">
+          A DIFFERENT PERSPECTIVE.
+        </span>
+      </div>
+
+      <div className="absolute top-5 left-1 z-1 w-[65%] -rotate-6 rounded-[14px] border border-carbon/10 bg-chalk p-3 text-carbon shadow-[0_12px_28px_rgb(32_34_30/0.13)]">
+        <div className="mb-2 flex items-center gap-1.5">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-carbon text-chalk">
+            <svg className="h-3 w-2.25">
+              <use href="#tactic-mark" />
+            </svg>
+          </span>
+          <span className="text-[8px] font-medium tracking-[-0.02em]">
+            tactic.studio
+          </span>
+          <span className="ml-auto text-[10px] tracking-[0.12em]">···</span>
+        </div>
+        <div className="relative flex h-38 items-center overflow-hidden rounded-lg bg-[rgb(198,211,174)] px-4">
+          <svg className="absolute -right-3 -bottom-6 h-36 w-26 rotate-12 opacity-[0.08]">
+            <use href="#tactic-mark" />
+          </svg>
+          <p className="relative text-[30px] leading-[0.98] tracking-[-0.06em]">
+            Worth
+            <br />
+            a second
+            <br />
+            <em className="font-editorial text-[34px] font-normal">look.</em>
+          </p>
+        </div>
+        <svg
+          className="mt-2.5 h-4 w-full"
+          viewBox="0 0 190 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        >
+          <path d="M8 14 2.5 8.7C-2 4.3 4-1 8 3c4-4 10 1.3 5.5 5.7Z" />
+          <path d="M29 2a5.5 5.5 0 0 0-5.5 5.5c0 1.5.5 2.8 1.5 3.8l-1 3 3.3-1.1c.6.3 1.2.4 1.7.4a5.8 5.8 0 1 0 0-11.6Z" />
+          <path d="m43 2 14 5-5 2-2 5-7-12Zm0 0 9 7" />
+          <path d="M178 2h9v12l-4.5-3-4.5 3Z" />
+        </svg>
+      </div>
+
+      <div className="absolute right-0 bottom-0 z-2 h-42 w-[32%] rotate-7 overflow-hidden rounded-[13px] border border-chalk/30 bg-carbon shadow-[0_10px_24px_rgb(32_34_30/0.18)]">
+        <Image
+          src="/studio/ai-campaign.png"
+          alt=""
+          fill
+          sizes="300px"
+          className="object-cover object-[51%_center] brightness-90 saturate-50"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-carbon/80 via-transparent to-carbon/20" />
+        <span className="absolute top-3 left-3 font-mono text-[7px] text-chalk/85">
+          IN MOTION
+        </span>
+        <svg
+          className="absolute top-1/2 left-1/2 h-7 w-7 -translate-1/2 text-chalk"
+          viewBox="0 0 28 28"
+          fill="none"
+        >
+          <circle cx="14" cy="14" r="13" stroke="currentColor" opacity=".6" />
+          <path d="m11 9 8 5-8 5Z" fill="currentColor" />
+        </svg>
+        <p className="absolute bottom-3 left-3 text-[10px] leading-[1.1] tracking-[-0.035em] text-chalk">
+          A feeling.
+          <br />
+          In fifteen seconds.
+        </p>
+      </div>
+      <span className="absolute bottom-0 left-6 z-3 rounded-full border border-carbon/10 bg-chalk px-3 py-2 text-[9px] tracking-[-0.02em] text-carbon shadow-[0_4px_12px_rgb(32_34_30/0.08)]">
+        That’s a save.
       </span>
     </div>
   );
 }
+
+function IdentityMarks() {
+  return (
+    <div
+      className="relative z-1 grid w-full max-w-160 grid-cols-3 items-center justify-items-center gap-x-8 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:grid-cols-5 min-[701px]:gap-9 min-[701px]:px-0"
+      role="img"
+      aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
+    >
+      <svg
+        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        viewBox="90 45 245 370"
+        aria-hidden="true"
+      >
+        <path
+          d="M117 59Q117 50 126 50Q135 50 135 59V114H146Q158 114 158 126V331Q158 343 146 343H135V398Q135 408 126 408Q117 408 117 398V343H106Q94 343 94 331V126Q94 114 106 114H117ZM190 115H279Q293 115 293 129V133Q293 145 306 145H316Q330 145 330 159V300Q330 314 316 314H305Q293 314 293 325Q293 334 306 334H318Q330 334 330 346V395Q330 408 318 408H289Q250 408 250 366V356Q250 343 237 343H190Q178 343 178 331V291Q178 278 190 278H251Q266 278 266 262V194Q266 179 251 179H190Q178 179 178 167V127Q178 115 190 115Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        viewBox="59 77 306 303"
+        aria-hidden="true"
+      >
+        <path
+          d="M130 106Q217 54 304 115Q318 124 307 131C223 153 155 210 110 326Q107 334 102 329L84 304Q81 300 88 290Q127 224 189 164L193 159Q204 149 189 141L132 122Q117 115 130 106ZM101 145 130 151Q143 154 134 164C103 198 84 234 75 269Q72 277 69 266C58 223 65 183 86 151Q91 142 101 145ZM125 347C167 250 258 188 329 163Q339 160 344 169C354 192 361 224 358 238Q358 247 347 248C267 249 193 287 125 347ZM161 353C214 313 272 288 335 286Q349 285 341 299C307 359 233 393 160 363Q146 358 161 353Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        className="h-13 w-full max-w-21 min-[1001px]:h-18"
+        viewBox="120 83 348 277"
+        aria-hidden="true"
+      >
+        <path
+          d="M199 112C181 132 175 157 175 183C175 252 228 307 294 307C362 307 415 254 415 186C415 156 408 133 391 112L410 96Q424 85 432 99C457 133 463 163 461 193C460 229 449 260 433 288L452 308C480 339 442 371 414 346L390 324C365 343 332 354 294 354C202 354 128 278 128 187C128 149 138 116 154 95Q162 82 173 93ZM225 132 294 180 364 132C378 150 384 167 381 189C378 237 340 275 294 275C247 275 209 239 208 191C205 168 214 145 225 132Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        viewBox="0 0 100 100"
+        aria-hidden="true"
+      >
+        <path
+          d="M10 78C12 36 29 9 57 8C67 7 75 9 84 10C81 32 65 38 51 50C37 62 24 72 10 78ZM49 94C46 73 50 54 68 43C78 37 87 37 95 38C94 66 87 93 64 95ZM44 66 42 95 9 89Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        viewBox="35 20 146 130"
+        aria-hidden="true"
+      >
+        <path
+          d="M43 142C55 82 66 29 109 29C152 29 164 85 175 142H137C147 85 137 32 109 30C80 32 70 86 81 142Z"
+          fill="currentColor"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export function Capabilities() {
   return (
     <section
@@ -63,130 +206,185 @@ export function Capabilities() {
         </p>
       </div>
 
-      <div>
-        <CapabilityIntro
-          title="Distinctive by design."
-          description="Strategy, naming, identity and art direction. One considered language, wherever your brand shows up."
-          index="01"
-        />
-        <div
-          className="grid grid-cols-[repeat(2,minmax(0px,1fr))] grid-rows-[190px_230px_145px_110px] gap-2.25 text-carbon min-[701px]:grid-cols-[repeat(12,minmax(0px,1fr))] min-[701px]:grid-rows-[230px_180px_145px] min-[701px]:gap-3 min-[1440px]:grid-rows-[260px_210px_160px]"
-          aria-label="TACTIC identity concept board"
-        >
-          <div className="relative col-[1/3] row-start-1 flex min-w-0 items-center justify-center gap-4.75 overflow-hidden rounded-[19px] border border-board-line bg-chalk p-6 text-[rgb(39,46,36)] min-[381px]:gap-6.25 min-[381px]:p-7.5 min-[701px]:col-[1/9] min-[701px]:row-auto min-[701px]:rounded-[25px] min-[1001px]:gap-8.75 min-[1001px]:p-11">
-            <svg
-              className="h-12 w-8.75 min-[381px]:h-14.5 min-[381px]:w-10.5 min-[701px]:h-15.75 min-[701px]:w-11.5 min-[1001px]:h-22.75 min-[1001px]:w-16.25"
-              aria-hidden="true"
-            >
-              <use href="#tactic-mark" />
-            </svg>
-            <div>
-              <strong className="text-[45px] leading-none font-medium tracking-[-0.075em] min-[381px]:text-[55px] min-[701px]:text-[clamp(43px,5.2vw,76px)]">
-                TACTIC
-              </strong>
-              <p className="mt-2.5 text-[11px] tracking-[-0.04em] min-[381px]:text-[13px] min-[701px]:text-[14px] min-[1001px]:text-[17px]">
-                Every move matters.
-              </p>
-            </div>
-            <BoardCaption>Identity / 01</BoardCaption>
-          </div>
-          <div className="relative col-start-2 row-start-2 min-w-0 overflow-hidden rounded-[19px] border border-board-line bg-[rgb(22,32,22)] text-[rgb(214,224,199)] min-[701px]:col-[9/13] min-[701px]:row-[1/3] min-[701px]:rounded-[25px]">
-            <Image
-              className="h-full w-full object-cover filter-[saturate(0.52)_brightness(0.96)]"
-              src="/studio/pathways.webp"
-              alt="TACTIC’s green and red forms become intersecting pathways."
-              width={1200}
-              height={1200}
-              sizes="(min-width: 1440px) 482px, (min-width: 701px) 424px, max(230px, calc((100vw - 57px) / 2))"
-            />
-            <BoardCaption>A matter of direction</BoardCaption>
-          </div>
-          <div className="relative col-start-1 row-start-2 flex min-w-0 flex-col justify-between overflow-hidden rounded-[19px] border border-board-line bg-[rgb(156,172,134)] p-4.5 text-[rgb(38,48,30)] min-[381px]:p-5.5 min-[701px]:col-[1/5] min-[701px]:row-[2/4] min-[701px]:rounded-[25px] min-[701px]:p-7">
-            <span className="font-mono text-[7px] leading-normal tracking-[0.03em] min-[701px]:text-[10px]">
-              TACTIC / Perspective series
-            </span>
-            <p className="relative z-1 my-3.75 text-[25px] leading-[1.05] tracking-[-0.06em] min-[381px]:text-[30px] min-[701px]:my-5 min-[701px]:text-[clamp(28px,3.5vw,45px)]">
-              Good things
-              <br />
-              start with
-              <br />
-              <em className="font-editorial font-normal tracking-[-0.07em]">
-                a move.
-              </em>
-            </p>
-            <svg
-              className="absolute -right-3.75 bottom-12.5 h-51.5 w-37.5 rotate-15 opacity-10"
-              aria-hidden="true"
-            >
-              <use href="#tactic-mark" />
-            </svg>
-            <span className="max-w-50 font-mono text-[6px] leading-normal tracking-[0.03em] min-[701px]:text-[8px]">
-              Independent thinking. Shared ambition.
-            </span>
-          </div>
-          <div
-            className="relative col-start-1 row-start-3 min-w-0 overflow-hidden rounded-[19px] border border-board-line bg-[linear-gradient(135deg,rgb(40,43,38),rgb(18,22,18)_85%)] min-[701px]:col-[5/9] min-[701px]:row-start-2 min-[701px]:rounded-[25px]"
-            aria-label="TACTIC business card concept in soft green and black"
-          >
-            <div className="absolute top-[23%] left-[4%] flex aspect-[1.85/1] w-[66%] -rotate-12 items-center justify-between rounded-xs bg-[rgb(29,36,27)] p-3 text-[rgb(181,202,164)] shadow-[8px_14px_25px_rgba(0,0,0,0.25)] [border:1px_solid_rgba(184,204,165,0.09)] min-[701px]:top-[19%] min-[701px]:left-[12%] min-[701px]:w-[57%] min-[701px]:p-3.75">
-              <span className="text-[5px] leading-[1.4] min-[701px]:text-[7px] min-[1001px]:text-[9px]">
-                Independent
-                <br />
-                creative studio.
-              </span>
-              <svg
-                className="h-3.75 w-2.75 min-[701px]:h-5.5 min-[701px]:w-4"
-                aria-hidden="true"
-              >
-                <use href="#tactic-mark" />
-              </svg>
-            </div>
-            <div className="absolute top-[41%] left-[31%] grid aspect-[1.85/1] w-[66%] rotate-11 grid-cols-[10px_1fr] content-center gap-x-1.25 rounded-xs bg-[rgb(193,207,180)] p-2.5 text-[rgb(37,48,31)] shadow-[8px_14px_25px_rgba(0,0,0,0.25)] min-[381px]:grid-cols-[13px_1fr] min-[381px]:gap-x-1.5 min-[381px]:p-3.25 min-[701px]:top-[37%] min-[701px]:left-[36%] min-[701px]:w-[57%] min-[701px]:grid-cols-[17px_1fr] min-[701px]:gap-x-2 min-[701px]:px-3.75 min-[1001px]:grid-cols-[21px_1fr] min-[1001px]:gap-x-3 min-[1001px]:px-5.25 min-[1001px]:py-4.25">
-              <svg
-                className="row-[1/3] h-3.5 w-2.5 min-[381px]:h-4.5 min-[381px]:w-3.25 min-[701px]:h-6 min-[701px]:w-4.25 min-[1001px]:h-7.25 min-[1001px]:w-5.25"
-                aria-hidden="true"
-              >
-                <use href="#tactic-mark" />
-              </svg>
-              <strong className="text-[12px] leading-none font-medium tracking-[-0.055em] min-[381px]:text-[16px] min-[701px]:text-[18px] min-[1001px]:text-[24px]">
-                TACTIC
-              </strong>
-              <span className="mt-1 text-[3px] min-[381px]:text-[4px] min-[701px]:text-[5px] min-[1001px]:text-[7px]">
-                Every move matters.
-              </span>
-            </div>
-          </div>
-          <div className="relative col-start-2 row-start-3 grid min-w-0 grid-cols-[1fr] content-center gap-x-3.75 overflow-hidden rounded-[19px] border border-board-line bg-[rgb(210,211,200)] p-4.5 text-[rgb(48,52,42)] min-[701px]:col-[5/9] min-[701px]:grid-cols-[1fr_auto] min-[701px]:rounded-[25px] min-[701px]:p-7">
-            <span className="font-mono text-[7px] leading-normal tracking-[0.03em] min-[701px]:text-[10px]">
-              Type / Geist
-            </span>
-            <strong className="col-start-1 row-start-2 mt-1.5 text-[60px] leading-none font-normal tracking-[-0.075em] min-[701px]:col-start-2 min-[701px]:row-[1/3] min-[701px]:mt-0 min-[701px]:text-[77px]">
-              Aa
-            </strong>
-            <span className="mt-1 max-w-none text-[7px] leading-[1.3] min-[701px]:mt-3 min-[701px]:max-w-25 min-[701px]:text-[14px]">
-              Clear. Considered. Human.
-            </span>
-          </div>
-          <div
-            className="relative col-[1/3] row-start-4 flex min-w-0 overflow-hidden rounded-[19px] border-0 min-[701px]:col-[9/13] min-[701px]:row-start-3 min-[701px]:rounded-[25px]"
-            aria-label="Brand palette: chalk, charcoal, soft green and muted coral"
-          >
-            <div className="flex flex-[1_1_0%] items-end justify-center bg-chalk px-1.25 py-5 font-mono text-[8px] text-[rgb(69,76,61)]">
-              <span>Chalk</span>
-            </div>
-            <div className="flex flex-[1_1_0%] items-end justify-center bg-carbon px-1.25 py-5 font-mono text-[8px] text-[rgb(177,181,169)]">
-              <span>Carbon</span>
-            </div>
-            <div className="flex flex-[1_1_0%] items-end justify-center bg-sage px-1.25 py-5 font-mono text-[8px] text-[rgb(58,71,47)]">
-              <span>Growth</span>
-            </div>
-            <div className="flex flex-[1_1_0%] items-end justify-center bg-rose px-1.25 py-5 font-mono text-[8px] text-[rgb(70,51,45)]">
-              <span>Feeling</span>
-            </div>
-          </div>
-        </div>
-        <BoardNote>TACTIC identity exploration / Studio concept</BoardNote>
+      <div className="mb-6 grid gap-3 min-[701px]:mb-7 min-[701px]:grid-cols-[1fr_1.3fr_auto] min-[701px]:items-start min-[701px]:gap-10">
+        <p className="text-[22px] font-normal tracking-[-0.035em] min-[701px]:text-[23px]">
+          Every move matters.
+        </p>
+        <p className="max-w-100 text-[12px] leading-[1.75] text-muted min-[701px]:text-[13px]">
+          Branding, digital experiences, AI films and social. One considered
+          language, wherever your brand shows up.
+        </p>
+        <span className="hidden pt-1.25 font-mono text-[9px] leading-normal tracking-[0.06em] text-muted min-[701px]:block">
+          OUR SPECIALTIES
+        </span>
       </div>
+
+      <div
+        className="grid gap-3 min-[701px]:grid-cols-12 min-[701px]:grid-rows-[230px_160px_220px] min-[1001px]:grid-rows-[250px_170px_240px] min-[1440px]:grid-rows-[260px_180px_250px]"
+        aria-label="TACTIC specialties and studio concepts"
+      >
+        <article
+          className="relative flex min-h-68 flex-col items-start justify-between overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-8 min-[701px]:row-start-1 min-[701px]:min-h-0 min-[1001px]:p-7"
+          aria-labelledby="branding-title"
+        >
+          <ServiceNumber>01</ServiceNumber>
+          <div>
+            <ServiceHeading id="branding-title">
+              Branding / Design
+            </ServiceHeading>
+            <p className="mt-2 max-w-95 text-[11px] leading-[1.5] text-carbon/80 min-[1001px]:text-[12px]">
+              Strategy, naming, identity and art direction. One considered
+              language, wherever your brand shows up.
+            </p>
+          </div>
+          <div className="relative my-5 flex w-full justify-center min-[701px]:my-4">
+            <svg
+              className="pointer-events-none absolute top-1/2 left-0 h-[calc(100%+48px)] w-full -translate-y-1/2 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)] text-carbon opacity-[0.07]"
+              aria-hidden="true"
+            >
+              <defs>
+                <pattern
+                  id="branding-construction-grid"
+                  width="28"
+                  height="28"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M28 0H0V28"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.8"
+                  />
+                </pattern>
+              </defs>
+              <rect
+                width="100%"
+                height="100%"
+                fill="url(#branding-construction-grid)"
+              />
+            </svg>
+            <IdentityMarks />
+          </div>
+        </article>
+
+        <article
+          className="relative flex min-h-78 flex-col justify-between overflow-hidden rounded-[25px] bg-[rgb(156,172,134)] p-6 text-[rgb(38,48,30)] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-1 min-[701px]:row-[2/4] min-[701px]:min-h-0 min-[1001px]:p-7"
+          aria-labelledby="social-title"
+        >
+          <ServiceNumber>03</ServiceNumber>
+          <div className="relative z-1">
+            <ServiceHeading id="social-title">Social</ServiceHeading>
+            <p className="mt-2 max-w-60 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
+              We turn scrolls into stops, and audiences into communities.
+            </p>
+          </div>
+          <SocialFeedArtwork />
+          <span className="relative z-1 max-w-55 font-mono text-[8px] leading-[1.7] tracking-[0.03em]">
+            Strategy. Content. Community.
+          </span>
+        </article>
+
+        <div
+          className="flex min-h-48 flex-col items-center justify-center overflow-hidden bg-background px-6 py-5 text-center min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-2 min-[701px]:min-h-0"
+          aria-label="TACTIC — the studio connecting our specialties"
+        >
+          <svg
+            className="h-18 w-13 shrink-0 text-[rgb(44,51,40)] min-[1001px]:h-21 min-[1001px]:w-15.25"
+            aria-hidden="true"
+          >
+            <use href="#tactic-mark" />
+          </svg>
+          <p className="mt-3 font-mono text-[10px] leading-[1.5] text-foreground/70 min-[1001px]:text-[11px]">
+            One considered language.
+          </p>
+          <p className="mt-1.5 font-mono text-[8px] leading-[1.5] tracking-[0.03em] text-muted/75 min-[1001px]:text-[9px]">
+            Every move matters.
+          </p>
+        </div>
+
+        <article
+          className="relative min-h-65 overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          aria-labelledby="web-app-title"
+        >
+          <ServiceNumber className="-bottom-2 left-5">04</ServiceNumber>
+          <div className="relative z-1 flex h-full max-w-[53%] -translate-y-3 flex-col justify-center min-[701px]:max-w-[60%] min-[1001px]:max-w-[53%]">
+            <ServiceHeading id="web-app-title">Web / App</ServiceHeading>
+            <p className="mt-2 max-w-42 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
+              We design digital products that turn complex ideas into intuitive,
+              seamless experiences.
+            </p>
+          </div>
+          <Image
+            src="/studio/web-app-phone.svg"
+            width={300}
+            height={560}
+            alt="A metallic phone displaying TACTIC’s sculptural opposing forms."
+            className="absolute top-8 -right-2 w-[52%] max-w-55 min-[701px]:top-7 min-[701px]:-right-3 min-[701px]:w-[47%] min-[1001px]:right-1 min-[1001px]:w-[52%]"
+            sizes="(min-width: 1001px) 220px, (min-width: 701px) 170px, 52vw"
+          />
+        </article>
+
+        <article
+          className="ability-film-scene relative min-h-100 overflow-hidden rounded-[25px] border border-board-line bg-carbon text-chalk shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-[1/3] min-[701px]:min-h-0"
+          aria-labelledby="ai-film-title"
+        >
+          <Image
+            src="/studio/ai-campaign.png"
+            alt="A black perfume bottle on volcanic rocks, surrounded by smoke against a green and rose sunset."
+            fill
+            sizes="(min-width: 701px) 900px, 720px"
+            className="object-cover object-[51%_center] saturate-75"
+          />
+          <ServiceNumber className="top-3 right-6 z-1">02</ServiceNumber>
+          <div className="relative z-1 p-6 min-[1001px]:p-7">
+            <ServiceHeading id="ai-film-title">AI / AI Film</ServiceHeading>
+            <p className="mt-2 max-w-48 text-[11px] leading-[1.5] text-chalk/85 min-[1001px]:text-[12px]">
+              AI-powered films shaped by creative direction. From the first
+              story to the final frame.
+            </p>
+          </div>
+          <p className="absolute right-6 bottom-7 left-6 z-1 text-[28px] leading-[1.1] tracking-[-0.05em] min-[701px]:text-[clamp(18px,2.6vw,37px)] min-[1001px]:right-7 min-[1001px]:left-7">
+            A moment.
+            <br />
+            <em className="font-editorial font-normal">An entire feeling.</em>
+          </p>
+        </article>
+
+        <figure
+          className="relative min-h-60 overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          aria-label="TACTIC — sculptural studio identity"
+        >
+          <Image
+            src="/studio/hero-preview-wide.webp"
+            width={1228}
+            height={2529}
+            alt="TACTIC’s opposing chevrons rendered as a dark, reflective sculpture."
+            className="absolute top-4 -right-4 h-[145%] w-[58%] object-cover object-top saturate-50"
+            sizes="(min-width: 701px) 320px, 58vw"
+          />
+          <div className="relative z-1 flex items-center gap-2.5">
+            <svg className="h-8 w-6" aria-hidden="true">
+              <use href="#tactic-mark" />
+            </svg>
+            <span className="text-[25px] font-medium tracking-[-0.055em] min-[1001px]:text-[30px]">
+              TACTIC
+            </span>
+          </div>
+          <p className="relative z-1 mt-7 max-w-[48%] text-[23px] leading-[1.12] tracking-[-0.045em] min-[1001px]:text-[28px]">
+            Every move
+            <br />
+            <em className="font-editorial font-normal">matters.</em>
+          </p>
+          <figcaption className="absolute bottom-6 left-6 z-1 max-w-[45%] font-mono text-[8px] leading-[1.7] tracking-[0.03em] opacity-70 min-[1001px]:bottom-7 min-[1001px]:left-7">
+            One mark. Many perspectives.
+          </figcaption>
+        </figure>
+      </div>
+
+      <p className="mt-4 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px]">
+        Branding & Design / Web & App / AI & AI Film / Social
+      </p>
+
       <div className="mt-8.75 flex flex-col items-start justify-between gap-6.25 min-[381px]:flex-row min-[381px]:items-center min-[701px]:mt-12 min-[701px]:gap-7.5">
         <p className="text-[12px] leading-[1.65] text-muted min-[701px]:text-[14px]">
           Something in mind?

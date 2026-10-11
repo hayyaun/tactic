@@ -36,6 +36,7 @@ jobs:
           NEXT_PUBLIC_CLARITY_PROJECT_ID: testclarity
       - run: npm run test:e2e
         env:
+          PLAYWRIGHT_SOFTWARE_RENDERER: "true"
           NEXT_PUBLIC_ENABLE_SCENE_DEBUG: "true"
           CONTACT_DELIVERY_ENABLED: "true"
           CONTACT_LOCAL_RATE_LIMIT: "true"

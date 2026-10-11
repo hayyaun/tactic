@@ -99,9 +99,9 @@ test("Clarity starts by default and stays stopped after rejection; GA4 is absent
   await page
     .getByRole("button", { name: "Privacy settings", exact: true })
     .click();
-  await expect(page.getByRole("status")).toHaveText(
-    "Recordings rejected. Your choice is saved for 180 days.",
-  );
+  await expect(
+    page.locator("#privacy-settings").getByRole("status"),
+  ).toHaveText("Recordings rejected. Your choice is saved for 180 days.");
   await page
     .getByRole("button", { name: "Allow recordings", exact: true })
     .click();
@@ -129,7 +129,9 @@ test("Clarity starts by default and stays stopped after rejection; GA4 is absent
   expect(requests.length).toBe(beforeWithdrawal);
 });
 
-test("Global Privacy Control keeps Clarity unloaded", async ({ page }) => {
+test("browser privacy signals do not lock the default-on recording toggle", async ({
+  page,
+}) => {
   await page.addInitScript(() =>
     Object.defineProperty(navigator, "globalPrivacyControl", { value: true }),
   );
@@ -148,12 +150,48 @@ test("Global Privacy Control keeps Clarity unloaded", async ({ page }) => {
     .click();
   await expect(
     page.getByRole("button", { name: "Allow recordings", exact: true }),
-  ).toBeDisabled();
-  await expect(page.getByRole("status")).toHaveText(
-    "Your browser's Global Privacy Control keeps recording off.",
-  );
+  ).toBeEnabled();
+  await expect(
+    page.locator("#privacy-settings").getByRole("status"),
+  ).toHaveText("Clarity is enabled for this browser.");
+  await expect.poll(() => requests.length).toBeGreaterThan(0);
+  const initialRequests = requests.length;
+  await page
+    .getByRole("button", { name: "Reject recordings", exact: true })
+    .click();
   await expect(page.locator("#tactic-clarity")).toHaveCount(0);
-  expect(requests).toEqual([]);
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Privacy choices", exact: true })
+    .click();
+  const allow = page.getByRole("button", {
+    name: "Allow recordings",
+    exact: true,
+  });
+  await expect(allow).toBeEnabled();
+  await allow.click();
+  await expect.poll(() => requests.length).toBeGreaterThan(initialRequests);
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Privacy choices", exact: true })
+    .click();
+  await expect(
+    page.locator("#privacy-settings").getByRole("status"),
+  ).toHaveText("Clarity is enabled for this browser.");
+  const beforeReject = requests.length;
+  await page
+    .getByRole("button", { name: "Reject recordings", exact: true })
+    .click();
+  await expect(page.locator("#tactic-clarity")).toHaveCount(0);
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Privacy choices", exact: true })
+    .click();
+  await expect(allow).toBeEnabled();
+  await expect(
+    page.locator("#privacy-settings").getByRole("status"),
+  ).toHaveText("Recordings rejected. Your choice is saved for 180 days.");
+  expect(requests.length).toBe(beforeReject);
 });
 
 test("privacy notice is reachable and wizard test endpoints are closed in production", async ({

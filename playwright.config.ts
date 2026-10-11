@@ -14,7 +14,14 @@ export default defineConfig({
     baseURL: externalURL ?? "http://127.0.0.1:3100",
     browserName: "chromium",
     channel: process.env.PLAYWRIGHT_CHANNEL,
-    launchOptions: { args: ["--enable-unsafe-swiftshader"] },
+    launchOptions: {
+      args: [
+        "--enable-unsafe-swiftshader",
+        ...(process.env.PLAYWRIGHT_SOFTWARE_RENDERER === "true"
+          ? ["--use-angle=swiftshader"]
+          : []),
+      ],
+    },
     reducedMotion: "reduce",
     viewport: { width: 1440, height: 1000 },
     trace: "retain-on-failure",

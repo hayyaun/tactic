@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./scene-fixture";
 import { studies } from "../app/studies";
 
 test("study triggers preserve their identity and opener without moving focus", async ({
@@ -73,7 +73,11 @@ test("debug settings copy current values and reset requires confirmation", async
   await exposure.fill("1.25");
   await exposure.press("Enter");
   await page.getByRole("button", { name: "Copy settings" }).click();
-  await expect(page.getByRole("status")).toHaveText("Settings copied.");
+  await expect(
+    page
+      .getByRole("complementary", { name: "Scene debug controls" })
+      .getByRole("status"),
+  ).toHaveText("Settings copied.");
   const copied = JSON.parse(
     await page.evaluate(() => navigator.clipboard.readText()),
   );
@@ -169,7 +173,11 @@ test("background controls update, copy, and restore the shared backdrop", async 
   await expect.poll(background).toContain("data:image/svg+xml");
   await expect(stage).toHaveAttribute("data-ready", "true");
   await page.getByRole("button", { name: "Copy settings" }).click();
-  await expect(page.getByRole("status")).toHaveText("Settings copied.");
+  await expect(
+    page
+      .getByRole("complementary", { name: "Scene debug controls" })
+      .getByRole("status"),
+  ).toHaveText("Settings copied.");
   const copied = JSON.parse(
     await page.evaluate(() => navigator.clipboard.readText()),
   );
@@ -340,7 +348,11 @@ test("clipboard import restores scene and performance values and rejects invalid
   await expect(exposure).toHaveValue("0.72");
   await page.evaluate((text) => navigator.clipboard.writeText(text), copied);
   await page.getByRole("button", { name: "Import from clipboard" }).click();
-  await expect(page.getByRole("status")).toHaveText("Settings imported.");
+  await expect(
+    page
+      .getByRole("complementary", { name: "Scene debug controls" })
+      .getByRole("status"),
+  ).toHaveText("Settings imported.");
   await expect(exposure).toHaveValue("1.25");
   await expect(threshold).toHaveValue("55");
   await page
@@ -358,9 +370,11 @@ test("clipboard import restores scene and performance values and rejects invalid
   ]) {
     await page.evaluate((text) => navigator.clipboard.writeText(text), text);
     await page.getByRole("button", { name: "Import from clipboard" }).click();
-    await expect(page.getByRole("status")).toContainText(
-      "Could not import settings:",
-    );
+    await expect(
+      page
+        .getByRole("complementary", { name: "Scene debug controls" })
+        .getByRole("status"),
+    ).toContainText("Could not import settings:");
     await expect(exposure).toHaveValue("1.25");
   }
 });

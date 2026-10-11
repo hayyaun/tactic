@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           { type: "heading", text: "Optional recordings and heatmaps" },
           {
             type: "paragraph",
-            text: "Microsoft Clarity is enabled by default to provide heatmaps and session recordings that help us improve the website, subject to provider restrictions. You can stop it by choosing Reject recordings in Privacy settings. We honor Global Privacy Control by keeping Clarity unloaded when that browser signal is enabled. Advertising storage is denied. Contact-form contents and brief previews are masked for recordings. We do not use Google Analytics or Plausible.",
+            text: "Microsoft Clarity is enabled by default to provide heatmaps and session recordings that help us improve the website, subject to provider restrictions. You can stop it by choosing Reject recordings in Privacy settings, and change your choice by selecting Allow recordings. The saved choice in Privacy settings controls whether Clarity loads; browser privacy signals do not change this default. Advertising storage is always denied. Contact-form contents and brief previews are masked for recordings. We do not use Google Analytics or Plausible.",
           },
           { type: "heading", text: "Reliability and spam prevention" },
           {

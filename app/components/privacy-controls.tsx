@@ -24,10 +24,7 @@ const trackingEnabled =
   process.env.NEXT_PUBLIC_ENABLE_TRACKING_PREVIEW === "true";
 const validClarity = !!clarityId && /^[a-z0-9]+$/i.test(clarityId);
 const subscribeBrowser = () => () => {};
-function browserAllowsTracking() {
-  return !(navigator as Navigator & { globalPrivacyControl?: boolean })
-    .globalPrivacyControl;
-}
+const browserIsReady = () => true;
 
 function subscribeChoice(callback: () => void) {
   window.addEventListener("storage", callback);
@@ -62,10 +59,10 @@ function cleanRecordingCookies() {
 }
 
 export function PrivacyControls() {
-  // Wait for browser preferences before loading; honor Global Privacy Control.
-  const browserAllowed = useSyncExternalStore(
+  // Read the saved choice before loading Clarity to avoid recording rejected visits.
+  const browserReady = useSyncExternalStore(
     subscribeBrowser,
-    browserAllowsTracking,
+    browserIsReady,
     () => false,
   );
   const storedChoice = useSyncExternalStore(
@@ -88,15 +85,17 @@ export function PrivacyControls() {
   const recordingsAllowed =
     trackingEnabled &&
     validClarity &&
-    browserAllowed &&
+    browserReady &&
     choice?.recordings !== false;
   const trackingUnavailableReason = !trackingEnabled
     ? "Recording is off on this development or preview version."
     : !validClarity
       ? "Recording is unavailable because Clarity is not configured."
-      : !browserAllowed
-        ? "Your browser's Global Privacy Control keeps recording off."
-        : null;
+      : null;
+  const recordingStatus =
+    choice?.recordings === false
+      ? "Recordings rejected. Your choice is saved for 180 days."
+      : (trackingUnavailableReason ?? "Clarity is enabled for this browser.");
 
   useEffect(() => {
     if (open) title.current?.focus();
@@ -114,10 +113,15 @@ export function PrivacyControls() {
 
   useEffect(() => {
     const changed = (event: StorageEvent) => {
-      if (event.key !== storageKey || !recordingsAllowed) return;
+      if (
+        (event.key !== storageKey && event.key !== null) ||
+        !recordingsAllowed
+      )
+        return;
       let stillAllowed = false;
       try {
-        stillAllowed = JSON.parse(readChoice() ?? "null")?.recordings !== false;
+        const saved = JSON.parse(readChoice() ?? "null") as Choice | null;
+        stillAllowed = saved?.recordings !== false;
       } catch {}
       if (!stillAllowed) {
         window.clarity?.("consentv2", {
@@ -266,10 +270,7 @@ export function PrivacyControls() {
             Form contents are masked. Reject recordings to stop tracking.
           </p>
           <p role="status" className="mt-3 text-sm leading-relaxed text-muted">
-            {choice?.recordings === false
-              ? "Recordings rejected. Your choice is saved for 180 days."
-              : (trackingUnavailableReason ??
-                "Clarity is enabled for this browser.")}
+            {recordingStatus}
           </p>
           {choice?.recordings === false && trackingUnavailableReason && (
             <p className="mt-2 text-xs leading-relaxed text-muted">

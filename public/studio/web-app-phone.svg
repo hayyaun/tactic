@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="560" viewBox="0 0 300 560" fill="none">
+  <defs>
+    <linearGradient id="titanium" x1="20" y1="70" x2="56" y2="72" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#272a24"/>
+      <stop offset=".13" stop-color="#a5a99b"/>
+      <stop offset=".27" stop-color="#e0e1d5"/>
+      <stop offset=".4" stop-color="#898c80"/>
+      <stop offset=".57" stop-color="#d1d3c5"/>
+      <stop offset=".77" stop-color="#686c60"/>
+      <stop offset="1" stop-color="#1b1e18"/>
+    </linearGradient>
+    <linearGradient id="side-light" x1="27" y1="11" x2="31" y2="545" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d6d7ca"/>
+      <stop offset=".08" stop-color="#62665c"/>
+      <stop offset=".16" stop-color="#cbcdbf"/>
+      <stop offset=".29" stop-color="#999e8f"/>
+      <stop offset=".51" stop-color="#6a7061"/>
+      <stop offset=".78" stop-color="#c4c7b5"/>
+      <stop offset="1" stop-color="#51574b"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="220" y2="515" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a3a798"/>
+      <stop offset=".12" stop-color="#e1e3d5"/>
+      <stop offset=".25" stop-color="#5a6051"/>
+      <stop offset=".46" stop-color="#33392b"/>
+      <stop offset=".71" stop-color="#939887"/>
+      <stop offset="1" stop-color="#292d25"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="16" y1="20" x2="205" y2="505" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#262a21"/>
+      <stop offset=".31" stop-color="#050702"/>
+      <stop offset=".65" stop-color="#11160b"/>
+      <stop offset="1" stop-color="#030502"/>
+    </linearGradient>
+    <radialGradient id="screen-haze" cx="0" cy="0" r="1" gradientTransform="translate(164 69) rotate(126) scale(272 186)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a6a78e" stop-opacity=".26"/>
+      <stop offset=".55" stop-color="#676e53" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#464a34" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="upper-left" x1="17" y1="18" x2="155" y2="184" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d4d8c3" stop-opacity=".28"/>
+      <stop offset=".3" stop-color="#6d735e" stop-opacity=".21"/>
+      <stop offset="1" stop-color="#9b9e8b" stop-opacity=".36"/>
+    </linearGradient>
+    <linearGradient id="upper-right" x1="205" y1="57" x2="132" y2="201" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9a9f87" stop-opacity=".41"/>
+      <stop offset=".45" stop-color="#757b62" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#adb49b" stop-opacity=".31"/>
+    </linearGradient>
+    <linearGradient id="upper-edge" x1="20" y1="136" x2="152" y2="221" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a5ab95" stop-opacity=".32"/>
+      <stop offset=".39" stop-color="#a6ad97" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#727b61" stop-opacity=".3"/>
+    </linearGradient>
+    <linearGradient id="lower-left" x1="16" y1="306" x2="121" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#161d0f" stop-opacity=".67"/>
+      <stop offset=".8" stop-color="#8d9877" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#b4bda2" stop-opacity=".39"/>
+    </linearGradient>
+    <linearGradient id="lower-right" x1="114" y1="264" x2="213" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8e967d" stop-opacity=".38"/>
+      <stop offset=".56" stop-color="#6b7558" stop-opacity=".23"/>
+      <stop offset="1" stop-color="#171e10" stop-opacity=".57"/>
+    </linearGradient>
+    <linearGradient id="glass-sheen" x1="9" y1="75" x2="168" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e3e5d6" stop-opacity=".3"/>
+      <stop offset=".14" stop-color="#dce1ce" stop-opacity=".08"/>
+      <stop offset=".23" stop-color="#dce1ce" stop-opacity="0"/>
+      <stop offset="1" stop-color="#dce1ce" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="screen-clip"><rect x="7" y="7" width="222" height="500" rx="32"/></clipPath>
+  </defs>
+
+  <path d="M65 14C35 12 20 28 20 58V491C20 517 31 533 56 538L236 551C263 553 280 536 280 509V76C280 49 268 33 243 30L65 14Z" fill="url(#titanium)"/>
+  <path d="M54 17C35 21 26 36 26 61V492C26 514 34 529 51 535" stroke="url(#side-light)" stroke-width="3.5"/>
+  <path d="M32 59V493C32 513 38 525 48 531" stroke="#373c30" stroke-width="1.4"/>
+  <path d="M21 71L34 69M21 460L34 460" stroke="#4b5143" stroke-width="2"/>
+  <path d="M26 121C24 121 24 123 24 126V147C24 150 25 151 27 150L29 149V124L26 121Z" fill="#51594a" stroke="#bcc2ae" stroke-width=".65"/>
+  <path d="M26 166C24 166 24 168 24 171V209C24 212 25 214 27 213L29 212V169L26 166Z" fill="#6b7361" stroke="#bdc5af" stroke-width=".65"/>
+  <path d="M26 225C24 225 24 227 24 230V268C24 271 25 273 27 272L29 271V228L26 225Z" fill="#606959" stroke="#bac2ac" stroke-width=".65"/>
+  <path d="M24 126V145M24 172V207M24 231V266" stroke="#20281a" stroke-width=".8"/>
+
+  <g transform="translate(36 16) skewY(4)">
+    <rect x="0" y="0" width="236" height="514" rx="39" fill="#080b05" stroke="url(#rim)" stroke-width="2.1"/>
+    <rect x="3" y="3" width="230" height="508" rx="36" fill="#010300" stroke="#5b624f" stroke-opacity=".54" stroke-width=".9"/>
+    <g clip-path="url(#screen-clip)">
+      <rect x="7" y="7" width="222" height="500" fill="url(#screen)"/>
+      <rect x="7" y="7" width="222" height="500" fill="url(#screen-haze)"/>
+
+      <path d="M19 18L161 104L219 48V139L176 184L19 91V18Z" fill="url(#upper-left)"/>
+      <path d="M161 104L219 48V139L176 184L161 104Z" fill="url(#upper-right)"/>
+      <path d="M19 91L176 184L219 139V170L176 217L19 122V91Z" fill="url(#upper-edge)"/>
+      <path d="M19 18V91L176 184L219 139V48L161 104L19 18Z" stroke="#b4bba5" stroke-opacity=".35" stroke-width=".8"/>
+      <path d="M19 18L161 104L219 48M19 36L162 121L219 66" stroke="#d0d6c0" stroke-opacity=".3" stroke-width=".6"/>
+      <path d="M19 91L176 184L219 139" stroke="#e0e5cd" stroke-opacity=".6" stroke-width="1.15"/>
+      <path d="M19 122L176 217L219 170" stroke="#c3ccb3" stroke-opacity=".4" stroke-width=".9"/>
+      <path d="M19 93L175 186L219 141" stroke="#404932" stroke-opacity=".6" stroke-width="1.4"/>
+      <path d="M161 104L176 184V217" stroke="#aeb89b" stroke-opacity=".21" stroke-width=".8"/>
+      <path d="M19 18V91M176 184V217M219 139V170" stroke="#c9d1bb" stroke-opacity=".29" stroke-width=".75"/>
+
+      <path d="M7 310L94 227L229 308V406L108 321L7 416V310Z" fill="url(#lower-left)"/>
+      <path d="M94 227L229 308V406L108 321L94 227Z" fill="url(#lower-right)"/>
+      <path d="M7 310L94 227L229 308M7 327L97 245L229 325" stroke="#c7d0b6" stroke-opacity=".32" stroke-width=".75"/>
+      <path d="M7 416L108 321L229 406" stroke="#bcc8a8" stroke-opacity=".37" stroke-width=".85"/>
+      <path d="M94 227L108 321" stroke="#b8c5a1" stroke-opacity=".31" stroke-width=".7"/>
+      <path d="M7 416L108 321L229 406V435L108 351L7 446V416Z" fill="#5b654b" fill-opacity=".2"/>
+      <path d="M7 446L108 351L229 435" stroke="#adb99b" stroke-opacity=".25" stroke-width=".8"/>
+      <path d="M108 321V351" stroke="#c3cfb0" stroke-opacity=".25" stroke-width=".7"/>
+
+      <path d="M7 7H44V507H7V7Z" fill="url(#glass-sheen)"/>
+      <path d="M8 23V482" stroke="#ced3be" stroke-opacity=".13" stroke-width="1.5"/>
+      <path d="M228 50V467" stroke="#bcc7a8" stroke-opacity=".18" stroke-width="1"/>
+    </g>
+    <rect x="84" y="16" width="64" height="22" rx="11" fill="#010200"/>
+    <circle cx="137" cy="26.7" r="3" fill="#10170c"/>
+    <circle cx="137" cy="26.7" r="1.55" fill="#252e1c"/>
+    <circle cx="136.5" cy="26.1" r=".55" fill="#5a6b42" fill-opacity=".55"/>
+    <path d="M38 2H197C219 2 233 17 233 40" stroke="#e0e2d0" stroke-opacity=".48" stroke-width=".75"/>
+    <path d="M4 40V466" stroke="#d4dcc4" stroke-opacity=".21" stroke-width=".6"/>
+    <path d="M234 57V474" stroke="#969f87" stroke-opacity=".35" stroke-width=".7"/>
+  </g>
+</svg>

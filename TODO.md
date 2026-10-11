@@ -63,7 +63,7 @@ Checkboxes track completion; colors indicate responsibility and dependencies, no
 - [x] 🟡 Filter personal information from error reports; disable Sentry replay/tracing and drop logs/metrics.
 - [ ] 🔵 Uptime monitor: configure downtime alerts.
 - [x] 🔵 Microsoft Clarity: supply project ID yvn7ipejec.
-- [x] 🟡 Integrate Microsoft Clarity with form masking, opt-out, explicit cookie consent, and Global Privacy Control support.
+- [x] 🟡 Integrate Microsoft Clarity with form masking, default-on recording, reversible opt-out, and explicit cookie consent.
 - [x] 🔵 Microsoft Clarity: select strict masking and review dashboard access (confirmed by you).
 - [ ] 🔵 Microsoft Clarity: review provider retention settings/policy.
 
