@@ -173,9 +173,9 @@ function IndividualCapabilityPlane({ card }: { card: "branding" | "social" }) {
   return (
     <svg
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 h-full w-full text-carbon ${isBranding ? "opacity-[0.05]" : "opacity-[0.10]"}`}
+      className={`pointer-events-none absolute inset-0 h-full w-full text-carbon ${isBranding ? "opacity-[0.022]" : "opacity-[0.10]"}`}
       viewBox={isBranding ? "0 0 880 260" : "0 0 440 440"}
-      preserveAspectRatio="xMaxYMin slice"
+      preserveAspectRatio={isBranding ? "xMinYMin slice" : "xMaxYMin slice"}
     >
       <defs>
         <linearGradient id={fadeId} x1="0" y1="0" x2="1" y2="0">
@@ -188,20 +188,20 @@ function IndividualCapabilityPlane({ card }: { card: "branding" | "social" }) {
         <>
           <rect
             className="min-[701px]:hidden"
-            x="665"
-            y="-48"
-            width="200"
+            x="-90"
+            y="-66"
+            width="320"
             height="108"
-            transform="rotate(-36 765 6)"
+            transform="rotate(-36 130 -12)"
             fill={`url(#${fadeId})`}
           />
           <rect
             className="hidden min-[701px]:block"
-            x="310"
-            y="-74"
-            width="340"
+            x="-130"
+            y="-102"
+            width="480"
             height="180"
-            transform="rotate(-36 480 16)"
+            transform="rotate(-36 180 -12)"
             fill={`url(#${fadeId})`}
           />
         </>
