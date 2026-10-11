@@ -37,7 +37,9 @@ function ServiceNumber({
         {mobileNumber ? (
           <>
             <span className="min-[701px]:hidden">{mobileNumber}</span>
-            <span className="hidden min-[701px]:inline">{children.slice(1)}</span>
+            <span className="hidden min-[701px]:inline">
+              {children.slice(1)}
+            </span>
           </>
         ) : (
           children.slice(1)
@@ -245,12 +247,12 @@ function CapabilityBackdrop({ card }: { card: "branding" | "social" }) {
 function IdentityMarks() {
   return (
     <div
-      className="relative z-1 grid w-full max-w-160 grid-cols-3 items-center justify-items-center gap-x-8 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:min-h-17 min-[701px]:grid-cols-5 min-[701px]:gap-9 min-[701px]:px-0"
+      className="relative z-1 grid w-full max-w-144 grid-cols-3 items-center justify-items-center gap-x-6 gap-y-7 px-7 text-[rgb(48,55,43)] min-[701px]:min-h-17 min-[701px]:grid-cols-5 min-[701px]:gap-7 min-[701px]:px-0"
       role="img"
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/branding:opacity-100 motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-10"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -260,12 +262,12 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-10"
-        viewBox="100 60 390 320"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/branding:opacity-100 motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-10"
+        viewBox="0 0 40 40"
         aria-hidden="true"
       >
         <path
-          d="M199 112C181 132 175 157 175 183C175 252 228 307 294 307C362 307 415 254 415 186C415 156 408 133 391 112L410 96Q424 85 432 99C457 133 463 163 461 193C460 229 449 260 433 288L452 308C480 339 442 371 414 346L390 324C365 343 332 354 294 354C202 354 128 278 128 187C128 149 138 116 154 95Q162 82 173 93ZM225 132 294 180 364 132C378 150 384 167 381 189C378 237 340 275 294 275C247 275 209 239 208 191C205 168 214 145 225 132Z"
+          d="M39.9297 3.37945V0H36.5554C25.5185 0 16.5905 8.94145 16.5905 19.9951V32.8088C12.3023 31.6823 8.85765 28.4437 7.45167 24.2194C6.60809 21.7552 4.35852 19.9951 1.68717 19.9951H0C0 31.2599 9.27944 40.3421 20.5975 39.9901C31.4939 39.6381 40 30.4854 40 19.5726L39.9297 3.37945ZM23.3392 32.8088V19.9951C23.3392 13.8698 27.4868 8.73023 33.181 7.18132V19.9951C33.181 26.1203 29.0334 31.2599 23.3392 32.8088Z"
           fill="currentColor"
         />
       </svg>
@@ -280,17 +282,38 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-10"
-        viewBox="0 4 100 94"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/branding:opacity-100 motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-10"
+        viewBox="0 0 37 37"
         aria-hidden="true"
       >
         <path
-          d="M10 78C12 36 29 9 57 8C67 7 75 9 84 10C81 32 65 38 51 50C37 62 24 72 10 78ZM49 94C46 73 50 54 68 43C78 37 87 37 95 38C94 66 87 93 64 95ZM44 66 42 95 9 89Z"
-          fill="currentColor"
+          d="M0 0.00976562V36.9972H18.4947C18.4947 26.783 10.2141 18.5025 0 18.5025H18.4947C18.4947 8.29032 10.2141 0.00976562 0 0.00976562Z"
+          fill="#454940"
         />
+        <path
+          d="M18.4951 0.00976562C18.4951 10.2239 26.7757 18.5045 36.9898 18.5045H18.4951C18.4951 28.7186 26.7757 36.9991 36.9898 36.9991V0.00976562H18.4951Z"
+          fill="#454940"
+        />
+        <path
+          d="M18.4947 0C18.4947 10.2141 26.7752 18.4947 36.9894 18.4947H31.9447C25.1385 18.4591 19.2032 14.7502 16.0208 9.24833V9.25625C12.8206 3.72467 6.84769 0 0 0V18.4947C0 28.7088 8.28055 36.9894 18.4947 36.9894C18.4947 26.7752 10.2141 18.4947 0 18.4947H4.95962C11.7064 18.4947 17.6061 22.1085 20.836 27.5036C23.9986 33.1598 30.0447 36.9874 36.9854 36.9874V18.4947C36.9854 8.28055 28.7049 0 18.4907 0H18.4947Z"
+          fill="url(#nomadic-art-logo-shading)"
+        />
+        <defs>
+          <radialGradient
+            id="nomadic-art-logo-shading"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(18.4947 18.4947) scale(18.4947)"
+          >
+            <stop stopColor="#454940" />
+            <stop offset="1" stopColor="#1C1E1A" />
+          </radialGradient>
+        </defs>
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/branding:opacity-100 motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-10"
         viewBox="35 25 146 120"
         aria-hidden="true"
       >
@@ -353,7 +376,10 @@ export function Capabilities() {
           <ServiceNumber opacityClassName="opacity-[0.045]">o1</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="branding-title">
-              Branding / <em className="inline-block skew-x-6 font-editorial font-normal">Design</em>
+              Branding /{" "}
+              <em className="inline-block skew-x-6 font-editorial font-normal">
+                Design
+              </em>
             </ServiceHeading>
             <p className="mt-2 max-w-95 text-[11px] leading-[1.5] text-carbon/80 min-[1001px]:text-[12px]">
               Strategy, naming, identity and art direction. One considered
@@ -432,7 +458,10 @@ export function Capabilities() {
           </ServiceNumber>
           <div className="relative z-1 flex h-full max-w-[53%] -translate-y-3 flex-col justify-center min-[701px]:max-w-[60%] min-[1001px]:max-w-[53%]">
             <ServiceHeading id="web-app-title">
-              Web / <em className="inline-block skew-x-6 font-editorial font-normal">App</em>
+              Web /{" "}
+              <em className="inline-block skew-x-6 font-editorial font-normal">
+                App
+              </em>
             </ServiceHeading>
             <p className="mt-2 max-w-42 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
               We design digital products that turn complex ideas into intuitive,
@@ -440,9 +469,9 @@ export function Capabilities() {
             </p>
           </div>
           <Image
-            src="/studio/web-app-phone.svg"
-            width={300}
-            height={560}
+            src="/studio/web-app-phone.png"
+            width={666}
+            height={1126}
             alt="A metallic phone displaying TACTIC’s sculptural opposing forms."
             className="absolute top-8 -right-2 w-[52%] max-w-55 transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/web:-translate-y-1.5 motion-reduce:transition-none min-[701px]:top-7 min-[701px]:-right-3 min-[701px]:w-[47%] min-[1001px]:right-1 min-[1001px]:w-[52%]"
             sizes="(min-width: 1001px) 220px, (min-width: 701px) 170px, 52vw"
@@ -469,7 +498,10 @@ export function Capabilities() {
           </ServiceNumber>
           <div className="absolute right-6 bottom-7 left-6 z-1 min-[1001px]:right-7 min-[1001px]:left-7">
             <ServiceHeading id="ai-film-title">
-              AI / <em className="inline-block skew-x-6 font-editorial font-normal">AI Film</em>
+              AI /{" "}
+              <em className="inline-block skew-x-6 font-editorial font-normal">
+                AI Film
+              </em>
             </ServiceHeading>
             <p className="mt-2 max-w-48 text-[11px] leading-[1.5] text-chalk/85 min-[1001px]:text-[12px]">
               AI-powered films shaped by creative direction. From the first
