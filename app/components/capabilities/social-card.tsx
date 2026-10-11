@@ -9,6 +9,7 @@ import { SocialFeedArtwork } from "./social-feed-artwork";
 export function SocialCard() {
   return (
     <CapabilityCard
+      href="/services/social"
       variant="social"
       className="ability-social-scene flex min-h-78 flex-col justify-between min-[701px]:col-span-4 min-[701px]:col-start-1 min-[701px]:row-[2/4]"
       aria-labelledby="social-title"

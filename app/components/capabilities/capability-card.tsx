@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import Link from "next/link";
 
 const surfaces = {
   chalk: "bg-chalk p-6 text-carbon min-[1001px]:p-7",
@@ -9,13 +10,44 @@ const surfaces = {
 export function CapabilityCard({
   variant = "chalk",
   className = "",
+  children,
+  href,
   ...props
-}: HTMLAttributes<HTMLElement> & { variant?: keyof typeof surfaces }) {
+}: HTMLAttributes<HTMLElement> & {
+  variant?: keyof typeof surfaces;
+  href: string;
+}) {
   return (
     <article
       {...props}
-      className={`relative overflow-hidden rounded-[25px] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:min-h-0 ${surfaces[variant]} ${className}`}
-    />
+      className={`capability-card relative cursor-pointer overflow-hidden rounded-[25px] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:min-h-0 ${surfaces[variant]} ${className}`}
+    >
+      {children}
+      <Link
+        href={href}
+        aria-labelledby={props["aria-labelledby"]}
+        className="absolute inset-0 z-3 rounded-[25px] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current"
+      />
+      <svg
+        className={`capability-navigation pointer-events-none absolute bottom-5 z-2 h-4 w-16 overflow-visible text-current ${href === "/services/web-app" ? "left-6 min-[1001px]:left-7" : "right-6 min-[1001px]:right-7"}`}
+        viewBox="0 0 64 16"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          className="capability-navigation-line"
+          d="M0 8H63"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+        <path
+          className="capability-navigation-head"
+          d="M55 0L63 8"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+      </svg>
+    </article>
   );
 }
 

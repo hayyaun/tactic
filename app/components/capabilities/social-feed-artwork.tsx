@@ -7,7 +7,6 @@ export function SocialFeedArtwork() {
       className="social-feed-artwork relative mx-auto my-4 h-62 w-full max-w-85 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-carbon/50"
       role="img"
       aria-label="Social campaign concepts: a designed post, campaign artwork and a short film"
-      tabIndex={0}
     >
       <div
         aria-hidden="true"

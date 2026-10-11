@@ -8,6 +8,7 @@ import {
 export function AiFilmCard() {
   return (
     <CapabilityCard
+      href="/services/ai-film"
       variant="film"
       className="ability-film-scene group/film min-h-100 min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-[1/3]"
       aria-labelledby="ai-film-title"

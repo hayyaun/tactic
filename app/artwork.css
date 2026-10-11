@@ -1,5 +1,70 @@
 /* Bespoke illustration details. Layout lives in Tailwind utilities. */
 @layer components {
+  .capability-navigation {
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+  .capability-navigation-line {
+    transform: scaleX(0);
+    transform-origin: 0px 8px;
+  }
+  .capability-navigation-head {
+    opacity: 0;
+  }
+  .capability-card:is(:hover, :focus-within) .capability-navigation {
+    opacity: 0.65;
+  }
+  @keyframes capability-line-reveal {
+    0% {
+      transform: scaleX(0);
+      transform-origin: 0px 8px;
+    }
+    55% {
+      transform: scaleX(1);
+      transform-origin: 0px 8px;
+    }
+    56% {
+      transform: scaleX(1);
+      transform-origin: 63px 8px;
+    }
+    100% {
+      transform: scaleX(0.32);
+      transform-origin: 63px 8px;
+    }
+  }
+  @keyframes capability-head-reveal {
+    0%,
+    55% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .capability-card:is(:hover, :focus-within) .capability-navigation-line {
+      animation: capability-line-reveal 1100ms cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+    }
+    .capability-card:is(:hover, :focus-within) .capability-navigation-head {
+      animation: capability-head-reveal 1100ms ease-out forwards;
+    }
+  }
+  @media (prefers-reduced-motion: reduce), (hover: none) {
+    .capability-card .capability-navigation {
+      opacity: 0.5;
+      transition: none;
+    }
+    .capability-card .capability-navigation-line {
+      transform: scaleX(0.32);
+      transform-origin: 63px 8px;
+      animation: none;
+    }
+    .capability-card .capability-navigation-head {
+      opacity: 1;
+      animation: none;
+    }
+  }
   @media (prefers-reduced-motion: no-preference) {
     .capability-number-prefix,
     .capability-number-digit {
@@ -71,7 +136,7 @@
     --feed-lift: -3px;
     --feed-angle: 0deg;
   }
-  .social-feed-artwork:focus-visible .social-feed-piece {
+  .ability-social-scene:focus-within .social-feed-piece {
     transform: translate(var(--feed-spread), var(--feed-lift))
       rotate(var(--feed-angle));
     transition-timing-function: linear(0, 0.65 18%, 1.45 42%, 1.15 65%, 1);

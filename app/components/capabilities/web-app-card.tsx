@@ -8,6 +8,7 @@ import {
 export function WebAppCard() {
   return (
     <CapabilityCard
+      href="/services/web-app"
       variant="chalk"
       className="group/web min-h-65 min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3"
       aria-labelledby="web-app-title"
