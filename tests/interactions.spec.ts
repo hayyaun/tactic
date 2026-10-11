@@ -1,6 +1,8 @@
 import { expect, test } from "./scene-fixture";
 import { studies } from "../app/studies";
 
+test.use({ sceneBrowserGroup: "interactions" });
+
 test("study triggers preserve their identity and opener without moving focus", async ({
   page,
 }) => {

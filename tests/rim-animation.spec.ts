@@ -2,7 +2,10 @@ import type { Page } from "@playwright/test";
 import { expect, test } from "./scene-fixture";
 
 // Preserve real shaders and animation while bounding CPU rasterization in CI.
-test.use({ viewport: { width: 960, height: 740 } });
+test.use({
+  viewport: { width: 960, height: 740 },
+  sceneBrowserGroup: "rim-animation",
+});
 test.setTimeout(120_000);
 
 async function observeScene(page: Page) {
@@ -66,7 +69,8 @@ test("idle rim shines, pauses offscreen, and resumes on return", async ({
   await page.waitForTimeout(2500);
   const after = await stage.screenshot();
   expect(after.equals(before)).toBe(false);
-  expect(await drawCount(page)).toBeGreaterThan(initialDraws);
+  // Slow screenshot encoding can land in the quiet interval between sweeps.
+  await expect.poll(() => drawCount(page)).toBeGreaterThan(initialDraws);
   // Observe the actual quiet period locally in the browser. Screenshot encoding
   // and host round trips must not push this measurement into the next sweep.
   await expect
@@ -98,11 +102,22 @@ test("idle rim shines, pauses offscreen, and resumes on return", async ({
       stage.evaluate((element) => element.getBoundingClientRect().bottom),
     )
     .toBeLessThanOrEqual(0);
-  // IntersectionObserver and pending demand frames must finish before measuring.
-  await page.waitForTimeout(500);
+  // Allow queued resize/visibility frames to drain. Observe longer than the
+  // five-second sweep gap, so an animation still running offscreen cannot pass.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const probe = (window as unknown as { rimProbe: { draws: number } })
+            .rimProbe;
+          const before = probe.draws;
+          await new Promise((resolve) => setTimeout(resolve, 6000));
+          return probe.draws === before;
+        }),
+      { timeout: 20_000 },
+    )
+    .toBe(true);
   const pausedDraws = await drawCount(page);
-  await page.waitForTimeout(750);
-  expect(await drawCount(page)).toBe(pausedDraws);
 
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await expect.poll(() => drawCount(page)).toBeGreaterThan(pausedDraws);

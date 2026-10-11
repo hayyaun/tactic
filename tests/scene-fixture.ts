@@ -2,7 +2,12 @@ import { test as base, expect } from "@playwright/test";
 
 // Rendering tests exercise real WebGL on CPU-only runners. This changes only
 // the test browser's admission probe, never the deployed performance policy.
-export const test = base.extend<{ allowSoftwareRenderer: boolean }>({
+export const test = base.extend<
+  { allowSoftwareRenderer: boolean },
+  { sceneBrowserGroup: string }
+>({
+  // Different worker options force a fresh browser between rendering suites.
+  sceneBrowserGroup: ["scene", { scope: "worker", option: true }],
   allowSoftwareRenderer: [true, { option: true }],
   page: async ({ page, allowSoftwareRenderer }, runFixture) => {
     // Scene checks are independent of the analytics provider's network service.
