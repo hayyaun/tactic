@@ -143,7 +143,7 @@ function IdentityMarks() {
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        className="h-12 w-full max-w-19 opacity-60 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -153,7 +153,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        className="h-13 w-full max-w-19 opacity-80 min-[701px]:translate-y-0.5 min-[1001px]:h-18"
         viewBox="59 77 306 303"
         aria-hidden="true"
       >
@@ -163,7 +163,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-21 min-[1001px]:h-18"
+        className="h-14 w-full max-w-21 min-[701px]:-translate-y-1 min-[1001px]:h-20"
         viewBox="120 83 348 277"
         aria-hidden="true"
       >
@@ -173,7 +173,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        className="h-13 w-full max-w-19 opacity-80 min-[701px]:translate-y-0.5 min-[1001px]:h-18"
         viewBox="0 0 100 100"
         aria-hidden="true"
       >
@@ -183,7 +183,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-19 min-[1001px]:h-18"
+        className="h-12 w-full max-w-19 opacity-60 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
         viewBox="35 20 146 130"
         aria-hidden="true"
       >
@@ -367,34 +367,28 @@ export function Capabilities() {
 
         <Link
           href="/services"
-          className="group relative block min-h-60 overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-label="Explore our services"
         >
-          <Image
-            src="/studio/hero-preview-wide.webp"
-            width={1228}
-            height={2529}
-            alt="TACTIC’s opposing chevrons rendered as a dark, reflective sculpture."
-            className="absolute top-4 -right-4 h-[145%] w-[58%] object-cover object-top saturate-50"
-            sizes="(min-width: 701px) 320px, 58vw"
-          />
-          <div className="relative z-1 flex items-center gap-2.5">
-            <svg className="h-8 w-6" aria-hidden="true">
+          <div className="flex items-center gap-2 opacity-65">
+            <svg className="h-6 w-4.5" aria-hidden="true">
               <use href="#tactic-mark" />
             </svg>
-            <span className="text-[25px] font-medium tracking-[-0.055em] min-[1001px]:text-[30px]">
+            <span className="text-[18px] font-medium tracking-[-0.055em]">
               TACTIC
             </span>
           </div>
-          <p className="relative z-1 mt-7 max-w-[48%] text-[23px] leading-[1.12] tracking-[-0.045em] min-[1001px]:text-[28px]">
-            Every move
+          <p className="my-5 text-[28px] leading-[1.08] tracking-[-0.045em] min-[1001px]:text-[34px]">
+            Explore our
             <br />
-            <em className="font-editorial font-normal">matters.</em>
+            <em className="font-editorial font-normal">services.</em>
           </p>
-          <span className="absolute bottom-6 left-6 z-1 flex max-w-[50%] items-center gap-2 text-[11px] leading-[1.5] tracking-[-0.02em] min-[1001px]:bottom-7 min-[1001px]:left-7 min-[1001px]:text-[12px]">
-            Explore our services
+          <span className="flex items-end justify-between gap-4">
+            <span className="font-mono text-[8px] leading-[1.7] tracking-[0.03em] opacity-65 min-[1001px]:text-[9px]">
+              Four specialties. One direction.
+            </span>
             <svg
-              className="h-3 w-3 shrink-0 transition-transform duration-500 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+              className="h-5 w-5 shrink-0 transition-transform duration-500 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
               aria-hidden="true"
             >
               <use href="#arrow-up-right" />
