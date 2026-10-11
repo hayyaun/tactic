@@ -26,10 +26,12 @@ function ServiceNumber({
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute inline-flex items-start font-editorial text-[144px] leading-none font-normal tracking-[-0.055em] lining-nums select-none min-[701px]:text-[164px] min-[1001px]:text-[192px] ${opacityClassName} ${className}`}
+      className={`capability-number pointer-events-none absolute inline-flex items-start font-editorial text-[144px] leading-none font-normal tracking-[-0.055em] lining-nums select-none min-[701px]:text-[164px] min-[1001px]:text-[192px] ${opacityClassName} ${className}`}
     >
-      <span className="relative -top-[0.23em]">{children[0]}</span>
-      <span>{children.slice(1)}</span>
+      <span className="capability-number-prefix relative -top-[0.23em]">
+        {children[0]}
+      </span>
+      <span className="capability-number-digit">{children.slice(1)}</span>
     </span>
   );
 }
@@ -378,7 +380,7 @@ export function Capabilities() {
         </article>
 
         <article
-          className="relative flex min-h-78 flex-col justify-between overflow-hidden rounded-[25px] bg-[rgb(156,172,134)] p-6 text-[rgb(38,48,30)] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-1 min-[701px]:row-[2/4] min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="ability-social-scene relative flex min-h-78 flex-col justify-between overflow-hidden rounded-[25px] bg-[rgb(156,172,134)] p-6 text-[rgb(38,48,30)] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-1 min-[701px]:row-[2/4] min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="social-title"
         >
           <CapabilityBackdrop card="social" />

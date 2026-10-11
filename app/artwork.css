@@ -1,5 +1,25 @@
 /* Bespoke illustration details. Layout lives in Tailwind utilities. */
 @layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    .capability-number-prefix,
+    .capability-number-digit {
+      transition: translate 1800ms ease-in-out;
+    }
+    article:focus-within > .capability-number .capability-number-prefix {
+      translate: 0 -3px;
+    }
+    article:focus-within > .capability-number .capability-number-digit {
+      translate: 0 3px;
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    article:hover > .capability-number .capability-number-prefix {
+      translate: 0 -3px;
+    }
+    article:hover > .capability-number .capability-number-digit {
+      translate: 0 3px;
+    }
+  }
   @keyframes services-orbit {
     to {
       rotate: 1turn;
@@ -58,7 +78,7 @@
     transition-duration: 950ms;
   }
   @media (hover: hover) {
-    .social-feed-artwork:hover .social-feed-piece {
+    .ability-social-scene:hover .social-feed-piece {
       transform: translate(var(--feed-spread), var(--feed-lift))
         rotate(var(--feed-angle));
       transition-timing-function: linear(0, 0.65 18%, 1.45 42%, 1.15 65%, 1);
@@ -66,7 +86,7 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .social-feed-artwork .social-feed-piece {
+    .ability-social-scene .social-feed-artwork .social-feed-piece {
       transform: none;
       transition: none;
     }
