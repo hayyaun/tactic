@@ -310,8 +310,11 @@ function HeroBackdrop({ backgroundURL }: { backgroundURL: string }) {
   }, [backgroundURL, source, texture, invalidate]);
   const size = useThree((state) => state.size);
   const gl = useThree((state) => state.gl);
+  // Read both positions together: Fiber's measured top can lag behind scrolling
+  // and make the shader stretch a clamped texture row across the canvas.
+  const canvasBounds = gl.domElement.getBoundingClientRect();
   const bounds = gl.domElement.closest("section")?.getBoundingClientRect();
-  const offset = size.top - (bounds?.top ?? 0);
+  const offset = canvasBounds.top - (bounds?.top ?? canvasBounds.top);
   const height = bounds?.height ?? size.height + offset;
   const uniforms = useMemo(
     () => ({
@@ -826,11 +829,12 @@ function Sculpture({
   // Extend the backdrop across the hero without changing the sculpture's
   // original viewport scale or projected position.
   const gl = useThree((state) => state.gl);
+  const canvasBounds = gl.domElement.getBoundingClientRect();
   const artBounds = gl.domElement
     .closest("[data-hero-art]")
     ?.getBoundingClientRect();
   const artHeight = Math.max(artBounds?.height ?? size.height, 1);
-  const artOffset = (artBounds?.top ?? size.top) - size.top;
+  const artOffset = (artBounds?.top ?? canvasBounds.top) - canvasBounds.top;
   const viewHeight =
     Math.max(
       SCENE_FRAMING.minHeight,
@@ -1083,6 +1087,7 @@ export default function HeroCanvas(props: SceneProps) {
         if (source.current) state.events.connect?.(source.current);
       }}
       className="absolute inset-0 size-full"
+      resize={{ scroll: false }}
       frameloop="never"
       dpr={[1, props.settings.dprLimit]}
       gl={{

@@ -276,3 +276,84 @@ test("one loaded backdrop covers the entire hero on mobile and desktop", async (
       expect(Math.abs(canvas![key] - hero![key])).toBeLessThan(1);
   }
 });
+
+test("scrolling back to the hero keeps every backdrop frame aligned", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const samples: {
+      stage: number[];
+      expected: number[];
+    }[] = [];
+    Object.assign(window, { backdropSamples: samples });
+    const names = new WeakMap<WebGLUniformLocation, string>();
+    const getLocation = WebGL2RenderingContext.prototype.getUniformLocation;
+    WebGL2RenderingContext.prototype.getUniformLocation = function (
+      program,
+      name,
+    ) {
+      const location = getLocation.call(this, program, name);
+      if (location) names.set(location, name);
+      return location;
+    };
+    const uniform = WebGL2RenderingContext.prototype.uniform3f;
+    WebGL2RenderingContext.prototype.uniform3f = function (location, x, y, z) {
+      const canvas = this.canvas;
+      if (
+        canvas instanceof HTMLCanvasElement &&
+        location &&
+        names.get(location) === "stage"
+      ) {
+        const hero = canvas.closest("section.hero-atmosphere");
+        if (hero) {
+          const canvasBounds = canvas.getBoundingClientRect();
+          const heroBounds = hero.getBoundingClientRect();
+          samples.push({
+            stage: [x, y, z],
+            expected: [
+              heroBounds.height,
+              canvasBounds.top - heroBounds.top,
+              canvasBounds.height,
+            ],
+          });
+        }
+      }
+      uniform.call(this, location, x, y, z);
+    };
+  });
+  for (const viewport of [
+    { width: 1440, height: 1000 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const stage = page.locator("[data-hero-art]");
+    await expect(stage).toHaveAttribute("data-ready", "true");
+    for (let pass = 0; pass < 3; pass++) {
+      await page.evaluate(() =>
+        document
+          .querySelector("#studio")!
+          .scrollIntoView({ behavior: "instant" }),
+      );
+      await page.waitForTimeout(200);
+      await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForTimeout(200);
+    }
+    const samples = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            backdropSamples: { stage: number[]; expected: number[] }[];
+          }
+        ).backdropSamples,
+    );
+    // Inspect every uniform upload, including the brief return frame that can
+    // recover before a screenshot. Repeating one clamped grain row makes stripes.
+    expect(samples.length).toBeGreaterThan(0);
+    for (const sample of samples)
+      for (let axis = 0; axis < 3; axis++)
+        expect(
+          Math.abs(sample.stage[axis] - sample.expected[axis]),
+        ).toBeLessThan(1);
+  }
+});
