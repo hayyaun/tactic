@@ -99,6 +99,9 @@ test("Clarity starts by default and stays stopped after rejection; GA4 is absent
   await page
     .getByRole("button", { name: "Privacy settings", exact: true })
     .click();
+  await expect(page.getByRole("status")).toHaveText(
+    "Recordings rejected. Your choice is saved for 180 days.",
+  );
   await page
     .getByRole("button", { name: "Allow recordings", exact: true })
     .click();
@@ -146,6 +149,9 @@ test("Global Privacy Control keeps Clarity unloaded", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Allow recordings", exact: true }),
   ).toBeDisabled();
+  await expect(page.getByRole("status")).toHaveText(
+    "Your browser's Global Privacy Control keeps recording off.",
+  );
   await expect(page.locator("#tactic-clarity")).toHaveCount(0);
   expect(requests).toEqual([]);
 });

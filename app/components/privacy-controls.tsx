@@ -90,6 +90,13 @@ export function PrivacyControls() {
     validClarity &&
     browserAllowed &&
     choice?.recordings !== false;
+  const trackingUnavailableReason = !trackingEnabled
+    ? "Recording is off on this development or preview version."
+    : !validClarity
+      ? "Recording is unavailable because Clarity is not configured."
+      : !browserAllowed
+        ? "Your browser's Global Privacy Control keeps recording off."
+        : null;
 
   useEffect(() => {
     if (open) title.current?.focus();
@@ -254,11 +261,21 @@ export function PrivacyControls() {
             </button>
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Microsoft Clarity is enabled by default to help us improve the
-            website using heatmaps and session recordings. Form contents are
-            masked. Reject recordings to stop tracking. We honor Global Privacy
-            Control.
+            Microsoft Clarity helps us improve the website using heatmaps and
+            session recordings. It is enabled by default on the live website.
+            Form contents are masked. Reject recordings to stop tracking.
           </p>
+          <p role="status" className="mt-3 text-sm leading-relaxed text-muted">
+            {choice?.recordings === false
+              ? "Recordings rejected. Your choice is saved for 180 days."
+              : (trackingUnavailableReason ??
+                "Clarity is enabled for this browser.")}
+          </p>
+          {choice?.recordings === false && trackingUnavailableReason && (
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              {trackingUnavailableReason}
+            </p>
+          )}
           <div className="mt-5 grid grid-cols-2 gap-2 text-xs">
             <button
               type="button"
@@ -270,7 +287,7 @@ export function PrivacyControls() {
             <button
               type="button"
               className="min-h-11 rounded-full border border-line px-3 py-2.5 transition-colors hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transition-none"
-              disabled={!validClarity || !trackingEnabled || !browserAllowed}
+              disabled={trackingUnavailableReason !== null}
               onClick={() => save(true)}
             >
               Allow recordings

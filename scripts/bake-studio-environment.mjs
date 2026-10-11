@@ -10,6 +10,7 @@ import { createServer } from "node:http";
 import path from "node:path";
 import { gzipSync, gunzipSync } from "node:zlib";
 import { chromium } from "@playwright/test";
+import { format, resolveConfig } from "prettier";
 
 const repository = path.resolve(import.meta.dirname, "..");
 const outputDirectory = path.join(repository, "public", "studio");
@@ -380,9 +381,13 @@ async function main() {
       path.join(outputDirectory, `${basename}.bin.gz`),
       compressed,
     );
+    const metadataPath = path.join(outputDirectory, `${basename}.json`);
     await writeFile(
-      path.join(outputDirectory, `${basename}.json`),
-      `${JSON.stringify(metadata, null, 2)}\n`,
+      metadataPath,
+      await format(JSON.stringify(metadata), {
+        ...(await resolveConfig(metadataPath)),
+        filepath: metadataPath,
+      }),
     );
     console.log(
       JSON.stringify(
