@@ -145,7 +145,7 @@ function IdentityMarks() {
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-12 w-full max-w-19 opacity-85 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
+        className="h-12 w-full max-w-19 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1.5 min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-16"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -155,7 +155,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12.5 w-full max-w-19 opacity-95 min-[701px]:translate-y-0.5 min-[1001px]:h-16.5"
+        className="h-12.5 w-full max-w-19 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.5 min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-16.5"
         viewBox="120 83 348 277"
         aria-hidden="true"
       >
@@ -175,7 +175,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12.5 w-full max-w-19 opacity-95 min-[701px]:translate-y-0.5 min-[1001px]:h-16.5"
+        className="h-12.5 w-full max-w-19 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.5 min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-16.5"
         viewBox="0 0 100 100"
         aria-hidden="true"
       >
@@ -185,7 +185,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12 w-full max-w-19 opacity-85 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
+        className="h-12 w-full max-w-19 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1.5 min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-16"
         viewBox="35 20 146 130"
         aria-hidden="true"
       >
@@ -241,7 +241,7 @@ export function Capabilities() {
         aria-label="TACTIC specialties and studio concepts"
       >
         <article
-          className="relative flex min-h-68 flex-col items-start justify-between overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-8 min-[701px]:row-start-1 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="group/branding relative flex min-h-68 flex-col items-start justify-between overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-8 min-[701px]:row-start-1 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="branding-title"
         >
           <ServiceNumber>01</ServiceNumber>
@@ -256,7 +256,7 @@ export function Capabilities() {
           </div>
           <div className="relative my-5 flex w-full justify-center min-[701px]:my-4">
             <svg
-              className="pointer-events-none absolute top-1/2 left-0 h-[calc(100%+48px)] w-full -translate-y-1/2 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)] text-carbon opacity-[0.07]"
+              className="pointer-events-none absolute top-1/2 left-0 h-[calc(100%+48px)] w-full -translate-y-1/2 text-carbon opacity-[0.07] transition-opacity duration-700 ease-in-out group-hover/branding:opacity-[0.14] motion-reduce:transition-none [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
               aria-hidden="true"
             >
               <defs>
@@ -317,7 +317,7 @@ export function Capabilities() {
         </div>
 
         <article
-          className="relative min-h-65 overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="group/web relative min-h-65 overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="web-app-title"
         >
           <ServiceNumber className="-bottom-2 left-5">04</ServiceNumber>
@@ -333,13 +333,13 @@ export function Capabilities() {
             width={300}
             height={560}
             alt="A metallic phone displaying TACTIC’s sculptural opposing forms."
-            className="absolute top-8 -right-2 w-[52%] max-w-55 min-[701px]:top-7 min-[701px]:-right-3 min-[701px]:w-[47%] min-[1001px]:right-1 min-[1001px]:w-[52%]"
+            className="absolute top-8 -right-2 w-[52%] max-w-55 transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/web:-translate-y-1.5 motion-reduce:transition-none min-[701px]:top-7 min-[701px]:-right-3 min-[701px]:w-[47%] min-[1001px]:right-1 min-[1001px]:w-[52%]"
             sizes="(min-width: 1001px) 220px, (min-width: 701px) 170px, 52vw"
           />
         </article>
 
         <article
-          className="ability-film-scene relative min-h-100 overflow-hidden rounded-[25px] border border-board-line bg-carbon text-chalk shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-[1/3] min-[701px]:min-h-0"
+          className="ability-film-scene group/film relative min-h-100 overflow-hidden rounded-[25px] border border-board-line bg-carbon text-chalk shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-[1/3] min-[701px]:min-h-0"
           aria-labelledby="ai-film-title"
         >
           <Image
@@ -347,11 +347,11 @@ export function Capabilities() {
             alt="A black perfume bottle on volcanic rocks, surrounded by smoke against a green and rose sunset."
             fill
             sizes="(min-width: 701px) 900px, 720px"
-            className="object-cover object-[51%_center] saturate-75"
+            className="object-cover object-[51%_center] saturate-75 transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/film:scale-[1.035] motion-reduce:transition-none"
           />
           <ServiceNumber
-            className="top-3 left-6 z-1 min-[1001px]:left-7"
-            opacityClassName="opacity-[0.16]"
+            className="top-3 right-6 z-1 min-[1001px]:right-7"
+            opacityClassName="opacity-[0.07]"
           >
             02
           </ServiceNumber>
@@ -366,7 +366,7 @@ export function Capabilities() {
 
         <Link
           href="/services"
-          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[#2e3731] bg-[linear-gradient(125deg,transparent_40%,rgb(189_136_129/38%)_100%)] p-6 text-chalk shadow-[inset_1px_1px_1px_rgb(171_194_146/24%),inset_-1px_-1px_1px_rgb(189_136_129/22%),0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[#2e3731] bg-[linear-gradient(125deg,transparent_40%,rgb(189_136_129/38%)_100%)] p-6 text-chalk shadow-[inset_1px_1px_1px_rgb(171_194_146/24%),inset_-1px_-1px_1px_rgb(189_136_129/22%),0_12px_28px_rgb(0_0_0/0.28)] transition-[translate,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:brightness-[1.04] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk focus-visible:brightness-[1.04] motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5 motion-reduce:transition-none min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-label="Explore our services"
         >
           <div className="flex items-center gap-2 opacity-65">
@@ -378,7 +378,7 @@ export function Capabilities() {
             </span>
           </div>
           <svg
-            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-chalk min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
+            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-chalk transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:scale-[1.04] motion-safe:group-focus-visible:scale-[1.04] motion-reduce:transition-none min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
             viewBox="0 0 112 112"
             aria-hidden="true"
           >
