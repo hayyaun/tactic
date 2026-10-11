@@ -17,14 +17,16 @@ function ServiceHeading({ children, id }: { children: ReactNode; id: string }) {
 function ServiceNumber({
   children,
   className = "top-3 right-6",
+  opacityClassName = "opacity-[0.09]",
 }: {
   children: ReactNode;
   className?: string;
+  opacityClassName?: string;
 }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] tabular-nums opacity-[0.09] select-none min-[1001px]:text-[96px] ${className}`}
+      className={`pointer-events-none absolute font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] tabular-nums select-none min-[1001px]:text-[96px] ${opacityClassName} ${className}`}
     >
       {children}
     </span>
@@ -143,7 +145,7 @@ function IdentityMarks() {
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-12 w-full max-w-19 opacity-60 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
+        className="h-12 w-full max-w-19 opacity-85 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -153,17 +155,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-19 opacity-80 min-[701px]:translate-y-0.5 min-[1001px]:h-18"
-        viewBox="59 77 306 303"
-        aria-hidden="true"
-      >
-        <path
-          d="M130 106Q217 54 304 115Q318 124 307 131C223 153 155 210 110 326Q107 334 102 329L84 304Q81 300 88 290Q127 224 189 164L193 159Q204 149 189 141L132 122Q117 115 130 106ZM101 145 130 151Q143 154 134 164C103 198 84 234 75 269Q72 277 69 266C58 223 65 183 86 151Q91 142 101 145ZM125 347C167 250 258 188 329 163Q339 160 344 169C354 192 361 224 358 238Q358 247 347 248C267 249 193 287 125 347ZM161 353C214 313 272 288 335 286Q349 285 341 299C307 359 233 393 160 363Q146 358 161 353Z"
-          fill="currentColor"
-        />
-      </svg>
-      <svg
-        className="h-14 w-full max-w-21 min-[701px]:-translate-y-1 min-[1001px]:h-20"
+        className="h-12.5 w-full max-w-19 opacity-95 min-[701px]:translate-y-0.5 min-[1001px]:h-16.5"
         viewBox="120 83 348 277"
         aria-hidden="true"
       >
@@ -173,7 +165,17 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-13 w-full max-w-19 opacity-80 min-[701px]:translate-y-0.5 min-[1001px]:h-18"
+        className="h-13 w-full max-w-21 min-[701px]:-translate-y-0.5 min-[1001px]:h-17"
+        viewBox="59 77 306 303"
+        aria-hidden="true"
+      >
+        <path
+          d="M130 106Q217 54 304 115Q318 124 307 131C223 153 155 210 110 326Q107 334 102 329L84 304Q81 300 88 290Q127 224 189 164L193 159Q204 149 189 141L132 122Q117 115 130 106ZM101 145 130 151Q143 154 134 164C103 198 84 234 75 269Q72 277 69 266C58 223 65 183 86 151Q91 142 101 145ZM125 347C167 250 258 188 329 163Q339 160 344 169C354 192 361 224 358 238Q358 247 347 248C267 249 193 287 125 347ZM161 353C214 313 272 288 335 286Q349 285 341 299C307 359 233 393 160 363Q146 358 161 353Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        className="h-12.5 w-full max-w-19 opacity-95 min-[701px]:translate-y-0.5 min-[1001px]:h-16.5"
         viewBox="0 0 100 100"
         aria-hidden="true"
       >
@@ -183,7 +185,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-12 w-full max-w-19 opacity-60 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
+        className="h-12 w-full max-w-19 opacity-85 min-[701px]:translate-y-1.5 min-[1001px]:h-16"
         viewBox="35 20 146 130"
         aria-hidden="true"
       >
@@ -309,11 +311,8 @@ export function Capabilities() {
           >
             <use href="#tactic-mark" />
           </svg>
-          <p className="mt-3 font-mono text-[10px] leading-[1.5] text-foreground/70 min-[1001px]:text-[11px]">
+          <p className="mt-3 font-mono text-[10px] leading-[1.5] text-muted/55 min-[1001px]:text-[11px]">
             One considered language.
-          </p>
-          <p className="mt-1.5 font-mono text-[8px] leading-[1.5] tracking-[0.03em] text-muted/75 min-[1001px]:text-[9px]">
-            Every move matters.
           </p>
         </div>
 
@@ -350,19 +349,19 @@ export function Capabilities() {
             sizes="(min-width: 701px) 900px, 720px"
             className="object-cover object-[51%_center] saturate-75"
           />
-          <ServiceNumber className="top-3 right-6 z-1">02</ServiceNumber>
-          <div className="relative z-1 p-6 min-[1001px]:p-7">
+          <ServiceNumber
+            className="right-6 bottom-5 z-1"
+            opacityClassName="opacity-[0.16]"
+          >
+            02
+          </ServiceNumber>
+          <div className="absolute right-6 bottom-7 left-6 z-1 min-[1001px]:right-7 min-[1001px]:left-7">
             <ServiceHeading id="ai-film-title">AI / AI Film</ServiceHeading>
             <p className="mt-2 max-w-48 text-[11px] leading-[1.5] text-chalk/85 min-[1001px]:text-[12px]">
               AI-powered films shaped by creative direction. From the first
               story to the final frame.
             </p>
           </div>
-          <p className="absolute right-6 bottom-7 left-6 z-1 text-[28px] leading-[1.1] tracking-[-0.05em] min-[701px]:text-[clamp(18px,2.6vw,37px)] min-[1001px]:right-7 min-[1001px]:left-7">
-            A moment.
-            <br />
-            <em className="font-editorial font-normal">An entire feeling.</em>
-          </p>
         </article>
 
         <Link
@@ -378,7 +377,62 @@ export function Capabilities() {
               TACTIC
             </span>
           </div>
-          <p className="my-5 text-[28px] leading-[1.08] tracking-[-0.045em] min-[1001px]:text-[34px]">
+          <svg
+            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-carbon min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
+            viewBox="0 0 112 112"
+            aria-hidden="true"
+          >
+            <circle
+              cx="56"
+              cy="56"
+              r="43"
+              fill="none"
+              stroke="currentColor"
+              strokeOpacity=".12"
+            />
+            <path
+              d="M30 30 48 48M82 30 64 48M30 82 48 64M82 82 64 64"
+              fill="none"
+              stroke="currentColor"
+              strokeOpacity=".2"
+            />
+            <g fill="currentColor" fillOpacity=".07">
+              <circle cx="26" cy="26" r="15" />
+              <circle cx="86" cy="26" r="15" />
+              <circle cx="26" cy="86" r="15" />
+              <circle cx="86" cy="86" r="15" />
+            </g>
+            <g
+              className="font-mono"
+              fill="currentColor"
+              fillOpacity=".65"
+              fontSize="7"
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              <text x="26" y="26">
+                Brand
+              </text>
+              <text x="86" y="26">
+                Film
+              </text>
+              <text x="26" y="86">
+                Social
+              </text>
+              <text x="86" y="86">
+                Digital
+              </text>
+            </g>
+            <use
+              href="#tactic-mark"
+              x="49"
+              y="46"
+              width="14"
+              height="20"
+              opacity=".45"
+            />
+          </svg>
+          <p className="relative my-5 max-w-[65%] text-[28px] leading-[1.08] tracking-[-0.045em] min-[701px]:max-w-[62%] min-[1001px]:text-[34px]">
             Explore our
             <br />
             <em className="font-editorial font-normal">services.</em>
