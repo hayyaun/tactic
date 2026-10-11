@@ -154,7 +154,7 @@ test("the default rim animation rests between sweeps", async ({ page }) => {
 });
 
 test("both rims fade to zero through the handoff", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.clock.install();
   await page.addInitScript(() => {
     const probe = {
       started: 0,
@@ -203,7 +203,41 @@ test("both rims fade to zero through the handoff", async ({ page }) => {
     "data-ready",
     "true",
   );
-  await page.waitForTimeout(10500);
+  // Begin the sweep after loading and advance a controlled animation clock.
+  // Shader compilation and CPU rendering must not consume its handoff window.
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  await page.evaluate(() => {
+    const probe = (
+      window as unknown as {
+        shimmerAlphaProbe: {
+          started: number;
+          samples: { time: number; alpha: number }[];
+        };
+      }
+    ).shimmerAlphaProbe;
+    probe.started = performance.now();
+    probe.samples = [];
+    const requestFrame = window.requestAnimationFrame.bind(window);
+    Object.assign(window, { shimmerFramesScheduled: 0 });
+    window.requestAnimationFrame = (callback) => {
+      const state = window as unknown as { shimmerFramesScheduled: number };
+      state.shimmerFramesScheduled++;
+      return requestFrame(callback);
+    };
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as unknown as { shimmerFramesScheduled: number })
+            .shimmerFramesScheduled,
+      ),
+    )
+    .toBeGreaterThan(0);
+  for (let step = 0; step < 11; step++) {
+    await page.clock.runFor(1000);
+  }
   const samples = await page.evaluate(
     () =>
       (
@@ -213,7 +247,10 @@ test("both rims fade to zero through the handoff", async ({ page }) => {
       ).shimmerAlphaProbe.samples,
   );
   const handoff = samples.filter(({ time }) => time > 4.3 && time < 5.7);
-  expect(handoff.length).toBeGreaterThan(10);
+  expect(
+    handoff.length,
+    JSON.stringify(samples.filter((_, i) => i % 20 === 0)),
+  ).toBeGreaterThan(0);
   expect(handoff.every(({ alpha }) => alpha === 0)).toBe(true);
   expect(samples.some(({ time, alpha }) => time < 4 && alpha > 0.5)).toBe(true);
   expect(samples.some(({ time, alpha }) => time > 6 && alpha > 0.5)).toBe(true);

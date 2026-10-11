@@ -1,5 +1,49 @@
 /* Bespoke illustration details. Layout lives in Tailwind utilities. */
 @layer components {
+  .social-feed-piece {
+    transform: translate(0, 0) rotate(0deg);
+    transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .social-feed-strategy {
+    --feed-spread: 6px;
+    --feed-lift: -10px;
+    --feed-angle: 2deg;
+  }
+  .social-feed-post {
+    --feed-spread: -6px;
+    --feed-lift: -6px;
+    --feed-angle: -2deg;
+  }
+  .social-feed-reel {
+    --feed-spread: 8px;
+    --feed-lift: -4px;
+    --feed-angle: 2deg;
+  }
+  .social-feed-save {
+    --feed-spread: -2px;
+    --feed-lift: -3px;
+    --feed-angle: 0deg;
+  }
+  .social-feed-artwork:focus-visible .social-feed-piece {
+    transform: translate(var(--feed-spread), var(--feed-lift))
+      rotate(var(--feed-angle));
+    transition-timing-function: linear(0, 0.65 18%, 1.45 42%, 1.15 65%, 1);
+    transition-duration: 950ms;
+  }
+  @media (hover: hover) {
+    .social-feed-artwork:hover .social-feed-piece {
+      transform: translate(var(--feed-spread), var(--feed-lift))
+        rotate(var(--feed-angle));
+      transition-timing-function: linear(0, 0.65 18%, 1.45 42%, 1.15 65%, 1);
+      transition-duration: 950ms;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .social-feed-artwork .social-feed-piece {
+      transform: none;
+      transition: none;
+    }
+  }
   .ability-vase::before {
     position: absolute;
     top: -19px;

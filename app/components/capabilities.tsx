@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ContactButton } from "./dialog-buttons";
 
 function ServiceHeading({ children, id }: { children: ReactNode; id: string }) {
@@ -33,10 +34,15 @@ function ServiceNumber({
 function SocialFeedArtwork() {
   return (
     <div
-      className="relative mx-auto my-4 h-62 w-full max-w-85"
-      aria-hidden="true"
+      className="social-feed-artwork relative mx-auto my-4 h-62 w-full max-w-85 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-carbon/50"
+      role="img"
+      aria-label="Social campaign concepts: a designed post, campaign artwork and a short film"
+      tabIndex={0}
     >
-      <div className="absolute top-1 right-0 h-40 w-[54%] rotate-9 overflow-hidden rounded-xl border border-carbon/10 bg-carbon shadow-[0_8px_24px_rgb(32_34_30/0.12)]">
+      <div
+        aria-hidden="true"
+        className="social-feed-piece social-feed-strategy absolute top-1 right-0 h-40 w-[54%] rotate-9 overflow-hidden rounded-xl border border-carbon/10 bg-carbon shadow-[0_8px_24px_rgb(32_34_30/0.12)]"
+      >
         <Image
           src="/studio/strategy.webp"
           alt=""
@@ -49,7 +55,10 @@ function SocialFeedArtwork() {
         </span>
       </div>
 
-      <div className="absolute top-5 left-1 z-1 w-[65%] -rotate-6 rounded-[14px] border border-carbon/10 bg-chalk p-3 text-carbon shadow-[0_12px_28px_rgb(32_34_30/0.13)]">
+      <div
+        aria-hidden="true"
+        className="social-feed-piece social-feed-post absolute top-5 left-1 z-1 w-[65%] -rotate-6 rounded-[14px] border border-carbon/10 bg-chalk p-3 text-carbon shadow-[0_12px_28px_rgb(32_34_30/0.13)]"
+      >
         <div className="mb-2 flex items-center gap-1.5">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-carbon text-chalk">
             <svg className="h-3 w-2.25">
@@ -87,7 +96,10 @@ function SocialFeedArtwork() {
         </svg>
       </div>
 
-      <div className="absolute right-0 bottom-0 z-2 h-42 w-[32%] rotate-7 overflow-hidden rounded-[13px] border border-chalk/30 bg-carbon shadow-[0_10px_24px_rgb(32_34_30/0.18)]">
+      <div
+        aria-hidden="true"
+        className="social-feed-piece social-feed-reel absolute right-0 bottom-0 z-2 h-42 w-[32%] rotate-7 overflow-hidden rounded-[13px] border border-chalk/30 bg-carbon shadow-[0_10px_24px_rgb(32_34_30/0.18)]"
+      >
         <Image
           src="/studio/ai-campaign.png"
           alt=""
@@ -113,7 +125,10 @@ function SocialFeedArtwork() {
           In fifteen seconds.
         </p>
       </div>
-      <span className="absolute bottom-0 left-6 z-3 rounded-full border border-carbon/10 bg-chalk px-3 py-2 text-[9px] tracking-[-0.02em] text-carbon shadow-[0_4px_12px_rgb(32_34_30/0.08)]">
+      <span
+        aria-hidden="true"
+        className="social-feed-piece social-feed-save absolute bottom-0 left-6 z-3 rounded-full border border-carbon/10 bg-chalk px-3 py-2 text-[9px] tracking-[-0.02em] text-carbon shadow-[0_4px_12px_rgb(32_34_30/0.08)]"
+      >
         That’s a save.
       </span>
     </div>
@@ -350,9 +365,10 @@ export function Capabilities() {
           </p>
         </article>
 
-        <figure
-          className="relative min-h-60 overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
-          aria-label="TACTIC — sculptural studio identity"
+        <Link
+          href="/services"
+          className="group relative block min-h-60 overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          aria-label="Explore our services"
         >
           <Image
             src="/studio/hero-preview-wide.webp"
@@ -375,10 +391,16 @@ export function Capabilities() {
             <br />
             <em className="font-editorial font-normal">matters.</em>
           </p>
-          <figcaption className="absolute bottom-6 left-6 z-1 max-w-[45%] font-mono text-[8px] leading-[1.7] tracking-[0.03em] opacity-70 min-[1001px]:bottom-7 min-[1001px]:left-7">
-            One mark. Many perspectives.
-          </figcaption>
-        </figure>
+          <span className="absolute bottom-6 left-6 z-1 flex max-w-[50%] items-center gap-2 text-[11px] leading-[1.5] tracking-[-0.02em] min-[1001px]:bottom-7 min-[1001px]:left-7 min-[1001px]:text-[12px]">
+            Explore our services
+            <svg
+              className="h-3 w-3 shrink-0 transition-transform duration-500 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+              aria-hidden="true"
+            >
+              <use href="#arrow-up-right" />
+            </svg>
+          </span>
+        </Link>
       </div>
 
       <p className="mt-4 font-mono text-[8px] leading-[1.8] tracking-[0.03em] text-muted min-[701px]:text-[9px]">
