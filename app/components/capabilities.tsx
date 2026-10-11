@@ -337,7 +337,7 @@ export function Capabilities() {
           aria-labelledby="branding-title"
         >
           <CapabilityBackdrop card="branding" />
-          <ServiceNumber>o1</ServiceNumber>
+          <ServiceNumber opacityClassName="opacity-[0.045]">o1</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="branding-title">
               Branding / Design
