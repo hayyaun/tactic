@@ -32,8 +32,8 @@ export function WebAppCard() {
         width={666}
         height={1126}
         alt="A metallic phone displaying TACTIC’s sculptural opposing forms."
-        className="absolute top-8 -right-2 w-[48%] max-w-51 transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/web:-translate-y-1.5 motion-reduce:transition-none min-[701px]:top-7 min-[701px]:-right-3 min-[701px]:w-[44%] min-[1001px]:right-1 min-[1001px]:w-[48%]"
-        sizes="(min-width: 1001px) 204px, (min-width: 701px) 160px, 48vw"
+        className="absolute top-8 right-2 w-[46%] max-w-49 transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/web:-translate-y-1.5 motion-reduce:transition-none min-[701px]:top-7 min-[701px]:right-2 min-[701px]:w-[42%] min-[1001px]:right-3 min-[1001px]:w-[46%]"
+        sizes="(min-width: 1001px) 196px, (min-width: 701px) 152px, 46vw"
       />
     </CapabilityCard>
   );
