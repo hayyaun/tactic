@@ -350,7 +350,7 @@ export function Capabilities() {
             className="object-cover object-[51%_center] saturate-75"
           />
           <ServiceNumber
-            className="right-6 bottom-5 z-1"
+            className="top-3 left-6 z-1 min-[1001px]:left-7"
             opacityClassName="opacity-[0.16]"
           >
             02
@@ -366,7 +366,7 @@ export function Capabilities() {
 
         <Link
           href="/services"
-          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[color-mix(in_srgb,var(--color-rose)_70%,var(--color-chalk))] p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
+          className="group relative flex min-h-60 flex-col justify-between overflow-hidden rounded-[25px] bg-[#2e3731] bg-[linear-gradient(125deg,transparent_40%,rgb(189_136_129/38%)_100%)] p-6 text-chalk shadow-[inset_1px_1px_1px_rgb(171_194_146/24%),inset_-1px_-1px_1px_rgb(189_136_129/22%),0_12px_28px_rgb(0_0_0/0.28)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-chalk min-[701px]:col-span-4 min-[701px]:col-start-9 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-label="Explore our services"
         >
           <div className="flex items-center gap-2 opacity-65">
@@ -378,7 +378,7 @@ export function Capabilities() {
             </span>
           </div>
           <svg
-            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-carbon min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
+            className="pointer-events-none absolute top-1/2 right-5 h-28 w-28 -translate-y-1/2 text-chalk min-[701px]:right-4 min-[701px]:h-22 min-[701px]:w-22 min-[1001px]:right-7 min-[1001px]:h-28 min-[1001px]:w-28"
             viewBox="0 0 112 112"
             aria-hidden="true"
           >
