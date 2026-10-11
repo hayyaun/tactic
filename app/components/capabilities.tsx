@@ -353,7 +353,7 @@ export function Capabilities() {
           <ServiceNumber opacityClassName="opacity-[0.045]">o1</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="branding-title">
-              Branding / Design
+              Branding / <em className="inline-block skew-x-6 font-editorial font-normal">Design</em>
             </ServiceHeading>
             <p className="mt-2 max-w-95 text-[11px] leading-[1.5] text-carbon/80 min-[1001px]:text-[12px]">
               Strategy, naming, identity and art direction. One considered
@@ -431,7 +431,9 @@ export function Capabilities() {
             o4
           </ServiceNumber>
           <div className="relative z-1 flex h-full max-w-[53%] -translate-y-3 flex-col justify-center min-[701px]:max-w-[60%] min-[1001px]:max-w-[53%]">
-            <ServiceHeading id="web-app-title">Web / App</ServiceHeading>
+            <ServiceHeading id="web-app-title">
+              Web / <em className="inline-block skew-x-6 font-editorial font-normal">App</em>
+            </ServiceHeading>
             <p className="mt-2 max-w-42 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
               We design digital products that turn complex ideas into intuitive,
               seamless experiences.
@@ -466,7 +468,9 @@ export function Capabilities() {
             o2
           </ServiceNumber>
           <div className="absolute right-6 bottom-7 left-6 z-1 min-[1001px]:right-7 min-[1001px]:left-7">
-            <ServiceHeading id="ai-film-title">AI / AI Film</ServiceHeading>
+            <ServiceHeading id="ai-film-title">
+              AI / <em className="inline-block skew-x-6 font-editorial font-normal">AI Film</em>
+            </ServiceHeading>
             <p className="mt-2 max-w-48 text-[11px] leading-[1.5] text-chalk/85 min-[1001px]:text-[12px]">
               AI-powered films shaped by creative direction. From the first
               story to the final frame.
