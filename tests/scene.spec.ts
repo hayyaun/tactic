@@ -1,6 +1,9 @@
 import { expect, test } from "./scene-fixture";
 import { adaptBoxProjectedShader } from "../app/components/box-projected-shader";
 
+// Software-renderer cleanup and context creation can outlast the normal UI budget.
+test.setTimeout(120_000);
+
 test("shader adapter reports changed dependency anchors", () => {
   expect(() =>
     adaptBoxProjectedShader({

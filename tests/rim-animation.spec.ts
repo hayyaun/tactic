@@ -1,6 +1,10 @@
 import type { Page } from "@playwright/test";
 import { expect, test } from "./scene-fixture";
 
+// Preserve real shaders and animation while bounding CPU rasterization in CI.
+test.use({ viewport: { width: 960, height: 740 } });
+test.setTimeout(120_000);
+
 async function observeScene(page: Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -35,6 +39,7 @@ async function useShimmerTestTiming(page: Page) {
   // Exercise the quiet period and ten-second handoff independently of art defaults.
   await page.goto("/?debug");
   await page.getByLabel("Auto quality", { exact: true }).uncheck();
+  await page.getByLabel("Preset", { exact: true }).selectOption("Low");
   await page.locator("div").filter({ hasText: /^Rim$/ }).last().click();
   for (const [label, value] of [
     ["Repeat every (s)", "15"],

@@ -294,6 +294,7 @@ test("sustained slow frames lower quality and idle does not", async ({
   page,
   context,
 }) => {
+  test.setTimeout(90_000);
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/?debug");
   const stage = page.locator("[data-hero-art]");
@@ -313,6 +314,11 @@ test("sustained slow frames lower quality and idle does not", async ({
   expect(settings.autoQuality).toBe(true);
   expect(settings.fpsThreshold).toBe(120);
   expect(settings.fpsDuration).toBe(1);
+  // Keep rendering continuous: quiet gaps correctly reset the slow-frame timer.
+  await page.locator("div").filter({ hasText: /^Rim$/ }).last().click();
+  const sweepDuration = page.getByLabel("Sweep duration (s)", { exact: true });
+  await sweepDuration.fill("15");
+  await sweepDuration.press("Enter");
   // Pause at the first downgrade in the browser. A slow software renderer can
   // reach Preview before a round-trip from the test runner clicks this control.
   const autoQuality = page.getByLabel("Auto quality", { exact: true });
@@ -335,7 +341,9 @@ test("sustained slow frames lower quality and idle does not", async ({
   await page.waitForTimeout(2200);
   await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
   await autoQuality.check();
-  await expect(stage).toHaveAttribute("data-render-quality", "Preview");
+  await expect(stage).toHaveAttribute("data-render-quality", "Preview", {
+    timeout: 30_000,
+  });
   await expect(stage.locator("canvas")).toHaveCount(0);
   await expect(
     page.getByLabel("Preset", { exact: true }).locator("option:checked"),

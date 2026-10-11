@@ -256,7 +256,7 @@ export function Capabilities() {
           </div>
           <div className="relative my-5 flex w-full justify-center min-[701px]:my-4">
             <svg
-              className="pointer-events-none absolute top-1/2 left-0 h-[calc(100%+48px)] w-full -translate-y-1/2 text-carbon opacity-[0.07] transition-opacity duration-700 ease-in-out group-hover/branding:opacity-[0.14] motion-reduce:transition-none [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+              className="pointer-events-none absolute top-1/2 left-0 h-[calc(100%+48px)] w-full -translate-y-1/2 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)] text-carbon opacity-[0.07] transition-opacity duration-700 ease-in-out group-hover/branding:opacity-[0.14] motion-reduce:transition-none"
               aria-hidden="true"
             >
               <defs>
