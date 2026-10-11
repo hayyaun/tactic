@@ -16,10 +16,12 @@ function ServiceHeading({ children, id }: { children: ReactNode; id: string }) {
 
 function ServiceNumber({
   children,
+  mobileNumber,
   className = "top-3 right-6",
   opacityClassName = "opacity-[0.07]",
 }: {
   children: string;
+  mobileNumber?: string;
   className?: string;
   opacityClassName?: string;
 }) {
@@ -31,7 +33,16 @@ function ServiceNumber({
       <span className="capability-number-prefix relative -top-[0.23em]">
         {children[0]}
       </span>
-      <span className="capability-number-digit">{children.slice(1)}</span>
+      <span className="capability-number-digit">
+        {mobileNumber ? (
+          <>
+            <span className="min-[701px]:hidden">{mobileNumber}</span>
+            <span className="hidden min-[701px]:inline">{children.slice(1)}</span>
+          </>
+        ) : (
+          children.slice(1)
+        )}
+      </span>
     </span>
   );
 }
@@ -384,7 +395,7 @@ export function Capabilities() {
           aria-labelledby="social-title"
         >
           <CapabilityBackdrop card="social" />
-          <ServiceNumber>o3</ServiceNumber>
+          <ServiceNumber mobileNumber="2">o3</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="social-title">Social</ServiceHeading>
             <p className="mt-2 max-w-60 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
@@ -416,7 +427,9 @@ export function Capabilities() {
           className="group/web relative min-h-65 overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="web-app-title"
         >
-          <ServiceNumber className="-bottom-2 left-5">o4</ServiceNumber>
+          <ServiceNumber className="-bottom-2 left-5" mobileNumber="3">
+            o4
+          </ServiceNumber>
           <div className="relative z-1 flex h-full max-w-[53%] -translate-y-3 flex-col justify-center min-[701px]:max-w-[60%] min-[1001px]:max-w-[53%]">
             <ServiceHeading id="web-app-title">Web / App</ServiceHeading>
             <p className="mt-2 max-w-42 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
@@ -448,6 +461,7 @@ export function Capabilities() {
           <ServiceNumber
             className="top-3 right-6 z-1 min-[1001px]:right-7"
             opacityClassName="opacity-[0.04]"
+            mobileNumber="4"
           >
             o2
           </ServiceNumber>
