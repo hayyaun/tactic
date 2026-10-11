@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ContactButton } from "./dialog-buttons";
+import { ArrowUpRight, DirectionArrow, TacticMark } from "./ui/icons";
 const navigation = [
   { href: "#capabilities", label: "What we do", number: "01" },
   { href: "#world", label: "Our world", number: "02" },
@@ -38,12 +39,10 @@ export function Header() {
           href="#top"
           aria-label="TACTIC home"
         >
-          <svg
+          <TacticMark
             className="h-5.25 w-3.75 text-green min-[360px]:h-6 min-[360px]:w-4.25 min-[960px]:h-7 min-[960px]:w-5"
             aria-hidden="true"
-          >
-            <use href="#tactic-mark" />
-          </svg>
+          />
           <span>TACTIC</span>
         </Link>
         <nav
@@ -60,11 +59,8 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <ContactButton className="ml-auto flex items-center gap-2.25 rounded-[28px] bg-foreground px-2.75 py-2.5 text-[10px] whitespace-nowrap text-background [transition:background_0.3s,color_0.3s] hover:bg-[rgb(213,231,206)] hover:text-background motion-reduce:transition-none min-[360px]:gap-3.25 min-[360px]:px-3.5 min-[360px]:py-2.75 min-[360px]:text-[11px] min-[960px]:ml-0 min-[960px]:gap-5.75 min-[960px]:px-4.5 min-[960px]:py-3 min-[960px]:text-[12px]">
-          Let’s talk{" "}
-          <svg className="h-2.75 w-2.75" aria-hidden="true">
-            <use href="#arrow-up-right" />
-          </svg>
+        <ContactButton preset="header">
+          Let’s talk <ArrowUpRight className="h-2.75 w-2.75" />
         </ContactButton>
         <button
           ref={toggle}
@@ -97,9 +93,9 @@ export function Header() {
           </Link>
         ))}
 
-        <ContactButton className="mx-0 mt-2.5 mb-0 flex justify-between rounded-[28px] bg-foreground px-4.25 py-3.25 text-left text-[17px] font-[350] text-background">
+        <ContactButton preset="menu">
           Let’s talk{" "}
-          <span className="font-mono text-[10px] text-inherit">↗</span>
+          <DirectionArrow className="font-mono text-[10px] text-inherit" />
         </ContactButton>
       </nav>
     </>

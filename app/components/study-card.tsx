@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { studies, type Study } from "../studies";
 import { StudyButton } from "./dialog-buttons";
+import { DirectionArrow } from "./ui/icons";
 
 export function StudyCard({ study }: { study: Study }) {
   const content = studies[study];
@@ -19,9 +20,7 @@ export function StudyCard({ study }: { study: Study }) {
           alt={content.alt}
           sizes="(min-width: 1424px) 408px, (min-width: 960px) calc((100vw - 204px) / 3), (min-width: 600px) calc((100vw - 124px) / 3), calc(100vw - 48px)"
         />
-        <span className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none">
-          ↗
-        </span>
+        <DirectionArrow className="absolute top-3.75 right-3.75 grid h-9 w-9 place-items-center rounded-full bg-[rgba(245,247,238,0.8)] text-[17px] text-[rgb(51,76,59)] backdrop-blur-md [transition:background_0.3s,color_0.3s] group-hover/study:bg-[rgb(51,76,59)] group-hover/study:text-[rgb(246,248,240)] motion-reduce:transition-none" />
       </div>
       <div className="flex items-baseline justify-between gap-3 px-0.75 pt-4.75 pb-3 [border-bottom:1px_solid_var(--line)] min-[600px]:flex-wrap min-[600px]:gap-2 min-[960px]:flex-nowrap">
         <h3 className="text-[14px] font-normal tracking-[-0.02em]">

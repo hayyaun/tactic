@@ -1,18 +1,24 @@
 "use client";
 
-import type { ButtonHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 import type { Study } from "../studies";
 import { openDialog } from "./dialog-opening";
+import { ActionButton, type ActionButtonProps } from "./ui/action";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = Omit<ComponentProps<"button">, "type">;
 
-export function ContactButton(props: ButtonProps) {
+export function ContactButton({
+  onClick,
+  ...props
+}: Omit<ActionButtonProps, "type">) {
   return (
-    <button
+    <ActionButton
       {...props}
       type="button"
       onClick={(event) => {
-        openDialog("contact-dialog", { opener: event.currentTarget });
+        onClick?.(event);
+        if (!event.defaultPrevented)
+          openDialog("contact-dialog", { opener: event.currentTarget });
       }}
     />
   );
@@ -20,6 +26,7 @@ export function ContactButton(props: ButtonProps) {
 
 export function StudyButton({
   study,
+  onClick,
   ...props
 }: ButtonProps & {
   study: Study;
@@ -29,9 +36,11 @@ export function StudyButton({
       {...props}
       type="button"
       data-study={study}
-      onClick={(event) =>
-        openDialog("study-dialog", { opener: event.currentTarget, study })
-      }
+      onClick={(event) => {
+        onClick?.(event);
+        if (!event.defaultPrevented)
+          openDialog("study-dialog", { opener: event.currentTarget, study });
+      }}
     />
   );
 }
