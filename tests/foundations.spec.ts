@@ -122,6 +122,17 @@ test("unpublished routes show a useful recovery link", async ({ page }) => {
 });
 
 test("production debug requires an explicit build opt-in", async ({ page }) => {
+  // Debug access must not depend on GPU support (CI uses software rendering).
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (
+      this: HTMLCanvasElement,
+      ...args
+    ) {
+      if (args[0] === "webgl2") return null;
+      return Reflect.apply(original, this, args);
+    } as typeof original;
+  });
   await page.goto("/?debug");
   const controls = page.getByRole("complementary", {
     name: "Scene debug controls",
@@ -129,10 +140,13 @@ test("production debug requires an explicit build opt-in", async ({ page }) => {
   if (process.env.NEXT_PUBLIC_ENABLE_SCENE_DEBUG === "true")
     await expect(controls).toBeVisible();
   else {
-    await expect(page.locator("[data-hero-art]")).toHaveAttribute(
-      "data-ready",
-      "true",
-    );
+    // Exercise client UI before asserting absence; server HTML alone is insufficient.
+    await page
+      .getByRole("button", { name: "Privacy choices", exact: true })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Your privacy choices" }),
+    ).toBeVisible();
     await expect(controls).toHaveCount(0);
   }
 });
