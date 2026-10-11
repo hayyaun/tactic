@@ -250,7 +250,7 @@ function IdentityMarks() {
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-10"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -260,7 +260,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-10"
         viewBox="100 60 390 320"
         aria-hidden="true"
       >
@@ -270,7 +270,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-90 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-opacity duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/branding:opacity-100 motion-reduce:transition-none min-[1001px]:h-10"
         viewBox="59 77 306 303"
         aria-hidden="true"
       >
@@ -280,7 +280,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-10"
         viewBox="0 4 100 94"
         aria-hidden="true"
       >
@@ -290,7 +290,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-10"
+        className="h-8 w-full max-w-14 opacity-[0.775] transition-[translate,opacity] group-hover/branding:opacity-100 duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-10"
         viewBox="35 25 146 120"
         aria-hidden="true"
       >
