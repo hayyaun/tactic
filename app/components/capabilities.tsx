@@ -17,18 +17,19 @@ function ServiceHeading({ children, id }: { children: ReactNode; id: string }) {
 function ServiceNumber({
   children,
   className = "top-3 right-6",
-  opacityClassName = "opacity-[0.09]",
+  opacityClassName = "opacity-[0.07]",
 }: {
-  children: ReactNode;
+  children: string;
   className?: string;
   opacityClassName?: string;
 }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] tabular-nums select-none min-[1001px]:text-[96px] ${opacityClassName} ${className}`}
+      className={`pointer-events-none absolute inline-flex items-start font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] lining-nums select-none min-[1001px]:text-[96px] ${opacityClassName} ${className}`}
     >
-      {children}
+      <span className="relative -top-[0.23em]">{children[0]}</span>
+      <span>{children.slice(1)}</span>
     </span>
   );
 }
@@ -336,7 +337,7 @@ export function Capabilities() {
           aria-labelledby="branding-title"
         >
           <CapabilityBackdrop card="branding" />
-          <ServiceNumber>01</ServiceNumber>
+          <ServiceNumber>o1</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="branding-title">
               Branding / Design
@@ -381,7 +382,7 @@ export function Capabilities() {
           aria-labelledby="social-title"
         >
           <CapabilityBackdrop card="social" />
-          <ServiceNumber>03</ServiceNumber>
+          <ServiceNumber>o3</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="social-title">Social</ServiceHeading>
             <p className="mt-2 max-w-60 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
@@ -413,7 +414,7 @@ export function Capabilities() {
           className="group/web relative min-h-65 overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-5 min-[701px]:row-start-3 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="web-app-title"
         >
-          <ServiceNumber className="-bottom-2 left-5">04</ServiceNumber>
+          <ServiceNumber className="-bottom-2 left-5">o4</ServiceNumber>
           <div className="relative z-1 flex h-full max-w-[53%] -translate-y-3 flex-col justify-center min-[701px]:max-w-[60%] min-[1001px]:max-w-[53%]">
             <ServiceHeading id="web-app-title">Web / App</ServiceHeading>
             <p className="mt-2 max-w-42 text-[11px] leading-[1.5] min-[1001px]:text-[12px]">
@@ -444,9 +445,9 @@ export function Capabilities() {
           />
           <ServiceNumber
             className="top-3 right-6 z-1 min-[1001px]:right-7"
-            opacityClassName="opacity-[0.07]"
+            opacityClassName="opacity-[0.04]"
           >
-            02
+            o2
           </ServiceNumber>
           <div className="absolute right-6 bottom-7 left-6 z-1 min-[1001px]:right-7 min-[1001px]:left-7">
             <ServiceHeading id="ai-film-title">AI / AI Film</ServiceHeading>
