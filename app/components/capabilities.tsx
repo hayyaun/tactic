@@ -137,6 +137,97 @@ function SocialFeedArtwork() {
   );
 }
 
+function SharedCapabilityPlane({ card }: { card: "branding" | "social" }) {
+  const fadeId = `capability-shared-fade-${card}`;
+
+  // The two crops share an origin, accounting for the 12px gap before Social.
+  return (
+    <svg
+      aria-hidden="true"
+      className={`capability-shared-plane pointer-events-none absolute left-0 h-108 w-132 max-w-none text-carbon min-[701px]:h-180 min-[701px]:w-220 ${card === "branding" ? "-bottom-54 opacity-[0.045] min-[701px]:-bottom-90" : "-top-57 opacity-[0.085] min-[701px]:-top-93"}`}
+      viewBox="0 0 880 720"
+    >
+      <defs>
+        <linearGradient id={fadeId} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.15" />
+          <stop offset="0.4" stopColor="currentColor" stopOpacity="0.75" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+      <rect
+        x="220"
+        y="295"
+        width="560"
+        height="180"
+        transform="rotate(-36 500 385)"
+        fill={`url(#${fadeId})`}
+      />
+    </svg>
+  );
+}
+
+function IndividualCapabilityPlane({ card }: { card: "branding" | "social" }) {
+  const fadeId = `capability-plane-fade-${card}`;
+  const isBranding = card === "branding";
+
+  return (
+    <svg
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 h-full w-full text-carbon ${isBranding ? "opacity-[0.05]" : "opacity-[0.10]"}`}
+      viewBox={isBranding ? "0 0 880 260" : "0 0 440 440"}
+      preserveAspectRatio="xMaxYMin slice"
+    >
+      <defs>
+        <linearGradient id={fadeId} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.3" />
+          <stop offset="0.45" stopColor="currentColor" stopOpacity="0.8" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+      {isBranding ? (
+        <>
+          <rect
+            className="min-[701px]:hidden"
+            x="665"
+            y="-48"
+            width="200"
+            height="108"
+            transform="rotate(-36 765 6)"
+            fill={`url(#${fadeId})`}
+          />
+          <rect
+            className="hidden min-[701px]:block"
+            x="310"
+            y="-74"
+            width="340"
+            height="180"
+            transform="rotate(-36 480 16)"
+            fill={`url(#${fadeId})`}
+          />
+        </>
+      ) : (
+        <rect
+          x="130"
+          y="328"
+          width="380"
+          height="180"
+          transform="rotate(-36 320 418)"
+          fill={`url(#${fadeId})`}
+        />
+      )}
+    </svg>
+  );
+}
+
+function CapabilityBackdrop({ card }: { card: "branding" | "social" }) {
+  return (
+    <>
+      <SharedCapabilityPlane card={card} />
+      <IndividualCapabilityPlane card={card} />
+    </>
+  );
+}
+
 function IdentityMarks() {
   return (
     <div
@@ -145,7 +236,7 @@ function IdentityMarks() {
       aria-label="Five selected brand identity logos, reproduced as flat monochrome symbols"
     >
       <svg
-        className="h-9.5 w-full max-w-16 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1 min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-12"
+        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-2 min-[1001px]:h-10"
         viewBox="90 45 245 370"
         aria-hidden="true"
       >
@@ -155,8 +246,8 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-10 w-full max-w-16 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.25 min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-12.5"
-        viewBox="120 83 348 277"
+        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:translate-x-1 min-[1001px]:h-10"
+        viewBox="100 60 390 320"
         aria-hidden="true"
       >
         <path
@@ -165,7 +256,7 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-10.5 w-full max-w-17 min-[1001px]:h-13"
+        className="h-8 w-full max-w-14 opacity-90 min-[1001px]:h-10"
         viewBox="59 77 306 303"
         aria-hidden="true"
       >
@@ -175,8 +266,8 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-10 w-full max-w-16 opacity-95 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-0.25 min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-12.5"
-        viewBox="0 0 100 100"
+        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-1 min-[1001px]:h-10"
+        viewBox="0 4 100 94"
         aria-hidden="true"
       >
         <path
@@ -185,8 +276,8 @@ function IdentityMarks() {
         />
       </svg>
       <svg
-        className="h-9.5 w-full max-w-16 opacity-85 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:translate-y-1 min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-12"
-        viewBox="35 20 146 130"
+        className="h-8 w-full max-w-14 opacity-90 transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none min-[701px]:motion-safe:group-hover/branding:-translate-x-2 min-[1001px]:h-10"
+        viewBox="35 25 146 120"
         aria-hidden="true"
       >
         <path
@@ -244,8 +335,9 @@ export function Capabilities() {
           className="group/branding relative flex min-h-68 flex-col items-start justify-between overflow-hidden rounded-[25px] bg-chalk p-6 text-carbon shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-8 min-[701px]:row-start-1 min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="branding-title"
         >
+          <CapabilityBackdrop card="branding" />
           <ServiceNumber>01</ServiceNumber>
-          <div>
+          <div className="relative z-1">
             <ServiceHeading id="branding-title">
               Branding / Design
             </ServiceHeading>
@@ -288,6 +380,7 @@ export function Capabilities() {
           className="relative flex min-h-78 flex-col justify-between overflow-hidden rounded-[25px] bg-[rgb(156,172,134)] p-6 text-[rgb(38,48,30)] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:col-span-4 min-[701px]:col-start-1 min-[701px]:row-[2/4] min-[701px]:min-h-0 min-[1001px]:p-7"
           aria-labelledby="social-title"
         >
+          <CapabilityBackdrop card="social" />
           <ServiceNumber>03</ServiceNumber>
           <div className="relative z-1">
             <ServiceHeading id="social-title">Social</ServiceHeading>
