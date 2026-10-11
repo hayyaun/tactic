@@ -29,7 +29,7 @@ export function AiFilmCard() {
       <div className="absolute right-6 bottom-7 left-6 z-1 min-[1001px]:right-7 min-[1001px]:left-7">
         <ServiceHeading id="ai-film-title">
           AI /{" "}
-          <em className="inline-block skew-x-6 font-editorial font-normal">
+          <em className="inline-block origin-bottom-left skew-x-6 font-editorial font-normal transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-focus-within/film:translate-x-1 motion-safe:group-focus-within/film:-skew-x-2 motion-safe:group-hover/film:translate-x-1 motion-safe:group-hover/film:-skew-x-2 motion-reduce:transition-none">
             AI Film
           </em>
         </ServiceHeading>

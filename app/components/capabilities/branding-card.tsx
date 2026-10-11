@@ -18,7 +18,7 @@ export function BrandingCard() {
       <div className="relative z-1">
         <ServiceHeading id="branding-title">
           Branding /{" "}
-          <em className="inline-block skew-x-6 font-editorial font-normal">
+          <em className="inline-block origin-bottom-left skew-x-6 font-editorial font-normal transition-transform duration-800 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-focus-within/branding:translate-x-1 motion-safe:group-focus-within/branding:-skew-x-2 motion-safe:group-hover/branding:translate-x-1 motion-safe:group-hover/branding:-skew-x-2 motion-reduce:transition-none">
             Design
           </em>
         </ServiceHeading>
