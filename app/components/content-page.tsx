@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DirectionArrow } from "./ui/icons";
 import type { ReactNode } from "react";
 import type { ContentPage as PageContent } from "../content/types";
 import {
@@ -48,7 +49,7 @@ export function ContentPage({
           href="/#contact"
           className="text-sm text-muted hover:text-foreground"
         >
-          Start a conversation ↗
+          Start a conversation <DirectionArrow />
         </Link>
       </header>
       <main

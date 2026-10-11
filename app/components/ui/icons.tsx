@@ -9,14 +9,25 @@ export function TacticMark(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ArrowUpRight(props: SVGProps<SVGSVGElement>) {
+export function ArrowUpRight({
+  className = "",
+  ...props
+}: SVGProps<SVGSVGElement>) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" {...props}>
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      className={`shrink-0 ${className}`}
+      {...props}
+    >
       <path
         d="M5 19 19 5M5 5h14v14"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -37,7 +48,12 @@ export function CloseIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const directions = { "up-right": "↗", "down-right": "↘", down: "↓", up: "↑" };
+const directions = {
+  "up-right": "M5 19L19 5M5 5H19V19",
+  "down-right": "M5 5L19 19M5 19H19V5",
+  down: "M12 4V20M5 13L12 20L19 13",
+  up: "M12 20V4M5 11L12 4L19 11",
+};
 
 export function DirectionArrow({
   direction = "up-right",
@@ -47,8 +63,26 @@ export function DirectionArrow({
   className?: string;
 }) {
   return (
-    <span aria-hidden="true" className={className}>
-      {directions[direction]}
+    <span
+      aria-hidden="true"
+      className={`direction-arrow shrink-0 items-center justify-center ${className ?? ""}`}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="1em"
+        height="1em"
+        fill="none"
+        focusable="false"
+        className="block shrink-0"
+      >
+        <path
+          d={directions[direction]}
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
     </span>
   );
 }

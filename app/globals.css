@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@layer components {
+  .direction-arrow {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+}
+
 @theme {
   --font-editorial: Georgia, serif;
   --color-chalk: #e0e2d8;

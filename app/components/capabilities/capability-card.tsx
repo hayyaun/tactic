@@ -36,15 +36,23 @@ export function CapabilityCard({
       >
         <path
           className="capability-navigation-line"
-          d="M0 8H63"
+          d="M2 8H59"
           stroke="currentColor"
           strokeWidth="1"
         />
         <path
           className="capability-navigation-head"
-          d="M55 0L63 8"
+          d="M53 2L59 8"
           stroke="currentColor"
           strokeWidth="1"
+        />
+        <path
+          className="capability-navigation-static"
+          d="M41 8H59L53 2"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </article>

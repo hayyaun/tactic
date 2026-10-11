@@ -5,11 +5,15 @@
     transition: opacity 250ms ease-out;
   }
   .capability-navigation-line {
+    transform-box: view-box;
     transform: scaleX(0);
     transform-origin: 0px 8px;
   }
   .capability-navigation-head {
     opacity: 0;
+  }
+  .capability-navigation-static {
+    display: none;
   }
   .capability-card:is(:hover, :focus-within) .capability-navigation {
     opacity: 0.65;
@@ -25,11 +29,11 @@
     }
     56% {
       transform: scaleX(1);
-      transform-origin: 63px 8px;
+      transform-origin: 59px 8px;
     }
     100% {
       transform: scaleX(0.32);
-      transform-origin: 63px 8px;
+      transform-origin: 59px 8px;
     }
   }
   @keyframes capability-head-reveal {
@@ -55,14 +59,13 @@
       opacity: 0.5;
       transition: none;
     }
-    .capability-card .capability-navigation-line {
-      transform: scaleX(0.32);
-      transform-origin: 63px 8px;
+    .capability-card .capability-navigation-line,
+    .capability-card .capability-navigation-head {
+      display: none;
       animation: none;
     }
-    .capability-card .capability-navigation-head {
-      opacity: 1;
-      animation: none;
+    .capability-card .capability-navigation-static {
+      display: block;
     }
   }
   @media (prefers-reduced-motion: no-preference) {
