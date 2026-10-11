@@ -313,12 +313,28 @@ test("sustained slow frames lower quality and idle does not", async ({
   expect(settings.autoQuality).toBe(true);
   expect(settings.fpsThreshold).toBe(120);
   expect(settings.fpsDuration).toBe(1);
+  // Pause at the first downgrade in the browser. A slow software renderer can
+  // reach Preview before a round-trip from the test runner clicks this control.
+  const autoQuality = page.getByLabel("Auto quality", { exact: true });
+  await autoQuality.evaluate((input) => {
+    const stage = document.querySelector<HTMLElement>("[data-hero-art]")!;
+    const observer = new MutationObserver(() => {
+      if (stage.dataset.renderQuality === "Balanced") {
+        observer.disconnect();
+        (input as HTMLInputElement).click();
+      }
+    });
+    observer.observe(stage, {
+      attributes: true,
+      attributeFilter: ["data-render-quality"],
+    });
+  });
   await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(autoQuality).not.toBeChecked();
   await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
-  await page.getByLabel("Auto quality", { exact: true }).uncheck();
   await page.waitForTimeout(2200);
   await expect(stage).toHaveAttribute("data-render-quality", "Balanced");
-  await page.getByLabel("Auto quality", { exact: true }).check();
+  await autoQuality.check();
   await expect(stage).toHaveAttribute("data-render-quality", "Preview");
   await expect(stage.locator("canvas")).toHaveCount(0);
   await expect(

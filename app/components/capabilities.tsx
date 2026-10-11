@@ -23,7 +23,7 @@ function ServiceNumber({
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute font-mono text-[82px] leading-none font-black tracking-[-0.09em] opacity-[0.09] select-none min-[1001px]:text-[96px] ${className}`}
+      className={`pointer-events-none absolute font-editorial text-[82px] leading-none font-normal tracking-[-0.055em] tabular-nums opacity-[0.09] select-none min-[1001px]:text-[96px] ${className}`}
     >
       {children}
     </span>
