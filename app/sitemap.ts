@@ -7,11 +7,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: site.url },
     { url: absoluteUrl("/privacy") },
-    ...(await loadPublishedPages()).map((page) => ({
-      url: absoluteUrl(page.path),
-      ...(page.updatedAt || page.publishedAt
-        ? { lastModified: page.updatedAt ?? page.publishedAt }
-        : {}),
-    })),
+    { url: absoluteUrl("/blog") },
+    ...(await loadPublishedPages())
+      .filter((page) => page.path !== "/blog")
+      .map((page) => ({
+        url: absoluteUrl(page.path),
+        ...(page.updatedAt || page.publishedAt
+          ? { lastModified: page.updatedAt ?? page.publishedAt }
+          : {}),
+      })),
   ];
 }

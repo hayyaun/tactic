@@ -4,7 +4,7 @@ import Link from "next/link";
 const surfaces = {
   chalk: "bg-chalk p-6 text-carbon min-[1001px]:p-7",
   social: "bg-[rgb(156,172,134)] p-6 text-[rgb(38,48,30)] min-[1001px]:p-7",
-  film: "border border-board-line bg-carbon text-chalk",
+  film: "bg-carbon text-chalk",
 };
 
 export function CapabilityCard({
@@ -23,6 +23,10 @@ export function CapabilityCard({
       className={`capability-card relative cursor-pointer overflow-hidden rounded-[25px] shadow-[0_12px_28px_rgb(0_0_0/0.28)] min-[701px]:min-h-0 ${surfaces[variant]} ${className}`}
     >
       {children}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 z-2 rounded-[inherit] ${variant === "film" ? "shadow-[inset_1px_1px_1px_rgb(224_226_216/22%),inset_-1px_-1px_1px_rgb(189_136_129/14%)]" : href === "/services/web-app" ? "shadow-[inset_1px_1px_1px_rgb(255_255_245/38%),inset_-1px_-1px_1px_rgb(255_255_245/22%)]" : "shadow-[inset_1px_1px_1px_rgb(255_255_245/38%),inset_-1px_-1px_1px_rgb(48_55_43/9%)]"}`}
+      />
       <Link
         href={href}
         aria-labelledby={props["aria-labelledby"]}

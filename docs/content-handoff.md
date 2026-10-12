@@ -1,6 +1,8 @@
 # Content and asset handoff
 
-The types live in `app/content/types.ts`. Content can be authored in the standalone sibling `studio-tactic` Sanity Studio; approved repository entries can also live in `app/content/pages.ts`. `app/content/load-pages.ts` combines both sources. `ContentPage` renders detail/about/contact pages; `ContentListing` renders listings. Explicit routes resolve published entries only. Drafts and unknown paths show the not-found UI and are excluded from feeds. No unfinished pages are added to navigation. Streaming detail routes can return HTTP 200 with a noindex not-found UI; unmatched URLs and unpublished static pages return HTTP 404. See `sanity-setup.md` for Studio setup and publishing.
+The types live in `app/content/types.ts`. Content can be authored in the standalone sibling `studio-tactic` Sanity Studio; approved repository entries can also live in `app/content/pages.ts`. `app/content/load-pages.ts` combines both sources. `ContentPage` renders detail/about/contact pages; `ContentListing` renders services and portfolio listings. The dedicated `BlogListing` renders `/blog`. These internal pages share `SiteHeader` and `SiteFooter`, the landing page's design tokens, and immediately visible server-rendered content. The landing page retains its own scene and section navigation. See `site-design.md` for the component handoff.
+
+Explicit content routes resolve published entries only. Drafts and unknown paths show the not-found UI and are excluded from feeds. No unfinished content routes are added to navigation. The blog has a published repository default for its listing title and introduction, so `/blog` remains usable without a Sanity listing document. This default does not create any articles. Streaming detail routes can return HTTP 200 with a noindex not-found UI; unmatched URLs and unpublished static pages return HTTP 404. See `sanity-setup.md` for Studio setup and publishing.
 
 ## Fields for every page
 
@@ -24,8 +26,9 @@ Images go in `public/studio/` or an organized subdirectory. Send originals, desc
 - Portfolio: project title, concept/client classification, challenge, approach, work, image captions.
 - About: studio story and approach.
 - Contact: approved contact details and expectations; match the privacy notice.
-- Blog: body, author if applicable, publication date, summary, cover image, social image.
-- Listings: introduction; child entries are found by their URL prefix.
+- Blog articles: body, author if applicable, publication date, summary, cover image, social image. Only approved, published articles at `/blog/<single-slug>` with a valid publication date appear in the listing, newest first. Reading time is estimated from the article's text at 220 words per minute, with a one-minute minimum.
+- Blog listing: create a published `/blog` Section listing document to replace the default Journal title and introduction. Its optional image and blocks appear above the article collection. The newest article is featured; remaining articles use a flat archive. If no articles are published, an explicit empty state appears with an existing TACTIC brand image.
+- Services and portfolio listings: introduction; child entries are found by their URL prefix.
 
 ## Publishing procedure
 
@@ -36,3 +39,5 @@ Images go in `public/studio/` or an organized subdirectory. Send originals, desc
 5. Add approved navigation links. For changed URLs, add an explicit permanent redirect in `next.config.ts`; do not redirect arbitrary 404s to the homepage.
 
 Repository content changes require a deployment. Sanity pages appear after approval and Studio publishing, followed by the cache refresh; no website deployment is required for content edits. Do not add private information to either published collection.
+
+Page design changes belong in the Next.js app. Change the Studio schema only when editors need new fields or content types. This design update does not change the Studio schema, its hosting settings, or published documents.

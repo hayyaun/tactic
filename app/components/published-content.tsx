@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import { loadPublishedPages } from "../content/load-pages";
 import { contentImageUrl } from "../lib/content-image";
 import { absoluteUrl } from "../lib/site";
+import type { ContentPage as PageContent } from "../content/types";
 import { ContentListing, ContentPage } from "./content-page";
 
 export async function getPublishedContent(path: string) {
@@ -14,7 +16,13 @@ export async function getPublishedContent(path: string) {
 }
 
 export async function contentMetadata(path: string): Promise<Metadata> {
+  "use cache";
+  cacheLife({ stale: 300, revalidate: 30, expire: 3600 });
   const page = await getPublishedContent(path);
+  return metadataForContent(page);
+}
+
+export function metadataForContent(page: PageContent): Metadata {
   return {
     title: page.title,
     description: page.description,
@@ -49,6 +57,8 @@ export async function contentMetadata(path: string): Promise<Metadata> {
 }
 
 export async function PublishedContent({ path }: { path: string }) {
+  "use cache";
+  cacheLife({ stale: 300, revalidate: 30, expire: 3600 });
   const page = await getPublishedContent(path);
   if (page.kind === "listing")
     return (

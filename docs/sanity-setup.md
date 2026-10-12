@@ -29,12 +29,21 @@ Create a **Content page** in the Studio. These are the website's supported paths
 
 Slugs use lowercase letters, numbers, and single hyphens. Each path must be
 unique. Create a section listing document to provide the title and introduction
-for its index page; child entries are selected by their path prefix.
+for its index page; child entries are selected by their path prefix. The blog
+also has a repository default titled Journal, so `/blog` renders even before a
+listing document is created. A published `/blog` listing replaces that default.
+The default contains no articles; the empty state is intentional.
 
 Pages have title, description, optional section label, hero/social images,
 author/dates, and ordered paragraph, heading, list, and image blocks. Images
 support alt text, crop, and hotspot. The homepage's existing scene and capability
 content remain managed in the application.
+
+The website owns the page designs. Blog, detail, about, contact, services,
+portfolio, and privacy pages use shared internal-page navigation and footer
+components styled to match the landing page. Their main content is visible
+without entrance animations or the landing page's 3D scene. Changing layouts
+requires a website deployment, not a Studio schema change. See `site-design.md`.
 
 New documents start with Approval status Draft. Set that field to Published and
 use the Studio's Publish action only when the content is approved. Sanity drafts
@@ -49,10 +58,14 @@ Sanity documents, with Sanity taking precedence for matching paths. Rendering,
 metadata, sitemap, and RSS use this same collection. Invalid paths and incomplete
 articles are excluded. Fetch failures surface through the existing error handling.
 
-The Next.js Cache Components helper revalidates after 30 seconds. On the first
-request after that interval, the previous value can be served while the refresh
-runs. The browser router and Sanity CDN can add a short delay. This initial setup
-does not enable live draft preview or click-to-edit overlays.
+The Next.js Cache Components content helper revalidates after 30 seconds. The
+published-page renderer, page metadata, and dedicated blog route also have local
+caches that revalidate after 30 seconds, with a five-minute client-router stale
+window and a one-hour expiration.
+On the first request after a revalidation interval, the previous value can be
+served while the refresh runs. Browser navigation and the Sanity CDN can add a
+delay; a full browser reload may be needed when checking newly published
+content. This setup does not enable live draft preview or click-to-edit overlays.
 
 The client defaults to the supplied project and dataset. These public overrides
 are documented in `.env.example`:
@@ -105,9 +118,23 @@ npm run build -- --no-auto-updates
 That invocation successfully bundles the locally installed Studio version and
 does not change `deployment.autoUpdates: true` in `sanity.cli.ts`. The CLI warns
 that the flag is deprecated. Resolve CDN access before relying on the default
-auto-updating production build; no Studio hosting deployment was performed.
-The running local Studio also uses `npm run dev -- --no-auto-updates` for this
-environment. The saved auto-update option remains enabled.
+auto-updating production build. This was a setup-environment limitation, not a
+requirement to disable production auto-updates. The saved auto-update option
+remains enabled.
+
+## Hosted Studio
+
+The Studio was subsequently deployed successfully to
+https://tacticforyou.sanity.studio/ with `npm run deploy`. Its application ID is
+saved in `sanity.cli.ts`, avoiding the application-selection prompt on future
+deployments. Team members use this hosted editor and the existing production
+dataset; your local development server does not need to run for them to publish.
+Manage invitations and publishing permissions in Sanity Manage.
+
+Normal text/image edits need only approval and publishing in Studio. Redeploy
+Studio after schema or editor configuration changes. Redeploy the Next.js app
+after website design or repository content changes. No Studio changes are
+required for the shared internal-page design.
 
 From `tacticforyou`, validate with `npm run lint`, `npm run build`, and the focused
 Playwright tests in `tests/sanity.spec.ts` and `tests/foundations.spec.ts`.
