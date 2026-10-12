@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { publishedPages } from "../content/pages";
+import { loadPublishedPages } from "../content/load-pages";
+import { contentImageUrl } from "../lib/content-image";
 import { absoluteUrl } from "../lib/site";
 import { ContentListing, ContentPage } from "./content-page";
 
-export function getPublishedContent(path: string) {
-  const page = publishedPages().find((entry) => entry.path === path);
+export async function getPublishedContent(path: string) {
+  const page = (await loadPublishedPages()).find(
+    (entry) => entry.path === path,
+  );
   if (!page) notFound();
   return page;
 }
 
-export function contentMetadata(path: string): Metadata {
-  const page = getPublishedContent(path);
+export async function contentMetadata(path: string): Promise<Metadata> {
+  const page = await getPublishedContent(path);
   return {
     title: page.title,
     description: page.description,
@@ -27,7 +30,7 @@ export function contentMetadata(path: string): Metadata {
             url: absoluteUrl(page.path),
             images: [
               {
-                url: absoluteUrl(page.socialImage.src),
+                url: contentImageUrl(page.socialImage.src),
                 alt: page.socialImage.alt,
                 width: page.socialImage.width,
                 height: page.socialImage.height,
@@ -38,20 +41,20 @@ export function contentMetadata(path: string): Metadata {
             card: "summary_large_image",
             title: page.title,
             description: page.description,
-            images: [absoluteUrl(page.socialImage.src)],
+            images: [contentImageUrl(page.socialImage.src)],
           },
         }
       : {}),
   };
 }
 
-export function PublishedContent({ path }: { path: string }) {
-  const page = getPublishedContent(path);
+export async function PublishedContent({ path }: { path: string }) {
+  const page = await getPublishedContent(path);
   if (page.kind === "listing")
     return (
       <ContentListing
         content={page}
-        entries={publishedPages().filter((entry) =>
+        entries={(await loadPublishedPages()).filter((entry) =>
           entry.path.startsWith(`${page.path}/`),
         )}
       />

@@ -5,11 +5,12 @@ export type ContentImage = {
   height: number;
 };
 
-export type ContentBlock =
+export type ContentBlock = { key?: string } & (
   | { type: "paragraph"; text: string }
   | { type: "heading"; text: string }
   | { type: "list"; items: readonly string[] }
-  | { type: "image"; image: ContentImage; caption?: string };
+  | { type: "image"; image: ContentImage; caption?: string }
+);
 
 export type ContentPage = {
   path: string;

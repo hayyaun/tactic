@@ -90,20 +90,23 @@ export function ContentPage({
             switch (block.type) {
               case "heading":
                 return (
-                  <h2 key={index} className="pt-5 text-2xl tracking-tight">
+                  <h2
+                    key={block.key ?? index}
+                    className="pt-5 text-2xl tracking-tight"
+                  >
                     {block.text}
                   </h2>
                 );
               case "paragraph":
                 return (
-                  <p key={index} className="text-muted">
+                  <p key={block.key ?? index} className="text-muted">
                     {block.text}
                   </p>
                 );
               case "list":
                 return (
                   <ul
-                    key={index}
+                    key={block.key ?? index}
                     className="list-disc space-y-2 pl-6 text-muted"
                   >
                     {block.items.map((item, i) => (
@@ -113,7 +116,7 @@ export function ContentPage({
                 );
               case "image":
                 return (
-                  <figure key={index}>
+                  <figure key={block.key ?? index}>
                     <Image
                       {...block.image}
                       alt={block.image.alt}

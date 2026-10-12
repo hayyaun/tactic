@@ -5,6 +5,7 @@ out/
 build/
 coverage/
 next-env.d.ts
+sanity.types.ts
 *.tsbuildinfo
 
 # Package manager output

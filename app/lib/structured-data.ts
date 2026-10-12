@@ -1,4 +1,5 @@
 import type { ContentPage } from "../content/types";
+import { contentImageUrl } from "./content-image";
 import { absoluteUrl, site } from "./site";
 
 export function organizationSchema() {
@@ -25,7 +26,7 @@ export function articleSchema(page: ContentPage) {
     ...(page.author
       ? { author: { "@type": "Person", name: page.author } }
       : {}),
-    ...(page.hero ? { image: absoluteUrl(page.hero.src) } : {}),
+    ...(page.hero ? { image: contentImageUrl(page.hero.src) } : {}),
     publisher: { "@id": `${site.url}/#organization` },
   };
 }

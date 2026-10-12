@@ -1,6 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 import { isIndexable } from "./app/lib/site";
+import { dataset, projectId } from "./app/sanity/env";
 
 const permanentRedirects: {
   source: string;
@@ -10,6 +11,15 @@ const permanentRedirects: {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: `/images/${projectId}/${dataset}/**`,
+      },
+    ],
+  },
   redirects: () => [
     ...permanentRedirects,
     {
