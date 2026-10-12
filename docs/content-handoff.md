@@ -1,6 +1,6 @@
 # Content and asset handoff
 
-The types live in `app/content/types.ts`. Content can be authored in the standalone sibling `studio-tactic` Sanity Studio; approved repository entries can also live in `app/content/pages.ts`. `app/content/load-pages.ts` combines both sources. `ContentPage` renders detail/about/contact pages; `ContentListing` renders services and portfolio listings. The dedicated `BlogListing` renders `/blog`. These internal pages share `SiteHeader` and `SiteFooter`, the landing page's design tokens, and immediately visible server-rendered content. The landing page retains its own scene and section navigation. See `site-design.md` for the component handoff.
+The types live in `app/content/types.ts`. Content can be authored in the standalone sibling `studio-tactic` Sanity Studio; approved repository entries can also live in `app/content/pages.ts`. `app/content/load-pages.ts` combines both sources. `ContentPage` renders detail/about/contact pages; `ContentListing` renders services and portfolio listings. The dedicated `BlogListing` renders `/blog`. These internal pages share `SiteHeader` and `SiteFooter`, the landing page's design tokens, and server-rendered content without added entrance delays. The landing page retains its own scene and section navigation. See `site-design.md` for the component handoff.
 
 Explicit content routes resolve published entries only. Drafts and unknown paths show the not-found UI and are excluded from feeds. No unfinished content routes are added to navigation. The blog has a published repository default for its listing title and introduction, so `/blog` remains usable without a Sanity listing document. This default does not create any articles. Streaming detail routes can return HTTP 200 with a noindex not-found UI; unmatched URLs and unpublished static pages return HTTP 404. See `sanity-setup.md` for Studio setup and publishing.
 
@@ -12,7 +12,7 @@ Explicit content routes resolve published entries only. Drafts and unknown paths
 - `title`: heading/title, without the automatic `| TACTIC` suffix.
 - `description`: concise summary used for the introduction and metadata.
 - `eyebrow`: optional section label.
-- `blocks`: ordered paragraphs, headings, lists, and images. Plain text is escaped by React; do not supply HTML.
+- `blocks`: ordered Portable Text paragraphs, H2/H3 headings, quotes, bullet/numbered lists, inline formatting, links, and image objects. Legacy text objects are no longer supported; migrate existing data before deployment using `content-migration.md`. React escapes text; do not supply HTML. See `portable-text.md` for editing details.
 - `hero` and `socialImage`: upload images with meaningful alt text and crop/hotspot in Sanity; repository entries use a local image path and actual pixel width/height.
 - `publishedAt`, `updatedAt`: actual ISO dates, not deployment timestamps. Articles need `publishedAt` for RSS.
 - `author`: optional actual article author.
@@ -40,4 +40,4 @@ Images go in `public/studio/` or an organized subdirectory. Send originals, desc
 
 Repository content changes require a deployment. Sanity pages appear after approval and Studio publishing, followed by the cache refresh; no website deployment is required for content edits. Do not add private information to either published collection.
 
-Page design changes belong in the Next.js app. Change the Studio schema only when editors need new fields or content types. This design update does not change the Studio schema, its hosting settings, or published documents.
+Page design changes belong in the Next.js app. Change the Studio schema only when editors need new fields or content types. The shared page design did not require a Studio schema change. Page content now uses native Portable Text with image objects; old custom text types have been removed. Follow `content-migration.md` before deploying this cleanup. Dataset changes and Studio deployment are separate, deliberate operations.

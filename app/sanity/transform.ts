@@ -79,16 +79,33 @@ export function toContentPage(page: SanityPage): ContentPage | undefined {
   for (const block of page.blocks ?? []) {
     const key = block._key;
     switch (block._type) {
-      case "paragraphBlock":
-        if (block.text)
-          blocks.push({ key, type: "paragraph", text: block.text });
-        break;
-      case "headingBlock":
-        if (block.text) blocks.push({ key, type: "heading", text: block.text });
-        break;
-      case "listBlock":
-        if (block.items?.length)
-          blocks.push({ key, type: "list", items: block.items });
+      case "block":
+        if (block.children)
+          blocks.push({
+            key,
+            type: "portableText",
+            value: {
+              _type: "block",
+              _key: key,
+              style: block.style ?? "normal",
+              ...(block.listItem ? { listItem: block.listItem } : {}),
+              ...(block.level !== null ? { level: block.level } : {}),
+              children: block.children
+                .filter((span) => typeof span.text === "string")
+                .map((span) => ({
+                  _type: "span",
+                  _key: span._key,
+                  text: span.text!,
+                  marks: span.marks ?? [],
+                })),
+              markDefs: (block.markDefs ?? []).map((definition) => ({
+                _type: "link",
+                _key: definition._key,
+                href: definition.href ?? "",
+                openInNewTab: definition.openInNewTab ?? false,
+              })),
+            },
+          });
         break;
       case "imageBlock": {
         const image = toImage(block.image);
@@ -101,6 +118,10 @@ export function toContentPage(page: SanityPage): ContentPage | undefined {
           });
         break;
       }
+      default:
+        throw new Error(
+          `Unsupported content block on ${page.path}. Run the Studio content migration before deploying this website.`,
+        );
     }
   }
 

@@ -22,9 +22,14 @@ export const PUBLISHED_CONTENT_QUERY = defineQuery(`
     blocks[] {
       _key,
       _type,
-      text,
-      items,
       caption,
+      _type == "block" => {
+        style,
+        listItem,
+        level,
+        children[] {_key, _type, text, marks},
+        markDefs[] {_key, _type, href, openInNewTab}
+      },
       image {
         _type, alt, crop, hotspot,
         asset->{_id, metadata {dimensions {width, height}}}

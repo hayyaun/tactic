@@ -35,9 +35,14 @@ listing document is created. A published `/blog` listing replaces that default.
 The default contains no articles; the empty state is intentional.
 
 Pages have title, description, optional section label, hero/social images,
-author/dates, and ordered paragraph, heading, list, and image blocks. Images
-support alt text, crop, and hotspot. The homepage's existing scene and capability
-content remain managed in the application.
+author/dates, and ordered Page content blocks. Page content supports Portable
+Text for normal paragraphs, H2/H3 headings, quotes, nested bullet/numbered lists,
+bold, italic, inline code, underline, strikethrough, and safe links with an
+optional new-tab setting. Image objects support alt text, crop, and hotspot.
+Legacy paragraph, heading, and list objects have been removed from authoring
+and rendering. Existing data must be migrated using `content-migration.md`. The
+homepage's existing scene and capability content remain managed in the
+application. See `portable-text.md` for the rich-text handoff.
 
 The website owns the page designs. Blog, detail, about, contact, services,
 portfolio, and privacy pages use shared internal-page navigation and footer
@@ -136,7 +141,16 @@ Studio after schema or editor configuration changes. Redeploy the Next.js app
 after website design or repository content changes. No Studio changes are
 required for the shared internal-page design.
 
+The Portable Text cleanup requires a content migration and a Studio deployment.
+Follow `content-migration.md` before deploying the cleaned-up website or Studio:
+back up, preview the migration, apply it deliberately, and deploy both apps with
+the documented compatibility or maintenance-window precautions. Approval rules,
+cache settings, environment variables, saved application ID, and enabled
+auto-updates are unchanged. No production mutations or hosted deployments have
+been performed by the agent for this cleanup.
+
 From `tacticforyou`, validate with `npm run lint`, `npm run build`, and the focused
 Playwright tests in `tests/sanity.spec.ts` and `tests/foundations.spec.ts`.
 
 See `sanity-command-log.md` for the setup commands, outcomes, and state changes.
+See `portable-text.md` for the subsequent editor update and its verification.

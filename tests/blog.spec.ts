@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { textBlock } from "../app/content/text-block";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BlogListing } from "../app/components/blog-listing";
@@ -18,7 +19,7 @@ const article = (overrides: Partial<ContentPage> = {}): ContentPage => ({
   description: "How a clear point of view makes the work more useful.",
   author: "TACTIC",
   publishedAt: "2026-10-10T12:00:00Z",
-  blocks: [{ type: "paragraph", text: "A considered place to begin." }],
+  blocks: [textBlock("text-1", "A considered place to begin.")],
   ...overrides,
 });
 
@@ -117,9 +118,12 @@ test("article reading time counts editorial words without counting image URLs", 
     articleReadingMinutes(
       article({
         blocks: [
-          { type: "heading", text: "word ".repeat(20) },
-          { type: "paragraph", text: "word ".repeat(200) },
-          { type: "list", items: ["word ".repeat(220)] },
+          textBlock("text-2", "word ".repeat(20), { style: "h2" }),
+          textBlock("text-3", "word ".repeat(200)),
+          textBlock("text-5", "word ".repeat(220), {
+            listItem: "bullet",
+            level: 1,
+          }),
           {
             type: "image",
             image: {
@@ -135,7 +139,7 @@ test("article reading time counts editorial words without counting image URLs", 
   ).toBe(2);
   expect(
     articleReadingMinutes(
-      article({ blocks: [{ type: "paragraph", text: "word ".repeat(441) }] }),
+      article({ blocks: [textBlock("text-4", "word ".repeat(441))] }),
     ),
   ).toBe(3);
 });

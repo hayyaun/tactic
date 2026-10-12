@@ -21,21 +21,6 @@ export type ImageBlock = {
   caption?: string;
 };
 
-export type ListBlock = {
-  _type: "listBlock";
-  items?: Array<string>;
-};
-
-export type HeadingBlock = {
-  _type: "headingBlock";
-  text?: string;
-};
-
-export type ParagraphBlock = {
-  _type: "paragraphBlock";
-  text?: string;
-};
-
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -67,12 +52,24 @@ export type ContentPage = {
   hero?: SiteImage;
   socialImage?: SiteImage;
   blocks?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2" | "h3" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      openInNewTab?: boolean;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
     _key: string;
-  } & ParagraphBlock | {
-    _key: string;
-  } & HeadingBlock | {
-    _key: string;
-  } & ListBlock | {
+  } | {
     _key: string;
   } & ImageBlock>;
   author?: string;
@@ -199,11 +196,11 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes = ImageBlock | ListBlock | HeadingBlock | ParagraphBlock | SanityImageAssetReference | SiteImage | ContentPage | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint | Slug;
+export type AllSanitySchemaTypes = ImageBlock | SanityImageAssetReference | SiteImage | ContentPage | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint | Slug;
 
 // Source: ../tacticforyou/app/sanity/queries.ts
 // Variable: PUBLISHED_CONTENT_QUERY
-// Query: *[_type == "contentPage" && status == "published" && defined(path)    && !(_id in path("drafts.**"))]  | order(_updatedAt desc) {    _id,    path,    kind,    status,    title,    description,    eyebrow,    hero {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    socialImage {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    blocks[] {      _key,      _type,      text,      items,      caption,      image {        _type, alt, crop, hotspot,        asset->{_id, metadata {dimensions {width, height}}}      }    },    publishedAt,    "updatedAt": coalesce(updatedAt, _updatedAt),    author  }
+// Query: *[_type == "contentPage" && status == "published" && defined(path)    && !(_id in path("drafts.**"))]  | order(_updatedAt desc) {    _id,    path,    kind,    status,    title,    description,    eyebrow,    hero {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    socialImage {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    blocks[] {      _key,      _type,      caption,      _type == "block" => {        style,        listItem,        level,        children[] {_key, _type, text, marks},        markDefs[] {_key, _type, href, openInNewTab}      },      image {        _type, alt, crop, hotspot,        asset->{_id, metadata {dimensions {width, height}}}      }    },    publishedAt,    "updatedAt": coalesce(updatedAt, _updatedAt),    author  }
 export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
   _id: string;
   path: string | null;
@@ -244,16 +241,27 @@ export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
   } | null;
   blocks: Array<{
     _key: string;
-    _type: "headingBlock";
-    text: string | null;
-    items: null;
+    _type: "block";
     caption: null;
+    style: "blockquote" | "h2" | "h3" | "normal" | null;
+    listItem: "bullet" | "number" | null;
+    level: number | null;
+    children: Array<{
+      _key: string;
+      _type: "span";
+      text: string | null;
+      marks: Array<string> | null;
+    }> | null;
+    markDefs: Array<{
+      _key: string;
+      _type: "link";
+      href: string | null;
+      openInNewTab: boolean | null;
+    }> | null;
     image: null;
   } | {
     _key: string;
     _type: "imageBlock";
-    text: null;
-    items: null;
     caption: string | null;
     image: {
       _type: "siteImage";
@@ -270,20 +278,6 @@ export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
         } | null;
       } | null;
     } | null;
-  } | {
-    _key: string;
-    _type: "listBlock";
-    text: null;
-    items: Array<string> | null;
-    caption: null;
-    image: null;
-  } | {
-    _key: string;
-    _type: "paragraphBlock";
-    text: string | null;
-    items: null;
-    caption: null;
-    image: null;
   }> | null;
   publishedAt: string | null;
   updatedAt: string;
@@ -293,7 +287,7 @@ export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"contentPage\" && status == \"published\" && defined(path)\n    && !(_id in path(\"drafts.**\"))]\n  | order(_updatedAt desc) {\n    _id,\n    path,\n    kind,\n    status,\n    title,\n    description,\n    eyebrow,\n    hero {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    socialImage {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    blocks[] {\n      _key,\n      _type,\n      text,\n      items,\n      caption,\n      image {\n        _type, alt, crop, hotspot,\n        asset->{_id, metadata {dimensions {width, height}}}\n      }\n    },\n    publishedAt,\n    \"updatedAt\": coalesce(updatedAt, _updatedAt),\n    author\n  }\n": PUBLISHED_CONTENT_QUERY_RESULT;
+    "\n  *[_type == \"contentPage\" && status == \"published\" && defined(path)\n    && !(_id in path(\"drafts.**\"))]\n  | order(_updatedAt desc) {\n    _id,\n    path,\n    kind,\n    status,\n    title,\n    description,\n    eyebrow,\n    hero {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    socialImage {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    blocks[] {\n      _key,\n      _type,\n      caption,\n      _type == \"block\" => {\n        style,\n        listItem,\n        level,\n        children[] {_key, _type, text, marks},\n        markDefs[] {_key, _type, href, openInNewTab}\n      },\n      image {\n        _type, alt, crop, hotspot,\n        asset->{_id, metadata {dimensions {width, height}}}\n      }\n    },\n    publishedAt,\n    \"updatedAt\": coalesce(updatedAt, _updatedAt),\n    author\n  }\n": PUBLISHED_CONTENT_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

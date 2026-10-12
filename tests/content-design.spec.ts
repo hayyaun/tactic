@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { textBlock } from "../app/content/text-block";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -19,13 +20,10 @@ const content = (overrides: Partial<ContentPage> = {}): ContentPage => ({
   title: "Independent minds. Collective ambition.",
   description: "A considered creative practice, working together.",
   blocks: [
-    { key: "heading", type: "heading", text: "A clear direction" },
-    {
-      key: "paragraph",
-      type: "paragraph",
-      text: "We turn careful thinking into work that matters.",
-    },
-    { key: "list", type: "list", items: ["Discovery", "Delivery"] },
+    textBlock("text-1", "A clear direction", { style: "h2" }),
+    textBlock("text-2", "We turn careful thinking into work that matters."),
+    textBlock("text-3", "Discovery", { listItem: "bullet", level: 1 }),
+    textBlock("text-4", "Delivery", { listItem: "bullet", level: 1 }),
     {
       key: "image",
       type: "image",

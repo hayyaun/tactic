@@ -105,65 +105,76 @@ test("Sanity editorial blocks retain their order and stable keys", () => {
   const blocks: SanityBlock[] = [
     {
       _key: "heading",
-      _type: "headingBlock",
-      text: "A clear direction",
-      items: null,
+      _type: "block",
+      style: "h2",
+      listItem: null,
+      level: null,
+      children: [
+        { _key: "text", _type: "span", text: "A clear direction", marks: [] },
+      ],
+      markDefs: [],
       caption: null,
       image: null,
     },
     {
       _key: "paragraph",
-      _type: "paragraphBlock",
-      text: "Research & design",
-      items: null,
-      caption: null,
-      image: null,
-    },
-    {
-      _key: "empty-paragraph",
-      _type: "paragraphBlock",
-      text: null,
-      items: null,
+      _type: "block",
+      style: "normal",
+      listItem: null,
+      level: null,
+      children: [
+        { _key: "text", _type: "span", text: "Research & design", marks: [] },
+      ],
+      markDefs: [],
       caption: null,
       image: null,
     },
     {
       _key: "list",
-      _type: "listBlock",
-      text: null,
-      items: ["Discovery", "Delivery"],
+      _type: "block",
+      style: "normal",
+      listItem: "bullet",
+      level: 1,
+      children: [{ _key: "text", _type: "span", text: "Discovery", marks: [] }],
+      markDefs: [],
       caption: null,
       image: null,
     },
-    {
-      _key: "image",
-      _type: "imageBlock",
-      text: null,
-      items: null,
-      caption: "Printed materials",
-      image,
-    },
+    { _key: "image", _type: "imageBlock", caption: "Printed materials", image },
     {
       _key: "incomplete-image",
       _type: "imageBlock",
-      text: null,
-      items: null,
       caption: null,
       image: { ...image, alt: null },
     },
   ];
   const content = toContentPage(page({ blocks, hero: image }));
-  expect(content?.blocks).toEqual([
-    { key: "heading", type: "heading", text: "A clear direction" },
-    { key: "paragraph", type: "paragraph", text: "Research & design" },
-    { key: "list", type: "list", items: ["Discovery", "Delivery"] },
-    {
-      key: "image",
-      type: "image",
-      image: content?.hero,
-      caption: "Printed materials",
-    },
+  expect(content?.blocks.map((block) => block.key)).toEqual([
+    "heading",
+    "paragraph",
+    "list",
+    "image",
   ]);
+  expect(content?.blocks.slice(0, 3).map((block) => block.type)).toEqual([
+    "portableText",
+    "portableText",
+    "portableText",
+  ]);
+  expect(content?.blocks[3]).toEqual({
+    key: "image",
+    type: "image",
+    image: content?.hero,
+    caption: "Printed materials",
+  });
+});
+
+test("unsupported stored blocks fail visibly instead of silently dropping content", () => {
+  const blocks = [
+    { _key: "unmigrated", _type: "paragraphBlock", text: "Keep this writing" },
+  ] as unknown as SanityBlock[];
+  expect(() => toContentPage(page({ blocks }))).toThrow(
+    "Run the Studio content migration",
+  );
 });
 
 test("Sanity images preserve alt text and crop while limiting output size", () => {

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { textBlock } from "../app/content/text-block";
 import { buildRss } from "../app/lib/rss";
 import { publishedPages } from "../app/content/pages";
 import { serializeJsonLd } from "../app/lib/structured-data";
@@ -18,9 +19,10 @@ test("content templates render editorial blocks and listing links", () => {
     title: "Identity design",
     description: "A clear identity.",
     blocks: [
-      { type: "heading", text: "Process" },
-      { type: "paragraph", text: "Research & design" },
-      { type: "list", items: ["Discovery", "Delivery"] },
+      textBlock("text-1", "Process", { style: "h2" }),
+      textBlock("text-2", "Research & design"),
+      textBlock("text-3", "Discovery", { listItem: "bullet", level: 1 }),
+      textBlock("text-4", "Delivery", { listItem: "bullet", level: 1 }),
     ],
   };
   const detail = renderToStaticMarkup(
@@ -28,7 +30,7 @@ test("content templates render editorial blocks and listing links", () => {
   );
   expect(detail).toContain("<h1");
   expect(detail).toContain("Research &amp; design");
-  expect(detail).toContain("<li>Discovery</li>");
+  expect(detail).toMatch(/<li[^>]*>Discovery<\/li>/);
   const listing = renderToStaticMarkup(
     createElement(ContentListing, {
       content: {

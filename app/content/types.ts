@@ -1,3 +1,21 @@
+import type { PortableTextBlock } from "next-sanity";
+
+export type ContentLink = {
+  _type: "link";
+  _key: string;
+  href: string;
+  openInNewTab?: boolean;
+};
+
+export type ContentTextSpan = {
+  _type: "span";
+  _key?: string;
+  text: string;
+  marks?: string[];
+};
+
+export type ContentTextBlock = PortableTextBlock<ContentLink, ContentTextSpan>;
+
 export type ContentImage = {
   src: string;
   alt: string;
@@ -6,10 +24,8 @@ export type ContentImage = {
 };
 
 export type ContentBlock = { key?: string } & (
-  | { type: "paragraph"; text: string }
-  | { type: "heading"; text: string }
-  | { type: "list"; items: readonly string[] }
   | { type: "image"; image: ContentImage; caption?: string }
+  | { type: "portableText"; value: ContentTextBlock }
 );
 
 export type ContentPage = {

@@ -38,13 +38,10 @@ export function articleReadingMinutes(article: ContentPage) {
   const text = article.blocks
     .map((block) => {
       switch (block.type) {
-        case "heading":
-        case "paragraph":
-          return block.text;
-        case "list":
-          return block.items.join(" ");
         case "image":
           return block.caption ?? "";
+        case "portableText":
+          return block.value.children.map((span) => span.text).join("");
       }
     })
     .join(" ")
