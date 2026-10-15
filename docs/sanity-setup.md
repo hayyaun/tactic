@@ -111,30 +111,36 @@ TypeGen scans `../tacticforyou/app/` and writes `../tacticforyou/sanity.types.ts
 It is also enabled during Studio development/build. Regenerate types after
 schema or GROQ query changes and commit the generated types with the code.
 `schema:deploy` registers the model in Sanity; it does not publish documents or
-host the Studio. Studio hosting is a separate `npm run deploy` action.
+host the Studio. The standalone Studio is built and hosted separately on Vercel.
 
-During setup, the default Studio build received HTTP 403 while checking Sanity's
-auto-update CDN. The installed CLI supports a temporary validation command:
+The Studio now sets `deployment.autoUpdates: false` in `sanity.cli.ts`, using
+Sanity's [documented opt-out](https://www.sanity.io/docs/studio/latest-version-of-sanity#opting-out).
+Its production build bundles the locally installed Studio core and dashboard
+together, avoiding the mixed-version Sanity UI CSS collision seen in the
+auto-updating deployment. Build normally with `npm run build`; no deprecated
+flags or dashboard inline-style overrides are needed. This is a fix for this
+deployment's dependency mismatch, not a general requirement for dashboards.
 
-```sh
-npm run build -- --no-auto-updates
-```
-
-That invocation successfully bundles the locally installed Studio version and
-does not change `deployment.autoUpdates: true` in `sanity.cli.ts`. The CLI warns
-that the flag is deprecated. Resolve CDN access before relying on the default
-auto-updating production build. This was a setup-environment limitation, not a
-requirement to disable production auto-updates. The saved auto-update option
-remains enabled.
+Studio software updates now require deliberate dependency updates, checks, and
+a Vercel rebuild/redeployment. Content editing and publishing remain unchanged.
+Re-enable auto-updates only after the styling incompatibility is resolved and
+an auto-updating production build has been verified.
 
 ## Hosted Studio
 
-The Studio was subsequently deployed successfully to
-https://tacticforyou.sanity.studio/ with `npm run deploy`. Its application ID is
-saved in `sanity.cli.ts`, avoiding the application-selection prompt on future
-deployments. Team members use this hosted editor and the existing production
-dataset; your local development server does not need to run for them to publish.
-Manage invitations and publishing permissions in Sanity Manage.
+The Studio is hosted on Vercel at
+[studio.tacticforyou.com](https://studio.tacticforyou.com). Its registered
+application ID, `pox5j4a3sxe0k851s2duo72h`, is the default in `sanity.cli.ts`.
+The optional `SANITY_STUDIO_APP_ID` build-time override still takes precedence;
+any existing Vercel value should match this application ID. Build with
+`npm run build` and use `dist` as the Studio's Vercel output directory.
+`npm run deploy` targets Sanity hosting, not this Vercel deployment.
+Rebuild and redeploy the Studio's Vercel project for the saved auto-update setting
+to take effect. No new environment variables or Next.js deployment are required
+for this Studio-only runtime change.
+Team members use the Vercel-hosted editor and the existing production dataset;
+your local development server does not need to run for them to publish. Manage
+invitations and publishing permissions in Sanity Manage.
 
 Normal text/image edits need only approval and publishing in Studio. Redeploy
 Studio after schema or editor configuration changes. Redeploy the Next.js app
@@ -145,8 +151,9 @@ The Portable Text cleanup requires a content migration and a Studio deployment.
 Follow `content-migration.md` before deploying the cleaned-up website or Studio:
 back up, preview the migration, apply it deliberately, and deploy both apps with
 the documented compatibility or maintenance-window precautions. Approval rules,
-cache settings, environment variables, saved application ID, and enabled
-auto-updates are unchanged. No production mutations or hosted deployments have
+cache settings, environment variables, and saved application ID were unchanged
+by that cleanup. The current Studio auto-update setting is documented above.
+No production mutations or hosted deployments have
 been performed by the agent for this cleanup.
 
 From `tacticforyou`, validate with `npm run lint`, `npm run build`, and the focused

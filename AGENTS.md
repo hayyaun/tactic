@@ -2,9 +2,11 @@
 
 ## Command transparency
 
-- After running commands, recap the actual commands, their purpose, and their outcome. Redact secrets.
-- Explicitly call out commands or tool actions that change application settings or state.
-- Apply this communication preference across projects and future chats when these instructions are available.
+- Recap only commands or tool actions that write, delete, or change files, data, configuration, application settings, or external state.
+- Do not recap read-only commands such as searches, file reads, inspections, or status checks. If no modifying actions ran, omit the command recap entirely.
+- Use one short bullet per meaningful change: `command or tool` — what changed; result. Include the actual command when short; for long scripts or patches, name the tool and affected files instead of reproducing the script or patch. Redact secrets.
+- Do not include exhaustive command logs or expandable command-recap sections.
+- Apply this preference across projects and future chats.
 
 ## Documentation and project conventions
 
