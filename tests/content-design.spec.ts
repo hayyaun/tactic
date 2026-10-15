@@ -137,7 +137,9 @@ test("About portraits distinguish illustrated stand-ins from real team details",
     }),
   );
   expect(preview).toContain("CASTING NOTES / ILLUSTRATED STAND-INS");
-  expect(preview).toContain("These fictional characters are portrait studies");
+  expect(preview).toContain(
+    "Cards marked “Character study” are fictional portrait studies.",
+  );
   expect(preview).toContain("CHARACTER STUDY");
 });
 

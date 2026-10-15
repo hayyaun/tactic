@@ -165,8 +165,8 @@ export function AboutPage({ content }: { content: PageContent }) {
                 CASTING NOTES / ILLUSTRATED STAND-INS
               </p>
               <p className="max-w-md text-[12px] leading-[1.8] text-muted">
-                A little imagination before the introductions. These fictional
-                characters are portrait studies, ready to make way for our team.
+                Cards marked “Character study” are fictional portrait studies.
+                They’ll make way for more of our team.
               </p>
             </div>
           )}
