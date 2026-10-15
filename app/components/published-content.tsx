@@ -6,6 +6,7 @@ import { contentImageUrl } from "../lib/content-image";
 import { absoluteUrl } from "../lib/site";
 import type { ContentPage as PageContent } from "../content/types";
 import { ContentListing, ContentPage } from "./content-page";
+import { AboutPage } from "./about-page";
 
 export async function getPublishedContent(path: string) {
   const page = (await loadPublishedPages()).find(
@@ -23,8 +24,9 @@ export async function contentMetadata(path: string): Promise<Metadata> {
 }
 
 export function metadataForContent(page: PageContent): Metadata {
+  const title = page.seoTitle || page.title;
   return {
-    title: page.title,
+    title,
     description: page.description,
     alternates: {
       canonical: absoluteUrl(page.path),
@@ -33,7 +35,7 @@ export function metadataForContent(page: PageContent): Metadata {
     ...(page.socialImage
       ? {
           openGraph: {
-            title: page.title,
+            title,
             description: page.description,
             url: absoluteUrl(page.path),
             images: [
@@ -47,7 +49,7 @@ export function metadataForContent(page: PageContent): Metadata {
           },
           twitter: {
             card: "summary_large_image",
-            title: page.title,
+            title,
             description: page.description,
             images: [contentImageUrl(page.socialImage.src)],
           },
@@ -60,6 +62,7 @@ export async function PublishedContent({ path }: { path: string }) {
   "use cache";
   cacheLife({ stale: 300, revalidate: 30, expire: 3600 });
   const page = await getPublishedContent(path);
+  if (page.kind === "about") return <AboutPage content={page} />;
   if (page.kind === "listing")
     return (
       <ContentListing

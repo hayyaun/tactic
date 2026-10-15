@@ -39,10 +39,13 @@ function page(overrides: Partial<SanityPage> = {}): SanityPage {
     kind: "article",
     status: "published",
     title: "Considered design",
+    seoTitle: null,
     description: "A clear direction for an independent studio.",
     eyebrow: null,
     hero: null,
     socialImage: null,
+    teamIntro: null,
+    team: null,
     blocks: [],
     publishedAt: "2026-10-10T12:00:00Z",
     updatedAt: "2026-10-12T09:00:00Z",
@@ -99,6 +102,55 @@ test("Sanity content only maps to supported routes with the matching kind", () =
   for (const route of supportedRoutes) {
     expect(toContentPage(page(route))).toMatchObject(route);
   }
+});
+
+test("About team retains real portrait details and excludes incomplete members", () => {
+  const member = {
+    _key: "team-fixture",
+    name: "  Portrait Test Person  ",
+    role: "  Test role  ",
+    bio: "  A short test biography.  ",
+    portrait: { ...image, alt: "Portrait of the test person" },
+  };
+  const source = page({
+    path: "/about",
+    kind: "about",
+    seoTitle: "  About the studio  ",
+    teamIntro: "  The people behind the work.  ",
+    team: [
+      member,
+      { ...member, _key: "missing-portrait", portrait: null },
+      { ...member, _key: "missing-name", name: " " },
+      { ...member, _key: "missing-role", role: null },
+      { ...member, _key: "missing-alt", portrait: { ...image, alt: null } },
+    ],
+  });
+  const content = toContentPage(source);
+  expect(content).toMatchObject({
+    path: source.path,
+    title: source.title,
+    description: source.description,
+    seoTitle: "About the studio",
+    teamIntro: "The people behind the work.",
+    blocks: [],
+    team: [
+      {
+        key: member._key,
+        name: "Portrait Test Person",
+        role: "Test role",
+        bio: "A short test biography.",
+        portrait: { alt: member.portrait.alt, width: 1920, height: 1440 },
+      },
+    ],
+  });
+  expect(content?.team).toHaveLength(1);
+  const portrait = new URL(content!.team![0].portrait.src);
+  expect(portrait.searchParams.get("rect")).toBe("400,600,2800,2100");
+  expect(toContentPage(page({ path: "/about", kind: "about" }))).toMatchObject({
+    title: source.title,
+    team: [],
+  });
+  expect(toContentPage(page({ team: [member] }))?.team).toBeUndefined();
 });
 
 test("Sanity editorial blocks retain their order and stable keys", () => {

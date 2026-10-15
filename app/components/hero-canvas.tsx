@@ -54,6 +54,7 @@ import { BACKGROUND_URL } from "./hero-background";
 import { adaptBoxProjectedShader } from "./box-projected-shader";
 import { SCENE_FRAMING, type SceneSettings } from "./hero-settings";
 import { warmHeroShaders } from "./hero-shader-warmup";
+import { createHeroTapTracker } from "./hero-touch";
 import {
   createStudioEnvironment,
   STUDIO_ENVIRONMENT_URL,
@@ -69,7 +70,13 @@ type SceneProps = {
   onContextLost: () => void;
   settings: SceneSettings;
 };
-type PointerMotion = { yaw: number; inside: boolean; event: Event | null };
+type PointerMotion = {
+  yaw: number;
+  inside: boolean;
+  touch: boolean;
+  event: Event | null;
+  tap: ReturnType<typeof createHeroTapTracker>;
+};
 type MarkGLTF = ReturnType<typeof useGLTF> & {
   nodes: { TACTIC_Green_Rear: Mesh; TACTIC_Red_Front: Mesh };
 };
@@ -642,6 +649,8 @@ function GlassBody({
   reducedMotion,
   onOver,
   onOut,
+  onDown,
+  onUp,
   settings,
   shimmerTime,
 }: {
@@ -651,6 +660,8 @@ function GlassBody({
   reducedMotion: boolean;
   onOver: (event: ThreeEvent<PointerEvent>) => void;
   onOut: () => void;
+  onDown: (event: ThreeEvent<PointerEvent>) => void;
+  onUp: (event: ThreeEvent<PointerEvent>) => void;
   settings: SceneSettings;
   shimmerTime: RefObject<number>;
 }) {
@@ -691,6 +702,8 @@ function GlassBody({
       onPointerOver={onOver}
       onPointerMove={(event) => event.stopPropagation()}
       onPointerOut={onOut}
+      onPointerDown={onDown}
+      onPointerUp={onUp}
     >
       <primitive object={geometry} attach="geometry" dispose={null} />
       <meshPhysicalMaterial
@@ -747,6 +760,9 @@ function Sculpture({
   const bodies = [nodes.TACTIC_Green_Rear, nodes.TACTIC_Red_Front];
   const moving = useRef<Group>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [tapped, setTapped] = useState<string | null>(null);
+  const tapYaw = useRef(0);
+  const tapTimer = useRef(0);
   const size = useThree((state) => state.size);
   const events = useThree((state) => state.events);
   const invalidate = useThree((state) => state.invalidate);
@@ -843,11 +859,26 @@ function Sculpture({
   const viewWidth = (viewHeight * size.width) / artHeight;
   const unitsPerPixel = viewHeight / artHeight;
   useEffect(() => {
+    const pointerMotion = motion.current;
     const reset = () => {
+      window.clearTimeout(tapTimer.current);
+      tapYaw.current = 0;
+      setTapped(null);
+      pointerMotion.tap.cancel();
       setHovered(null);
-      motion.current.yaw = 0;
-      motion.current.inside = false;
+      pointerMotion.yaw = 0;
+      pointerMotion.inside = false;
+      pointerMotion.touch = false;
       invalidate();
+    };
+    const onPointerLeave = (event: Event) => {
+      // Touch devices leave the element after pointerup. Let an accepted tap
+      // finish its pulse, while still discarding any unfinished gesture.
+      if ("pointerType" in event && event.pointerType === "touch") {
+        pointerMotion.tap.cancel();
+        return;
+      }
+      reset();
     };
     const onVisibilityChange = () => {
       if (document.hidden) reset();
@@ -857,14 +888,16 @@ function Sculpture({
     window.addEventListener("resize", reset);
     document.addEventListener("visibilitychange", onVisibilityChange);
     const source = events.connected;
-    source?.addEventListener("pointerleave", reset);
+    source?.addEventListener("pointerleave", onPointerLeave);
     source?.addEventListener("pointercancel", reset);
     return () => {
+      window.clearTimeout(tapTimer.current);
+      pointerMotion.tap.cancel();
       window.removeEventListener("blur", reset);
       window.removeEventListener("scroll", reset);
       window.removeEventListener("resize", reset);
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      source?.removeEventListener("pointerleave", reset);
+      source?.removeEventListener("pointerleave", onPointerLeave);
       source?.removeEventListener("pointercancel", reset);
     };
   }, [invalidate, events.connected, motion]);
@@ -882,7 +915,8 @@ function Sculpture({
     const target =
       reducedMotion || !active || !settings.parallax
         ? 0
-        : motion.current.yaw * (settings.parallaxStrength / 0.08);
+        : (tapYaw.current + motion.current.yaw) *
+          (settings.parallaxStrength / 0.08);
     const previous = moving.current.rotation.y;
     const next = reducedMotion
       ? target
@@ -933,7 +967,11 @@ function Sculpture({
               key={body.name}
               geometry={body.geometry}
               name={body.name}
-              hovered={active && settings.hover && hovered === body.name}
+              hovered={
+                active &&
+                settings.hover &&
+                (hovered === body.name || tapped === body.name)
+              }
               reducedMotion={reducedMotion}
               settings={settings}
               shimmerTime={shimmerTime}
@@ -951,6 +989,31 @@ function Sculpture({
                   current === body.name ? null : current,
                 )
               }
+              onDown={(event) => {
+                if (event.pointerType !== "touch") return;
+                event.stopPropagation();
+                motion.current.tap.start(event.nativeEvent, body.name);
+              }}
+              onUp={(event) => {
+                if (event.pointerType !== "touch") return;
+                event.stopPropagation();
+                if (
+                  !motion.current.tap.end(event.nativeEvent, body.name) ||
+                  !active
+                )
+                  return;
+                window.clearTimeout(tapTimer.current);
+                const bounds = gl.domElement.getBoundingClientRect();
+                tapYaw.current =
+                  ((event.clientX - bounds.left) / bounds.width - 0.5) * 0.08;
+                setTapped(body.name);
+                invalidate();
+                tapTimer.current = window.setTimeout(() => {
+                  tapYaw.current = 0;
+                  setTapped(null);
+                  invalidate();
+                }, 650);
+              }}
             />
           ))}
         </group>
@@ -1036,7 +1099,14 @@ function FrameTelemetry({ telemetry }: { telemetry: SceneTelemetry }) {
 
 export default function HeroCanvas(props: SceneProps) {
   const source = useRef<HTMLElement>(null);
-  const motion = useRef<PointerMotion>({ yaw: 0, inside: false, event: null });
+  const [motionState] = useState<PointerMotion>(() => ({
+    yaw: 0,
+    inside: false,
+    touch: false,
+    event: null,
+    tap: createHeroTapTracker(),
+  }));
+  const motion = useRef(motionState);
   const events = useMemo<NonNullable<Parameters<typeof Canvas>[0]["events"]>>(
     () => (store) => ({
       ...createPointerEvents(store),
@@ -1049,12 +1119,11 @@ export default function HeroCanvas(props: SceneProps) {
         const x = (event.clientX - bounds.left) / bounds.width;
         const y = (event.clientY - bounds.top) / bounds.height;
         // Repicking during animation reuses the last event; it must not undo a reset.
-        if (motion.current.event !== event) {
+        // A touch tap may also produce a compatibility click. Pointer events
+        // already handle positioning; that click must not turn into mouse hover.
+        if (event.type !== "click" && motion.current.event !== event) {
           motion.current.event = event;
-          motion.current.inside =
-            (!("pointerType" in event) ||
-              event.pointerType === "mouse" ||
-              event.pointerType === "pen") &&
+          const eligible =
             x >= 0 &&
             x <= 1 &&
             event.clientY >= artBounds.top &&
@@ -1063,6 +1132,15 @@ export default function HeroCanvas(props: SceneProps) {
               event.target instanceof Element &&
               event.target.closest("a, button, nav")
             );
+          const touch = "pointerType" in event && event.pointerType === "touch";
+          if (touch) motion.current.tap.move(event);
+          motion.current.touch = touch && event.isPrimary && eligible;
+          motion.current.inside =
+            !touch &&
+            (!("pointerType" in event) ||
+              event.pointerType === "mouse" ||
+              event.pointerType === "pen") &&
+            eligible;
           const yaw = motion.current.inside ? (x - 0.5) * 0.08 : 0;
           if (yaw !== motion.current.yaw) {
             motion.current.yaw = yaw;
@@ -1072,7 +1150,8 @@ export default function HeroCanvas(props: SceneProps) {
         state.pointer.set(x * 2 - 1, 1 - y * 2);
         state.raycaster.setFromCamera(state.pointer, state.camera);
       },
-      filter: (hits) => (motion.current.inside ? hits : []),
+      filter: (hits) =>
+        motion.current.inside || motion.current.touch ? hits : [],
     }),
     [],
   );

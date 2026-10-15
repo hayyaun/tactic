@@ -28,15 +28,26 @@ export type ContentBlock = { key?: string } & (
   | { type: "portableText"; value: ContentTextBlock }
 );
 
+export type TeamMember = {
+  key: string;
+  name: string;
+  role: string;
+  bio?: string;
+  portrait: ContentImage;
+};
+
 export type ContentPage = {
   path: string;
   kind: "service" | "project" | "article" | "about" | "contact" | "listing";
   status: "draft" | "published";
   title: string;
+  seoTitle?: string;
   description: string;
   eyebrow?: string;
   hero?: ContentImage;
   socialImage?: ContentImage;
+  teamIntro?: string;
+  team?: readonly TeamMember[];
   blocks: readonly ContentBlock[];
   publishedAt?: string;
   updatedAt?: string;

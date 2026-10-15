@@ -7,6 +7,7 @@ import {
   ContentPage as DetailPage,
 } from "../app/components/content-page";
 import { BlogListing } from "../app/components/blog-listing";
+import { AboutPage } from "../app/components/about-page";
 import { defaultBlogContent } from "../app/content/blog";
 import type { ContentPage } from "../app/content/types";
 import { articleSchema, breadcrumbSchema } from "../app/lib/structured-data";
@@ -94,6 +95,49 @@ test("editorial detail templates use the same static navigation and footer", () 
     expect(markup).toContain("A study in considered structure.");
     expect(markup).toContain('alt="TACTIC architectural brand study"');
   }
+});
+
+test("About portrait studies stay labelled until real team details are provided", () => {
+  for (const team of [undefined, []]) {
+    const markup = renderToStaticMarkup(
+      createElement(AboutPage, { content: content({ team }) }),
+    );
+    expectSharedChrome(markup);
+    expect(markup).toContain("STUDIO STUDIES / PORTRAITS TO FOLLOW");
+    expect(markup).toContain("Abstract studies hold the space for our people.");
+    expect(markup.match(/<span>Portrait study<\/span>/g)).toHaveLength(4);
+    expect(markup).not.toContain("<article");
+    expect(markup).not.toContain("<h3");
+  }
+
+  const member = {
+    key: "portrait-test-member",
+    name: "Example Team Member",
+    role: "Creative strategist (test fixture)",
+    bio: "A supplied biography for the portrait layout test.",
+    portrait: {
+      src: "/studio/architecture.webp",
+      alt: "Portrait of the example team member",
+      width: 900,
+      height: 900,
+    },
+  };
+  const markup = renderToStaticMarkup(
+    createElement(AboutPage, {
+      content: content({
+        team: [member],
+        teamIntro: "A supplied introduction to the team.",
+      }),
+    }),
+  );
+  expectSharedChrome(markup);
+  expect(markup).toMatch(/<h3[^>]*>Example Team Member<\/h3>/);
+  expect(markup).toContain(member.role);
+  expect(markup).toContain(member.bio);
+  expect(markup).toContain('alt="Portrait of the example team member"');
+  expect(markup).toContain("A supplied introduction to the team.");
+  expect(markup).not.toContain("Portrait study");
+  expect(markup).not.toContain("STUDIO STUDIES / PORTRAITS TO FOLLOW");
 });
 
 test("content listings and privacy use the shared editorial chrome", () => {

@@ -47,10 +47,20 @@ export type ContentPage = {
   kind?: "listing" | "service" | "project" | "article" | "about" | "contact";
   status?: "draft" | "published";
   title?: string;
+  seoTitle?: string;
   description?: string;
   eyebrow?: string;
   hero?: SiteImage;
   socialImage?: SiteImage;
+  teamIntro?: string;
+  team?: Array<{
+    name?: string;
+    role?: string;
+    bio?: string;
+    portrait?: SiteImage;
+    _type: "teamMember";
+    _key: string;
+  }>;
   blocks?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -198,15 +208,16 @@ export type Slug = {
 
 export type AllSanitySchemaTypes = ImageBlock | SanityImageAssetReference | SiteImage | ContentPage | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint | Slug;
 
-// Source: ../tacticforyou/app/sanity/queries.ts
+// Source: ../website/app/sanity/queries.ts
 // Variable: PUBLISHED_CONTENT_QUERY
-// Query: *[_type == "contentPage" && status == "published" && defined(path)    && !(_id in path("drafts.**"))]  | order(_updatedAt desc) {    _id,    path,    kind,    status,    title,    description,    eyebrow,    hero {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    socialImage {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    blocks[] {      _key,      _type,      caption,      _type == "block" => {        style,        listItem,        level,        children[] {_key, _type, text, marks},        markDefs[] {_key, _type, href, openInNewTab}      },      image {        _type, alt, crop, hotspot,        asset->{_id, metadata {dimensions {width, height}}}      }    },    publishedAt,    "updatedAt": coalesce(updatedAt, _updatedAt),    author  }
+// Query: *[_type == "contentPage" && status == "published" && defined(path)    && !(_id in path("drafts.**"))]  | order(_updatedAt desc) {    _id,    path,    kind,    status,    title,    seoTitle,    description,    eyebrow,    hero {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    socialImage {      _type, alt, crop, hotspot,      asset->{_id, metadata {dimensions {width, height}}}    },    teamIntro,    team[] {      _key,      name,      role,      bio,      portrait {        _type, alt, crop, hotspot,        asset->{_id, metadata {dimensions {width, height}}}      }    },    blocks[] {      _key,      _type,      caption,      _type == "block" => {        style,        listItem,        level,        children[] {_key, _type, text, marks},        markDefs[] {_key, _type, href, openInNewTab}      },      image {        _type, alt, crop, hotspot,        asset->{_id, metadata {dimensions {width, height}}}      }    },    publishedAt,    "updatedAt": coalesce(updatedAt, _updatedAt),    author  }
 export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
   _id: string;
   path: string | null;
   kind: "about" | "article" | "contact" | "listing" | "project" | "service" | null;
   status: "draft" | "published" | null;
   title: string | null;
+  seoTitle: string | null;
   description: string | null;
   eyebrow: string | null;
   hero: {
@@ -239,6 +250,28 @@ export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
       } | null;
     } | null;
   } | null;
+  teamIntro: string | null;
+  team: Array<{
+    _key: string;
+    name: string | null;
+    role: string | null;
+    bio: string | null;
+    portrait: {
+      _type: "siteImage";
+      alt: string | null;
+      crop: SanityImageCrop | null;
+      hotspot: SanityImageHotspot | null;
+      asset: {
+        _id: string;
+        metadata: {
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+    } | null;
+  }> | null;
   blocks: Array<{
     _key: string;
     _type: "block";
@@ -287,7 +320,7 @@ export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    "\n  *[_type == \"contentPage\" && status == \"published\" && defined(path)\n    && !(_id in path(\"drafts.**\"))]\n  | order(_updatedAt desc) {\n    _id,\n    path,\n    kind,\n    status,\n    title,\n    description,\n    eyebrow,\n    hero {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    socialImage {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    blocks[] {\n      _key,\n      _type,\n      caption,\n      _type == \"block\" => {\n        style,\n        listItem,\n        level,\n        children[] {_key, _type, text, marks},\n        markDefs[] {_key, _type, href, openInNewTab}\n      },\n      image {\n        _type, alt, crop, hotspot,\n        asset->{_id, metadata {dimensions {width, height}}}\n      }\n    },\n    publishedAt,\n    \"updatedAt\": coalesce(updatedAt, _updatedAt),\n    author\n  }\n": PUBLISHED_CONTENT_QUERY_RESULT;
+    "\n  *[_type == \"contentPage\" && status == \"published\" && defined(path)\n    && !(_id in path(\"drafts.**\"))]\n  | order(_updatedAt desc) {\n    _id,\n    path,\n    kind,\n    status,\n    title,\n    seoTitle,\n    description,\n    eyebrow,\n    hero {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    socialImage {\n      _type, alt, crop, hotspot,\n      asset->{_id, metadata {dimensions {width, height}}}\n    },\n    teamIntro,\n    team[] {\n      _key,\n      name,\n      role,\n      bio,\n      portrait {\n        _type, alt, crop, hotspot,\n        asset->{_id, metadata {dimensions {width, height}}}\n      }\n    },\n    blocks[] {\n      _key,\n      _type,\n      caption,\n      _type == \"block\" => {\n        style,\n        listItem,\n        level,\n        children[] {_key, _type, text, marks},\n        markDefs[] {_key, _type, href, openInNewTab}\n      },\n      image {\n        _type, alt, crop, hotspot,\n        asset->{_id, metadata {dimensions {width, height}}}\n      }\n    },\n    publishedAt,\n    \"updatedAt\": coalesce(updatedAt, _updatedAt),\n    author\n  }\n": PUBLISHED_CONTENT_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

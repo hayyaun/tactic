@@ -1,6 +1,11 @@
 import { createImageUrlBuilder } from "@sanity/image-url";
 import type { PUBLISHED_CONTENT_QUERY_RESULT } from "../../sanity.types";
-import type { ContentBlock, ContentImage, ContentPage } from "../content/types";
+import type {
+  ContentBlock,
+  ContentImage,
+  ContentPage,
+  TeamMember,
+} from "../content/types";
 import { dataset, projectId } from "./env";
 
 type SanityPage = PUBLISHED_CONTENT_QUERY_RESULT[number];
@@ -125,15 +130,36 @@ export function toContentPage(page: SanityPage): ContentPage | undefined {
     }
   }
 
+  const team: TeamMember[] = [];
+  if (page.kind === "about") {
+    for (const member of page.team ?? []) {
+      const portrait = toImage(member.portrait);
+      const name = member.name?.trim();
+      const role = member.role?.trim();
+      if (!portrait || !name || !role) continue;
+      team.push({
+        key: member._key,
+        name,
+        role,
+        bio: member.bio?.trim() || undefined,
+        portrait,
+      });
+    }
+  }
+
   return {
     path: page.path,
     kind: page.kind,
     status: "published",
     title: page.title,
+    seoTitle: page.seoTitle?.trim() || undefined,
     description: page.description,
     eyebrow: page.eyebrow ?? undefined,
     hero: toImage(page.hero),
     socialImage: toImage(page.socialImage),
+    teamIntro:
+      page.kind === "about" ? page.teamIntro?.trim() || undefined : undefined,
+    team: page.kind === "about" ? team : undefined,
     blocks,
     publishedAt: page.publishedAt ?? undefined,
     updatedAt: page.updatedAt ?? undefined,

@@ -9,6 +9,7 @@ export const PUBLISHED_CONTENT_QUERY = defineQuery(`
     kind,
     status,
     title,
+    seoTitle,
     description,
     eyebrow,
     hero {
@@ -18,6 +19,17 @@ export const PUBLISHED_CONTENT_QUERY = defineQuery(`
     socialImage {
       _type, alt, crop, hotspot,
       asset->{_id, metadata {dimensions {width, height}}}
+    },
+    teamIntro,
+    team[] {
+      _key,
+      name,
+      role,
+      bio,
+      portrait {
+        _type, alt, crop, hotspot,
+        asset->{_id, metadata {dimensions {width, height}}}
+      }
     },
     blocks[] {
       _key,
