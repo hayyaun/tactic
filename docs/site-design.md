@@ -14,9 +14,16 @@ archive images remain lazy-loaded.
 
 - `app/components/site-header.tsx` and `site-footer.tsx`: shared internal-page
   navigation and footer. The header links to `/#capabilities`, `/#studio`,
-  `/blog`, and `/#contact`; the footer has the TACTIC mark, studio tagline, and
+  `/blog`, and an in-place contact-dialog button; the footer has the TACTIC mark, studio tagline, and
   RSS link. Keep their links usable even when a CMS page has not been published;
   landing-page section links do not depend on CMS documents.
+- `app/layout.tsx` mounts one shared contact dialog for every route. Use
+  `ContactButton` from `dialog-buttons.tsx` for enquiry actions, including
+  `preset="text"` for inline actions. Rich-text `/#contact` and `#contact`
+  annotations render the same button instead of navigating to the homepage.
+  The homepage's study dialog remains on the homepage. The existing native
+  dialog focus restoration, Escape handling, privacy masking, and delivery
+  configuration are shared unchanged.
 - `app/components/blog-listing.tsx`: editorial heading, optional CMS introduction
   content, newest-article feature, flat archive, and honest empty state.
 - `app/content/blog.ts`: repository listing default, approved single-slug article

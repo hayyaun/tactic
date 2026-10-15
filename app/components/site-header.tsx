@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContactButton } from "./dialog-buttons";
 import { ArrowUpRight, TacticMark } from "./ui/icons";
 
 export function SiteHeader({ active }: { active?: "journal" | "studio" }) {
@@ -43,12 +44,9 @@ export function SiteHeader({ active }: { active?: "journal" | "studio" }) {
           >
             Journal
           </Link>
-          <Link
-            href="/#contact"
-            className="inline-flex min-h-11 items-center justify-center gap-4 rounded-full bg-foreground px-5 text-background hover:bg-green"
-          >
+          <ContactButton preset="siteHeader">
             Let&apos;s talk <ArrowUpRight className="size-3" />
-          </Link>
+          </ContactButton>
         </nav>
       </header>
     </>

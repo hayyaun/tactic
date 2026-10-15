@@ -1,10 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { site } from "./lib/site";
-import { enquiryDeliveryEnabled } from "./lib/enquiry-delivery";
 import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
-import { Dialogs } from "./components/interactions";
+import { StudyDialog } from "./components/dialogs/study-dialog";
 import { HeroSection } from "./components/home/hero-section";
 import { WorldSection } from "./components/home/world-section";
 import { StudioSection } from "./components/home/studio-section";
@@ -36,7 +35,7 @@ export default function Home() {
         <ContactSection />
       </main>
       <HomeFooter />
-      <Dialogs deliveryEnabled={enquiryDeliveryEnabled()} />
+      <StudyDialog />
     </>
   );
 }

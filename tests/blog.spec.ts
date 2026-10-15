@@ -149,8 +149,9 @@ test("blog server markup contains editorial content, navigation, and an honest e
     createElement(BlogListing, { content: defaultBlogContent, entries: [] }),
   );
   expect(empty).toContain("No articles yet.");
-  for (const href of ["/", "/#studio", "/#contact", "/rss.xml"])
+  for (const href of ["/", "/#studio", "/rss.xml"])
     expect(empty).toContain(`href="${href}"`);
+  expect(empty).toContain('aria-controls="contact-dialog"');
   expect(empty).not.toContain("<canvas");
   const populated = renderToStaticMarkup(
     createElement(BlogListing, {

@@ -13,6 +13,8 @@ const actionPresets = {
   menu: `${filled} mx-0 mt-2.5 mb-0 flex justify-between rounded-[28px] px-4.25 py-3.25 text-left text-[17px] font-[350]`,
   capability: `${filled} ${reducedMotion} flex items-center gap-4 rounded-[50px] px-4.5 py-3.75 text-[10px] [transition:background_180ms,transform_180ms] hover:-translate-y-0.5 hover:bg-[color-mix(in_srgb,var(--text)_90%,var(--green))] focus-visible:[outline:2px_solid_var(--green)] focus-visible:outline-offset-1 motion-reduce:hover:transform-none min-[701px]:gap-6 min-[701px]:px-5.5 min-[701px]:py-4.25 min-[701px]:text-[12px]`,
   contact: `${filled} ${paleHover} ${reducedMotion} group/text-link inline-flex items-center justify-between gap-7 rounded-[25px] px-5 py-3.5 text-[12px] [transition:background_0.3s]`,
+  siteHeader: `${filled} inline-flex min-h-11 items-center justify-center gap-4 rounded-full px-5 text-[12px] hover:bg-green`,
+  text: "inline bg-transparent p-0 text-left align-baseline text-foreground underline decoration-green/60 underline-offset-4 hover:text-green",
   contactIcon: `${paleHover} ${reducedMotion} grid h-16.75 w-16.75 place-items-center rounded-full bg-foreground [transition:background_0.3s,transform_0.3s] hover:rotate-45 motion-reduce:hover:rotate-0 min-[960px]:h-26 min-[960px]:w-26 min-[960px]:flex-[0_0_auto]`,
   dialog: `${filled} ${paleHover} flex w-full items-center justify-between gap-5 rounded-[22px] p-3.75 text-[12px] font-medium focus-visible:outline-green disabled:cursor-wait disabled:opacity-60`,
   outline: `${reducedMotion} min-h-11 rounded-full border border-line px-3 py-2.5 transition-colors hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage disabled:cursor-not-allowed disabled:opacity-40`,

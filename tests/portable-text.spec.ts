@@ -334,6 +334,32 @@ test("rich-text links allow intentional destinations and reject unsafe or ambigu
   expect(newTab).toContain('rel="noopener noreferrer"');
 });
 
+test("CMS contact annotations render enquiry buttons and preserve ordinary destination links", () => {
+  for (const href of ["/#contact", "#contact"]) {
+    const markup = renderBlocks([
+      rich("enquiry", "", {
+        children: [
+          {
+            _type: "span",
+            _key: "enquiry-span",
+            text: "Discuss your project",
+            marks: ["enquiry-link"],
+          },
+        ],
+        markDefs: [
+          { _type: "link", _key: "enquiry-link", href, openInNewTab: true },
+        ],
+      }),
+    ]);
+    expect(markup).toContain("Discuss your project");
+    expect(markup).toMatch(/<button\b[^>]*type="button"/);
+    expect(markup).toContain('aria-controls="contact-dialog"');
+    expect(markup).toContain('aria-haspopup="dialog"');
+    expect(markup).not.toContain("href=");
+    expect(markup).not.toContain("target=");
+  }
+});
+
 test("adjacent rich-text items form one ordered list with proper nested structure", () => {
   const markup = renderBlocks(listBlocks);
   expect(markup.match(/<ol(?:\s|>)/g)).toHaveLength(2);

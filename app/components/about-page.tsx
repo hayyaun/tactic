@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { ContactButton } from "./dialog-buttons";
 import type { ContentPage as PageContent } from "../content/types";
 import { breadcrumbSchema, serializeJsonLd } from "../lib/structured-data";
 import { ContentBlocks } from "./content-blocks";
@@ -21,65 +21,15 @@ function RegistrationMark({ className = "" }: { className?: string }) {
   );
 }
 
-function PortraitStudy({ index }: { index: number }) {
-  const tones = ["bg-sage", "bg-chalk", "bg-rose", "bg-sage"];
-  return (
-    <figure className={index % 2 ? "min-[960px]:pt-14" : ""}>
-      <div
-        className={`relative aspect-[4/5] overflow-hidden text-carbon ${tones[index]}`}
-      >
-        <span className="absolute top-5 left-5 font-mono text-[10px]">
-          0{index + 1} / STUDY
-        </span>
-        <RegistrationMark className="absolute top-4 right-4 size-6" />
-        <svg
-          viewBox="0 0 320 400"
-          className="absolute inset-0 h-full w-full"
-          aria-hidden="true"
-        >
-          <path
-            d="M0 300h320M0 200h320M0 100h320M80 0v400M160 0v400M240 0v400"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth=".5"
-            opacity=".18"
-          />
-          <g transform={index % 2 ? "translate(320 0) scale(-1 1)" : undefined}>
-            <path
-              d="M45 400c0-76 39-126 101-132v-39c-30-13-47-42-47-82 0-52 27-85 67-85 44 0 70 35 70 84l15 31-23 9c-3 33-17 52-39 55v28c56 15 88 61 88 131Z"
-              fill="currentColor"
-              opacity=".88"
-            />
-            <path
-              d="M168 66c-39 25-49 68-23 114 9 16 13 48-1 84"
-              fill="none"
-              stroke="var(--color-chalk)"
-              strokeWidth="1.4"
-              opacity=".6"
-            />
-            <circle cx="201" cy="147" r="3" fill="var(--color-sage)" />
-          </g>
-          <path
-            d="M24 372h272"
-            stroke="currentColor"
-            strokeWidth=".5"
-            opacity=".4"
-          />
-        </svg>
-        <span className="absolute right-5 bottom-5 left-5 font-mono text-[9px] tracking-[.08em] text-chalk">
-          A DIFFERENT POINT OF VIEW
-        </span>
-      </div>
-      <figcaption className="mt-4 flex justify-between gap-3 font-mono text-[10px] text-muted">
-        <span>Portrait study</span>
-        <span>0{index + 1}</span>
-      </figcaption>
-    </figure>
-  );
-}
-
 export function AboutPage({ content }: { content: PageContent }) {
   const team = content.team ?? [];
+  const hasStudies = team.some((member) => member.isPlaceholder);
+  const cardRhythms = [
+    "min-[960px]:-rotate-3",
+    "mt-12 min-[960px]:mt-20 min-[960px]:rotate-2",
+    "min-[960px]:mt-6 min-[960px]:-rotate-2",
+    "mt-12 min-[960px]:mt-16 min-[960px]:rotate-3",
+  ];
   return (
     <>
       <script
@@ -143,7 +93,11 @@ export function AboutPage({ content }: { content: PageContent }) {
                 id="people-title"
                 className="mt-5 text-[clamp(2.6rem,5.2vw,4.8rem)] leading-[1.04] font-[380] tracking-[-.045em]"
               >
-                The <em className="font-editorial font-normal">human</em> index.
+                Different minds.
+                <br />
+                <em className="font-editorial font-normal text-green">
+                  Same frequency.
+                </em>
               </h2>
             </div>
             <p className="max-w-lg text-[16px] leading-[1.85] text-muted">
@@ -152,35 +106,47 @@ export function AboutPage({ content }: { content: PageContent }) {
             </p>
           </div>
           {team.length > 0 ? (
-            <div className="grid items-start gap-x-8 gap-y-12 min-[600px]:grid-cols-2 min-[1100px]:grid-cols-3 min-[1100px]:gap-x-12">
+            <div className="grid grid-cols-2 items-start gap-x-5 gap-y-9 py-5 min-[600px]:gap-x-8 min-[960px]:grid-cols-4 min-[960px]:gap-x-7 min-[960px]:py-12">
               {team.map((member, index) => (
                 <article
                   key={member.key}
-                  className={
-                    index % 3 === 1 ? "min-w-0 min-[1100px]:pt-16" : "min-w-0"
-                  }
+                  className={`group min-w-0 ${cardRhythms[index % cardRhythms.length]}`}
                 >
-                  <div className="relative overflow-hidden bg-sage">
-                    <Image
-                      {...member.portrait}
-                      alt={member.portrait.alt}
-                      className="aspect-[4/5] w-full object-cover contrast-110 grayscale"
-                      sizes="(max-width: 599px) calc(100vw - 48px), (max-width: 1099px) 46vw, 30vw"
-                    />
-                    <span className="absolute top-4 left-4 bg-carbon px-3 py-2 font-mono text-[10px] text-chalk">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <RegistrationMark className="absolute right-4 bottom-4 size-7 text-chalk" />
+                  <div className="border border-chalk/20 bg-chalk p-2 text-carbon shadow-[0_12px_30px_rgb(0_0_0/12%)] min-[600px]:p-3">
+                    <div className="mb-2 flex items-center justify-between gap-3 font-mono text-[8px] uppercase min-[600px]:mb-3 min-[600px]:text-[9px]">
+                      <span>TACTIC / PEOPLE</span>
+                      <RegistrationMark className="size-4 shrink-0" />
+                    </div>
+                    <div className="relative overflow-hidden bg-sage">
+                      <Image
+                        {...member.portrait}
+                        alt={member.portrait.alt}
+                        className="aspect-[4/5] w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.04]"
+                        sizes="(max-width: 599px) calc((100vw - 88px) / 2), (max-width: 959px) 43vw, 23vw"
+                      />
+                      <span
+                        className="absolute bottom-0 left-2 text-[clamp(3.8rem,7vw,7rem)] leading-[.85] font-[350] tracking-[-.08em] text-chalk mix-blend-difference"
+                        aria-hidden="true"
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[8px] uppercase min-[600px]:mt-3 min-[600px]:text-[9px]">
+                      <span>
+                        {member.isPlaceholder ? "CHARACTER STUDY" : "ONE OF US"}
+                      </span>
+                      <span aria-hidden="true">↗</span>
+                    </div>
                   </div>
-                  <div className="mt-5 border-t border-line pt-4">
-                    <p className="font-mono text-[10px] leading-relaxed wrap-anywhere text-green uppercase">
+                  <div className="mt-5 min-[960px]:rotate-0">
+                    <p className="font-mono text-[9px] leading-relaxed wrap-anywhere text-green uppercase min-[600px]:text-[10px]">
                       {member.role}
                     </p>
-                    <h3 className="mt-2 text-[27px] leading-tight font-[400] tracking-[-.03em] wrap-anywhere">
+                    <h3 className="mt-2 text-[clamp(1.4rem,2.4vw,2rem)] leading-[1.08] font-[400] tracking-[-.035em] wrap-anywhere">
                       {member.name}
                     </h3>
                     {member.bio && (
-                      <p className="mt-4 text-[14px] leading-[1.85] wrap-anywhere text-muted">
+                      <p className="mt-3 text-[12px] leading-[1.8] wrap-anywhere text-muted min-[600px]:text-[13px]">
                         {member.bio}
                       </p>
                     )}
@@ -189,31 +155,20 @@ export function AboutPage({ content }: { content: PageContent }) {
               ))}
             </div>
           ) : (
-            <>
-              {content.hero ? (
-                <Image
-                  {...content.hero}
-                  alt={content.hero.alt}
-                  className="h-auto w-full"
-                  sizes="(max-width: 600px) calc(100vw - 48px), (max-width: 960px) calc(100vw - 80px), 1280px"
-                />
-              ) : (
-                <div className="grid grid-cols-2 items-start gap-4 min-[600px]:gap-8 min-[960px]:grid-cols-4">
-                  {[0, 1, 2, 3].map((index) => (
-                    <PortraitStudy key={index} index={index} />
-                  ))}
-                </div>
-              )}
-              <div className="mt-6 flex flex-wrap items-start justify-between gap-4 border-b border-line pb-6">
-                <p className="font-mono text-[10px] text-green uppercase">
-                  STUDIO STUDIES / PORTRAITS TO FOLLOW
-                </p>
-                <p className="max-w-md text-[13px] leading-[1.8] text-muted">
-                  Abstract studies hold the space for our people. Individual
-                  portraits and introductions will appear here.
-                </p>
-              </div>
-            </>
+            <p className="border-y border-line py-10 text-[18px] text-muted">
+              New introductions are on their way.
+            </p>
+          )}
+          {hasStudies && (
+            <div className="mt-9 flex flex-wrap items-start justify-between gap-4 border-y border-line py-5 min-[960px]:mt-14">
+              <p className="font-mono text-[9px] text-green uppercase">
+                CASTING NOTES / ILLUSTRATED STAND-INS
+              </p>
+              <p className="max-w-md text-[12px] leading-[1.8] text-muted">
+                A little imagination before the introductions. These fictional
+                characters are portrait studies, ready to make way for our team.
+              </p>
+            </div>
           )}
         </section>
 
@@ -256,13 +211,10 @@ export function AboutPage({ content }: { content: PageContent }) {
                 a conversation.
               </em>
             </h2>
-            <Link
-              href="/#contact"
-              className="inline-flex min-h-14 items-center justify-between gap-10 rounded-full bg-foreground px-7 py-4 text-[13px] text-background hover:bg-green"
-            >
+            <ContactButton preset="contact">
               Tell us what you&apos;re thinking{" "}
               <ArrowUpRight className="size-4" />
-            </Link>
+            </ContactButton>
           </div>
         </section>
       </main>

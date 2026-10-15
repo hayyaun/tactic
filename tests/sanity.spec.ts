@@ -107,6 +107,7 @@ test("Sanity content only maps to supported routes with the matching kind", () =
 test("About team retains real portrait details and excludes incomplete members", () => {
   const member = {
     _key: "team-fixture",
+    isPlaceholder: true,
     name: "  Portrait Test Person  ",
     role: "  Test role  ",
     bio: "  A short test biography.  ",
@@ -136,6 +137,7 @@ test("About team retains real portrait details and excludes incomplete members",
     team: [
       {
         key: member._key,
+        isPlaceholder: true,
         name: "Portrait Test Person",
         role: "Test role",
         bio: "A short test biography.",

@@ -7,6 +7,8 @@ import "./base.css";
 import "./artwork.css";
 import { Suspense } from "react";
 import { PrivacyControls } from "./components/privacy-controls";
+import { Dialogs } from "./components/interactions";
+import { enquiryDeliveryEnabled } from "./lib/enquiry-delivery";
 
 const geist = localFont({
   src: "../public/studio/geist-latin.woff2",
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         {children}
+        <Dialogs deliveryEnabled={enquiryDeliveryEnabled()} />
         <Suspense fallback={null}>
           <PrivacyControls />
         </Suspense>

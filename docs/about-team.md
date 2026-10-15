@@ -1,28 +1,19 @@
-# About page — The Human Index
+# About page — Different minds. Same frequency.
 
-The About route uses `AboutPage`, a Server Component with the site's existing typefaces, colours, navigation and breadcrumb metadata. Other pages retain their shared templates. No homepage component is changed by this work.
+The About page uses the existing site typefaces and palette with four illustrated editorial character studies. Staggered, slightly rotated print frames, oversized numbering and visible introductions give the people section its own rhythm. The illustrations are fictional stand-ins, explicitly labelled on the page and in Studio.
 
-## Editing the team
+## Editing people in Studio
 
-After deploying both the website and standalone Studio through their existing Vercel projects, open Main Pages → About in Studio. Use:
+Open Main Pages → About → People of TACTIC. Each card has an image, name, role, short biography and **Illustrated stand-in** switch. Reorder cards to change the sequence. The layout uses two columns on small screens and four on desktop, preserving colours and supporting reduced motion. Names, roles and biographies are visible without hover.
 
-- **Title** for the expressive on-page headline.
-- **Search title** for the descriptive search title; the website appends ` | TACTIC`.
-- **Team introduction** for the short statement above the portraits.
-- **Team members** for actual names, roles, short biographies and portrait uploads. Reorder entries to change their sequence.
+To introduce a real member, replace the portrait and all character-study details, add accurate alternative text, then turn off **Illustrated stand-in**. The page automatically removes the casting notice once no stand-ins remain. Only complete entries with a name, role and valid portrait appear. An empty team shows a short introductions notice.
 
-Only complete entries with a name, role and valid portrait render as team members. Every portrait requires descriptive alt text. The existing Sanity crop/hotspot tools remain supported. Portraits display in 4:5 frames with grayscale and contrast treatment; names, roles and biographies remain visible without hover. The layout uses one column on small screens, two at tablet sizes and three on larger screens, with a staggered middle column.
+## Portrait direction
 
-An empty team displays the abstract About hero with an explicit portrait-studies caption. The fallback when no hero exists is four abstract vector studies. Neither state invents people or biographies. Add real members to replace the studies automatically.
+The supplied originals combine expressive adult anime/manga linework with risograph textures in carbon, chalk, sage and soft coral. Use a vertical 4:5 chest-up photograph with room around the face and shoulders as the source for your future photos or illustrated treatments. Set the Sanity hotspot on the face. Avoid baked-in names, borders and labels; the website supplies those. Keep descriptive alt text accurate to the image.
 
-## Photography direction
+The exact generation prompts and original PNGs are stored in the main-page handoff under assets/team/manifest.json. Sanity handles responsive image delivery; the source files have not been resized or edited.
 
-Use vertical source images at least 1600×2000 pixels. Shoot chest-up against a plain gray backdrop, with soft light from one side, natural expression and space around the head and shoulders. Keep important details within the central 70% for flexible crops. The presentation applies the monochrome treatment, so colour originals are welcome. Avoid baked-in names, frames, graphic marks or heavy filters; the site supplies those.
+## Publication
 
-A separate synthetic-model reference sheet and its exact generation prompt accompany the content handoff. It is a style guide only and is not uploaded as team imagery.
-
-## Publication and limits
-
-The five main-page documents and six graphic assets were published to Sanity. The custom layout, search-title override and new team editing fields require website and Studio deployment respectively. Until deployment, the existing public template renders the updated content and abstract hero.
-
-Existing restrictions on `/blog` and `/portfolio` in `robots.ts`, and existing static sitemap caching, remain unchanged. Removing restrictions or changing sitemap behavior requires the owner's separate approval. No development server was started or restarted.
+Illustrated cards are stored as native editable team objects in Sanity. The website layout and the Studio stand-in field need their existing Vercel deployments to become public. Local preview uses the already running development server. No server was started or restarted.

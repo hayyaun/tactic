@@ -54,15 +54,9 @@ function expectSharedChrome(markup: string) {
   expect(markup).toContain("<footer");
   expect(markup).toContain('aria-label="Main navigation"');
   expect(markup).toContain('aria-label="TACTIC home"');
-  for (const href of [
-    "/",
-    "/#studio",
-    "/#capabilities",
-    "/#contact",
-    "/blog",
-    "/rss.xml",
-  ])
+  for (const href of ["/", "/#studio", "/#capabilities", "/blog", "/rss.xml"])
     expect(markup).toContain(`href="${href}"`);
+  expect(markup).toContain('aria-controls="contact-dialog"');
   expect(markup).toContain('id="page-content"');
   expect(markup).toContain("Skip to content");
   expect(markup).not.toContain("<canvas");
@@ -97,15 +91,13 @@ test("editorial detail templates use the same static navigation and footer", () 
   }
 });
 
-test("About portrait studies stay labelled until real team details are provided", () => {
+test("About portraits distinguish illustrated stand-ins from real team details", () => {
   for (const team of [undefined, []]) {
     const markup = renderToStaticMarkup(
       createElement(AboutPage, { content: content({ team }) }),
     );
     expectSharedChrome(markup);
-    expect(markup).toContain("STUDIO STUDIES / PORTRAITS TO FOLLOW");
-    expect(markup).toContain("Abstract studies hold the space for our people.");
-    expect(markup.match(/<span>Portrait study<\/span>/g)).toHaveLength(4);
+    expect(markup).toContain("New introductions are on their way.");
     expect(markup).not.toContain("<article");
     expect(markup).not.toContain("<h3");
   }
@@ -138,6 +130,15 @@ test("About portrait studies stay labelled until real team details are provided"
   expect(markup).toContain("A supplied introduction to the team.");
   expect(markup).not.toContain("Portrait study");
   expect(markup).not.toContain("STUDIO STUDIES / PORTRAITS TO FOLLOW");
+  expect(markup).not.toContain("ILLUSTRATED STAND-INS");
+  const preview = renderToStaticMarkup(
+    createElement(AboutPage, {
+      content: content({ team: [{ ...member, isPlaceholder: true }] }),
+    }),
+  );
+  expect(preview).toContain("CASTING NOTES / ILLUSTRATED STAND-INS");
+  expect(preview).toContain("These fictional characters are portrait studies");
+  expect(preview).toContain("CHARACTER STUDY");
 });
 
 test("content listings and privacy use the shared editorial chrome", () => {

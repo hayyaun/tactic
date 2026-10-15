@@ -23,6 +23,7 @@ export const PUBLISHED_CONTENT_QUERY = defineQuery(`
     teamIntro,
     team[] {
       _key,
+      isPlaceholder,
       name,
       role,
       bio,

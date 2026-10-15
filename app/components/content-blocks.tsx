@@ -11,6 +11,7 @@ import type {
   ContentTextBlock,
 } from "../content/types";
 import { safeContentLink } from "../lib/content-link";
+import { ContactButton } from "./dialog-buttons";
 
 function RichTextLink({
   children,
@@ -18,6 +19,8 @@ function RichTextLink({
 }: PortableTextMarkComponentProps<ContentLink>) {
   const href = safeContentLink(value?.href);
   if (!href) return <>{children}</>;
+  if (href === "/#contact" || href === "#contact")
+    return <ContactButton preset="text">{children}</ContactButton>;
   return (
     <a
       href={href}

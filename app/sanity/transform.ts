@@ -139,6 +139,7 @@ export function toContentPage(page: SanityPage): ContentPage | undefined {
       if (!portrait || !name || !role) continue;
       team.push({
         key: member._key,
+        isPlaceholder: member.isPlaceholder === true,
         name,
         role,
         bio: member.bio?.trim() || undefined,

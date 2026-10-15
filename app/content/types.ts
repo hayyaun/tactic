@@ -30,6 +30,7 @@ export type ContentBlock = { key?: string } & (
 
 export type TeamMember = {
   key: string;
+  isPlaceholder?: boolean;
   name: string;
   role: string;
   bio?: string;

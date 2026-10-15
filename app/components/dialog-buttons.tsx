@@ -15,6 +15,8 @@ export function ContactButton({
     <ActionButton
       {...props}
       type="button"
+      aria-haspopup="dialog"
+      aria-controls="contact-dialog"
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented)

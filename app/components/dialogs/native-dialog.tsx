@@ -9,16 +9,19 @@ import { takeDialogOpening } from "../dialog-opening";
 
 type DialogOpening = NonNullable<ReturnType<typeof takeDialogOpening>>;
 
+function syncModalScrollLock() {
+  // A route-specific dialog may unmount while the shared contact modal stays open.
+  document.body.classList.toggle(
+    "modal-open",
+    document.querySelector("dialog:modal") !== null,
+  );
+}
+
 export function useNativeDialog(onOpening?: (opening: DialogOpening) => void) {
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
 
-  useEffect(
-    () => () => {
-      document.body.classList.remove("modal-open");
-    },
-    [],
-  );
+  useEffect(() => syncModalScrollLock, []);
 
   function opening(event: ToggleEvent<HTMLDialogElement>) {
     if (event.newState !== "open") return;
@@ -34,7 +37,7 @@ export function useNativeDialog(onOpening?: (opening: DialogOpening) => void) {
   }
 
   function closed() {
-    document.body.classList.remove("modal-open");
+    syncModalScrollLock();
     opener.current?.focus({ preventScroll: true });
     opener.current = null;
   }

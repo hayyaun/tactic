@@ -1,5 +1,91 @@
 import { expect, test } from "@playwright/test";
 
+for (const route of [
+  "/services",
+  "/about",
+  "/contact",
+  "/portfolio",
+  "/blog",
+  "/services/branding-design",
+]) {
+  test(`the shared contact dialog opens on ${route} without navigation and restores focus`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+    await expect(page.locator("#contact-dialog")).toHaveCount(1);
+    const opener = page
+      .getByRole("navigation", { name: "Main navigation", exact: true })
+      .getByRole("button", { name: "Let's talk" });
+    await expect(opener).toHaveAttribute("aria-haspopup", "dialog");
+    await opener.click();
+    await expect(page).toHaveURL(new RegExp(`${route}$`));
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await expect(
+      dialog.getByRole("button", { name: "Close project enquiry" }),
+    ).toBeFocused();
+    await expect(page.locator("body")).toHaveClass(/modal-open/);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(page.locator("body")).not.toHaveClass(/modal-open/);
+    await expect(opener).toBeFocused();
+  });
+}
+
+test("a CMS enquiry action opens the shared dialog in place and remains keyboard accessible", async ({
+  page,
+}) => {
+  await page.goto("/services/branding-design");
+  const opener = page
+    .locator('main button[aria-controls="contact-dialog"]')
+    .first();
+  await expect(opener).toBeVisible();
+  await opener.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/services\/branding-design$/);
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+  await expect(opener).toBeFocused();
+});
+
+test("contact details survive client navigation with one persistent dialog host", async ({
+  page,
+}) => {
+  await page.goto("/services");
+  await page.getByRole("button", { name: "Let's talk" }).click();
+  await page.getByLabel("Your name", { exact: true }).fill("A saved enquiry");
+  await page.keyboard.press("Escape");
+  await page
+    .getByRole("navigation", { name: "Main navigation", exact: true })
+    .getByRole("link", { name: "Journal" })
+    .click();
+  await expect(page).toHaveURL(/\/blog$/);
+  await expect(page.locator("#contact-dialog")).toHaveCount(1);
+  await page.getByRole("button", { name: "Let's talk" }).click();
+  await expect(page.getByLabel("Your name", { exact: true })).toHaveValue(
+    "A saved enquiry",
+  );
+});
+
+test("history navigation preserves scroll locking while the global contact dialog remains open", async ({
+  page,
+}) => {
+  await page.goto("/services");
+  await page.getByRole("link", { name: "TACTIC home" }).first().click();
+  await expect(page.locator("#study-dialog")).toHaveCount(1);
+  await page.getByRole("button", { name: "Let’s talk" }).first().click();
+  await expect(page.locator("#contact-dialog")).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/services$/);
+  await expect(page.locator("#contact-dialog")).toBeVisible();
+  await expect(page.locator("body")).toHaveClass(/modal-open/);
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#contact-dialog")).toBeHidden();
+  await expect(page.locator("body")).not.toHaveClass(/modal-open/);
+});
+
 test("a mobile contact enquiry closes its menu and restores focus to the navigation toggle", async ({
   page,
 }) => {
