@@ -3,14 +3,13 @@ import {
   contentMetadata,
   ContentDetail,
 } from "../../components/published-content";
-import Loading from "../../loading";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
   return contentMetadata(`/services/${(await params).slug}`);
 }
 export default function Page({ params }: Props) {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={null}>
       <ContentDetail params={params} section="services" />
     </Suspense>
   );

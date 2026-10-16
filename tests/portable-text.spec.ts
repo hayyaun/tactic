@@ -466,8 +466,9 @@ test.describe("Portable Text without JavaScript", () => {
       await expect(page.locator("main em")).toHaveText(" with emphasis");
       await expect(page.locator("main code")).toHaveText(" and inline code");
       await expect(page.locator("main del")).toHaveText(", revised");
-      await expect(page.locator("main ol")).toHaveCount(2);
-      await expect(page.locator("main ol > li > ol")).toHaveCount(1);
+      const orderedLists = page.locator("main ol:not(nav ol)");
+      await expect(orderedLists).toHaveCount(2);
+      await expect(orderedLists.locator(":scope > li > ol")).toHaveCount(1);
       await expect(
         page.getByRole("link", { name: ", connected." }),
       ).toHaveAttribute("rel", "noopener noreferrer");
