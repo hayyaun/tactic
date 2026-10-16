@@ -101,9 +101,16 @@ test("public SEO endpoints and security headers are ready", async ({
   expect(sitemap.ok()).toBe(true);
   expect(await sitemap.text()).not.toContain("/services");
   const rss = await request.get("/rss.xml");
+  expect(rss.ok()).toBe(true);
   expect(rss.headers()["content-type"]).toContain("application/rss+xml");
-  expect(await rss.text()).toContain("<channel>");
-  expect(await rss.text()).not.toContain("<item>");
+  const feed = await rss.text();
+  expect(feed).toContain('<rss version="2.0"');
+  expect(feed).toContain("<channel>");
+  expect(feed).toContain("<title>TACTIC Journal</title>");
+  expect(feed).toContain(
+    '<atom:link href="https://tacticforyou.com/rss.xml" rel="self" type="application/rss+xml"/>',
+  );
+  expect(feed).toContain("</channel></rss>");
   const alternateDomain = await request.get("/privacy?ref=check", {
     headers: { Host: "www.tacticforyou.com" },
     maxRedirects: 0,
