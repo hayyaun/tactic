@@ -6,14 +6,14 @@ Explicit content routes resolve published entries only. Drafts and unknown paths
 
 ## Fields for every page
 
-- `path`: local URL such as `/services`, `/services/brand-design`, `/portfolio`, `/portfolio/project-name`, `/about`, `/contact`, `/blog`, `/blog/article-name`.
-- `kind`: `listing`, `service`, `project`, `article`, `about`, or `contact`.
+- `path`: local URL such as `/services`, `/services/brand-design`, `/portfolio`, `/portfolio/project-name`, `/about`, `/contact`, `/privacy`, `/blog`, `/blog/article-name`.
+- `kind`: `listing`, `service`, `project`, `article`, `about`, `contact`, or `privacy`.
 - `status`: `draft` until approved; then `published`.
 - `title`: heading/title, without the automatic `| TACTIC` suffix.
 - `description`: concise summary used for the introduction and metadata.
-- `eyebrow`: optional section label.
-- `blocks`: ordered Portable Text paragraphs, H2/H3 headings, quotes, bullet/numbered lists, inline formatting, links, and image objects. Legacy text objects are no longer supported; migrate existing data before deployment using `content-migration.md`. React escapes text; do not supply HTML. See `portable-text.md` for editing details.
-- `hero` and `socialImage`: upload images with meaningful alt text and crop/hotspot in Sanity; repository entries use a local image path and actual pixel width/height.
+- `eyebrow`: retained editorial field; page headers now show route-based breadcrumbs instead. TACTIC links home, a published parent listing links to its page, and the current page is plain text. The Journal parent always has a working built-in listing. Structured data uses the same trail.
+- `blocks`: ordered Portable Text paragraphs, H2/H3 headings, quotes, bullet/numbered lists, inline formatting, links, and image objects. Optional on listing pages, which can show their child entries without introductory body content; titles and descriptions remain required. Legacy text objects are no longer supported; migrate existing data before deployment using `content-migration.md`. React escapes text; do not supply HTML. See `portable-text.md` for editing details.
+- `hero` and `socialImage`: upload images with meaningful alt text and crop/hotspot in Sanity; repository entries use a local image path and actual pixel width/height. Open Graph and Twitter use `socialImage` when supplied, otherwise `hero`. If neither exists, no page image is emitted.
 - `publishedAt`, `updatedAt`: actual ISO dates, not deployment timestamps. Articles need `publishedAt` for RSS.
 - `author`: optional actual article author.
 

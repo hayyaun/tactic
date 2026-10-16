@@ -44,7 +44,7 @@ export type ContentPage = {
   _updatedAt: string;
   _rev: string;
   path?: string;
-  kind?: "listing" | "service" | "project" | "article" | "about" | "contact";
+  kind?: "listing" | "service" | "project" | "article" | "about" | "contact" | "privacy";
   status?: "draft" | "published";
   title?: string;
   seoTitle?: string;
@@ -215,7 +215,7 @@ export type AllSanitySchemaTypes = ImageBlock | SanityImageAssetReference | Site
 export type PUBLISHED_CONTENT_QUERY_RESULT = Array<{
   _id: string;
   path: string | null;
-  kind: "about" | "article" | "contact" | "listing" | "project" | "service" | null;
+  kind: "about" | "article" | "contact" | "listing" | "privacy" | "project" | "service" | null;
   status: "draft" | "published" | null;
   title: string | null;
   seoTitle: string | null;

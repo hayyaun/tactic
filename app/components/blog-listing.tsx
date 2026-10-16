@@ -7,6 +7,8 @@ import { ContentBlocks } from "./content-blocks";
 import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
 import { ArrowUpRight } from "./ui/icons";
+import { Breadcrumbs } from "./breadcrumbs";
+import { contentBreadcrumbs } from "../lib/content-breadcrumbs";
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   day: "numeric",
@@ -117,17 +119,13 @@ export function BlogListing({
   entries: readonly ContentPage[];
 }) {
   const [featured, ...archive] = entries;
+  const breadcrumbs = contentBreadcrumbs(content);
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: serializeJsonLd(
-            breadcrumbSchema([
-              { name: "Home", path: "/" },
-              { name: content.title, path: "/blog" },
-            ]),
-          ),
+          __html: serializeJsonLd(breadcrumbSchema(breadcrumbs)),
         }}
       />
       <SiteHeader active="journal" />
@@ -140,9 +138,7 @@ export function BlogListing({
           aria-labelledby="journal-title"
           className="pt-12 pb-10 min-[600px]:pt-16 min-[960px]:pt-20 min-[960px]:pb-14"
         >
-          <p className="font-mono text-[11px] text-green uppercase">
-            {content.eyebrow || "TACTIC / Journal"}
-          </p>
+          <Breadcrumbs items={breadcrumbs} />
           <div className="mt-6 grid items-end gap-6 min-[960px]:grid-cols-[1.3fr_1fr] min-[960px]:gap-16">
             <h1
               id="journal-title"

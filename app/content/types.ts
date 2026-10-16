@@ -39,7 +39,14 @@ export type TeamMember = {
 
 export type ContentPage = {
   path: string;
-  kind: "service" | "project" | "article" | "about" | "contact" | "listing";
+  kind:
+    | "service"
+    | "project"
+    | "article"
+    | "about"
+    | "contact"
+    | "privacy"
+    | "listing";
   status: "draft" | "published";
   title: string;
   seoTitle?: string;

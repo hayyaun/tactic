@@ -79,6 +79,7 @@ test("Sanity content only maps to supported routes with the matching kind", () =
   const invalidRoutes = [
     { path: "/", kind: "listing" },
     { path: "/privacy", kind: "about" },
+    { path: "/about", kind: "privacy" },
     { path: "/contact", kind: "about" },
     { path: "/blog/considered-design", kind: "project" },
     { path: "/services/identity", kind: "listing" },
@@ -95,12 +96,21 @@ test("Sanity content only maps to supported routes with the matching kind", () =
     { path: "/blog", kind: "listing" },
     { path: "/about", kind: "about" },
     { path: "/contact", kind: "contact" },
+    { path: "/privacy", kind: "privacy" },
     { path: "/services/identity", kind: "service" },
     { path: "/portfolio/identity", kind: "project" },
     { path: "/blog/considered-design", kind: "article" },
   ] satisfies Pick<SanityPage, "path" | "kind">[];
   for (const route of supportedRoutes) {
     expect(toContentPage(page(route))).toMatchObject(route);
+  }
+});
+
+test("listing pages publish without editorial content blocks", () => {
+  for (const path of ["/services", "/portfolio", "/blog"]) {
+    expect(
+      toContentPage(page({ path, kind: "listing", blocks: null })),
+    ).toMatchObject({ path, kind: "listing", blocks: [] });
   }
 });
 

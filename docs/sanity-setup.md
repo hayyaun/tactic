@@ -22,6 +22,7 @@ Use the port printed by each process if the default is already occupied.
 Create a **Content page** in the Studio. These are the website's supported paths:
 
 - `/about` with kind About; `/contact` with kind Contact.
+- `/privacy` with kind Privacy, available under **Main Pages → Privacy**.
 - `/services`, `/portfolio`, or `/blog` with kind Section listing.
 - `/services/<slug>` with kind Service.
 - `/portfolio/<slug>` with kind Project.
@@ -33,6 +34,13 @@ for its index page; child entries are selected by their path prefix. The blog
 also has a repository default titled Journal, so `/blog` renders even before a
 listing document is created. A published `/blog` listing replaces that default.
 The default contains no articles; the empty state is intentional.
+
+The Privacy main page opens a single document at `/privacy`, starting with the
+existing notice text when a new draft is created. Set Approval status to
+Published and use Studio's Publish action to replace the website notice. Until
+that document is published, `/privacy` retains the exact repository notice and
+its existing metadata. Draft privacy changes do not appear publicly. Publishing
+notice text does not change the footer's Privacy settings or recording controls.
 
 Pages have title, description, optional section label, hero/social images,
 author/dates, and ordered Page content blocks. Page content supports Portable

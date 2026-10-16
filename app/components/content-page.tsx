@@ -4,6 +4,11 @@ import { ArrowUpRight } from "./ui/icons";
 import { ContentBlocks } from "./content-blocks";
 import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
+import { Breadcrumbs } from "./breadcrumbs";
+import {
+  contentBreadcrumbs,
+  type Breadcrumb,
+} from "../lib/content-breadcrumbs";
 import type { ReactNode } from "react";
 import type { ContentPage as PageContent } from "../content/types";
 import {
@@ -15,15 +20,13 @@ import {
 export function ContentPage({
   content,
   children,
+  breadcrumbs = contentBreadcrumbs(content),
 }: {
   content: PageContent;
   children?: ReactNode;
+  breadcrumbs?: readonly Breadcrumb[];
 }) {
   const article = articleSchema(content);
-  const breadcrumbs = [
-    { name: "Home", path: "/" },
-    { name: content.title, path: content.path },
-  ];
   return (
     <>
       <script
@@ -47,12 +50,7 @@ export function ContentPage({
         className="studio-container min-h-[60svh] pb-16 min-[960px]:pb-24"
       >
         <section className="pt-12 min-[600px]:pt-16 min-[960px]:pt-20">
-          <p className="font-mono text-[11px] wrap-anywhere text-green uppercase">
-            {content.eyebrow ||
-              (content.kind === "article"
-                ? "TACTIC / Journal"
-                : "TACTIC / Studio")}
-          </p>
+          <Breadcrumbs items={breadcrumbs} />
           <div className="mt-6 grid items-end gap-6 min-[960px]:grid-cols-[1.3fr_1fr] min-[960px]:gap-16">
             <h1
               className={`min-w-0 leading-[1.1] font-[380] wrap-anywhere ${content.kind === "article" ? "text-[40px] min-[600px]:text-[58px] min-[960px]:text-[72px]" : "text-[48px] min-[600px]:text-[72px] min-[960px]:text-[92px]"}`}

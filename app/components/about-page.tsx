@@ -6,6 +6,8 @@ import { ContentBlocks } from "./content-blocks";
 import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
 import { ArrowUpRight, TacticMark } from "./ui/icons";
+import { Breadcrumbs } from "./breadcrumbs";
+import { contentBreadcrumbs } from "../lib/content-breadcrumbs";
 
 function RegistrationMark({ className = "" }: { className?: string }) {
   return (
@@ -22,6 +24,7 @@ function RegistrationMark({ className = "" }: { className?: string }) {
 }
 
 export function AboutPage({ content }: { content: PageContent }) {
+  const breadcrumbs = contentBreadcrumbs(content);
   const team = content.team ?? [];
   const hasStudies = team.some((member) => member.isPlaceholder);
   const cardRhythms = [
@@ -35,12 +38,7 @@ export function AboutPage({ content }: { content: PageContent }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: serializeJsonLd(
-            breadcrumbSchema([
-              { name: "Home", path: "/" },
-              { name: "About Tactic", path: "/about" },
-            ]),
-          ),
+          __html: serializeJsonLd(breadcrumbSchema(breadcrumbs)),
         }}
       />
       <SiteHeader />
@@ -50,7 +48,10 @@ export function AboutPage({ content }: { content: PageContent }) {
           aria-labelledby="about-title"
         >
           <div className="flex items-center justify-between gap-6 font-mono text-[10px] leading-relaxed text-green uppercase">
-            <p>{content.eyebrow || "TACTIC / AN INDEPENDENT POINT OF VIEW"}</p>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="font-mono text-[10px] leading-relaxed text-green uppercase"
+            />
             <RegistrationMark className="size-7 shrink-0" />
           </div>
           <div className="mt-10 grid gap-10 min-[960px]:grid-cols-[1.6fr_1fr] min-[960px]:items-end min-[960px]:gap-20">

@@ -58,6 +58,7 @@ function matchesRoute(path: string, kind: ContentPage["kind"]) {
       return ["/services", "/portfolio", "/blog"].includes(path);
     case "about":
     case "contact":
+    case "privacy":
       return path === `/${kind}`;
     case "service":
       return /^\/services\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path);

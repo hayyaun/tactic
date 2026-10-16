@@ -9,9 +9,10 @@ import {
 import { BlogListing } from "../app/components/blog-listing";
 import { AboutPage } from "../app/components/about-page";
 import { defaultBlogContent } from "../app/content/blog";
+import { defaultPrivacyContent } from "../app/content/privacy";
 import type { ContentPage } from "../app/content/types";
 import { articleSchema, breadcrumbSchema } from "../app/lib/structured-data";
-import PrivacyPage from "../app/privacy/page";
+import { contentBreadcrumbs } from "../app/lib/content-breadcrumbs";
 import NotFound from "../app/not-found";
 
 const content = (overrides: Partial<ContentPage> = {}): ContentPage => ({
@@ -166,7 +167,9 @@ test("content listings and privacy use the shared editorial chrome", () => {
       }),
     ),
   );
-  const privacy = renderToStaticMarkup(createElement(PrivacyPage));
+  const privacy = renderToStaticMarkup(
+    createElement(DetailPage, { content: defaultPrivacyContent }),
+  );
   expectSharedChrome(privacy);
   expect(privacy).toContain("Privacy notice");
   expect(privacy).toContain("Project enquiries");
@@ -181,12 +184,7 @@ test("article and breadcrumb metadata survive editorial restyling", () => {
   expect(markup).toContain('type="application/ld+json"');
   expect(markup).toContain(JSON.stringify(articleSchema(article)));
   expect(markup).toContain(
-    JSON.stringify(
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: article.title, path: article.path },
-      ]),
-    ),
+    JSON.stringify(breadcrumbSchema(contentBreadcrumbs(article))),
   );
   expect(markup).toContain(`dateTime="${article.publishedAt}"`);
   expect(markup).toContain(article.author!);
