@@ -18,5 +18,4 @@ The exact generation prompts and original PNGs are stored in the main-page hando
 
 Illustrated cards are stored as native editable team objects in Sanity. The website layout and the Studio stand-in field need their existing Vercel deployments to become public. Local preview uses the already running development server. No server was started or restarted.
 
-
 Use a discipline pair for the role line, matching Brand & strategy, Digital & experience and Content & culture. Hayyan Hami uses Code & craft. Real names belong in the name field; keep the short introduction in the biography field.
