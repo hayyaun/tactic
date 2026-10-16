@@ -44,7 +44,7 @@ text does not bypass draft filtering or make publication an instant preview.
 - `app/sanity/transform.ts` adapts the generated query result into typed
   `ContentTextBlock` values without flattening rich text; block/span keys and
   ordering are retained.
-- `app/components/content-blocks.tsx` uses the already-installed `next-sanity`
+- `app/components/content-blocks.tsx` uses the `@portabletext/react`
   Portable Text renderer as a server component. Adjacent text blocks are
   rendered together so nested lists retain their structure. Images remain in
   their original positions. No legacy text renderer remains.
@@ -52,8 +52,11 @@ text does not bypass draft filtering or make publication an instant preview.
 - `app/content/blog.ts` includes Portable Text span text when estimating article
   reading time, without counting formatting or link destinations as words.
 
-The renderer uses the existing internal-page typography and colors. It adds no
-client-side editor, animation dependency, or new package to the Next.js app.
+The website imports `@sanity/client`, `groq`, and the Portable Text packages
+directly. The Studio and its CLI stay in the sibling `studio-tactic` application.
+
+The renderer uses the existing internal-page typography and colors without a
+client-side editor or animation dependency.
 Existing metadata, feeds, publication checks, image constraints, cache windows,
 and environment settings are unchanged.
 

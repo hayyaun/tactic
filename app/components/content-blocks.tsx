@@ -3,7 +3,7 @@ import {
   PortableText,
   type PortableTextComponents,
   type PortableTextMarkComponentProps,
-} from "next-sanity";
+} from "@portabletext/react";
 import type { ReactNode } from "react";
 import type {
   ContentBlock,

@@ -1,4 +1,4 @@
-import { defineQuery } from "next-sanity";
+import { defineQuery } from "groq";
 
 export const PUBLISHED_CONTENT_QUERY = defineQuery(`
   *[_type == "contentPage" && status == "published" && defined(path)
