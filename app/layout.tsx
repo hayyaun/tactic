@@ -35,7 +35,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#101211" };
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geist.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${geist.variable} ${mono.variable}`}
+    >
       <body id="top">
         <script
           type="application/ld+json"
