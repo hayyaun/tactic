@@ -9,7 +9,7 @@ export function WorldSection() {
       id="world"
       aria-labelledby="world-title"
     >
-      <SectionLabel label="02 / The TACTIC world">
+      <SectionLabel label="03 / The TACTIC world">
         <span className="hidden text-muted min-[960px]:inline">
           Thinking, made visible.
         </span>

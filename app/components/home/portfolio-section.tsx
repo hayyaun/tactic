@@ -1,0 +1,517 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import localFont from "next/font/local";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, KeyboardEvent } from "react";
+import { SectionLabel } from "../studio-content";
+import { ArrowUpRight } from "../ui/icons";
+import "./portfolio-section.css";
+
+const displayFont = localFont({
+  src: "../../../public/studio/portfolio/anton.ttf",
+  weight: "400",
+  display: "swap",
+  variable: "--font-work-display",
+});
+
+const projects = [
+  {
+    name: "Radian Robots",
+    category: "Brand identity",
+    href: "/portfolio/radian-robots-branding",
+    background: "/studio/portfolio/radian-background-v3.webp",
+    object: "/studio/portfolio/radian-object-lossless.webp",
+    objectLayout: {
+      "--object-left": "50.5%",
+      "--object-width": "39.5%",
+      "--object-top": "-8.45cqw",
+      "--object-height": "36.8cqw",
+    },
+    thumbnail: "/studio/portfolio/radian-card-v2.webp",
+    accent: "#b8ef20",
+    description:
+      "A Radian robot breaks out of a bright green arrow filled with its brand identity.",
+  },
+  {
+    name: "Prevaisor",
+    category: "Brand identity",
+    href: "/portfolio/prevaisor-branding",
+    background: "/studio/portfolio/prevaisor-background-v3.webp",
+    object: "/studio/portfolio/prevaisor-object-lossless.webp",
+    objectLayout: {
+      "--object-left": "58.7%",
+      "--object-width": "25.7%",
+      "--object-top": "-7.8cqw",
+      "--object-height": "35.3cqw",
+    },
+    thumbnail: "/studio/portfolio/prevaisor-card-v2.webp",
+    accent: "#639aff",
+    description:
+      "Prevaisor’s blue brand world takes shape in a directional arrow and dimensional product mockups.",
+  },
+  {
+    name: "Social Puppy",
+    category: "Website design",
+    href: "/portfolio/social-puppy-website",
+    background: "/studio/portfolio/social-puppy-background-v3.webp",
+    object: "/studio/portfolio/social-puppy-object-lossless.webp",
+    objectLayout: {
+      "--object-left": "45.7%",
+      "--object-width": "43%",
+      "--object-top": "-7.55cqw",
+      "--object-height": "35cqw",
+    },
+    thumbnail: "/studio/portfolio/social-puppy-card-v2.webp",
+    accent: "#e9aaa9",
+    description:
+      "Social Puppy’s playful pink world comes forward through a bold arrow and expressive campaign imagery.",
+  },
+  {
+    name: "Doshi",
+    category: "Brand identity",
+    href: "/portfolio/doshi",
+    background: "/studio/portfolio/doshi-background-v3.webp",
+    object: "/studio/portfolio/doshi-object-lossless.webp",
+    objectLayout: {
+      "--object-left": "45.8%",
+      "--object-width": "42.4%",
+      "--object-top": "-10.45cqw",
+      "--object-height": "38.85cqw",
+    },
+    thumbnail: "/studio/portfolio/doshi-card-v2.webp",
+    accent: "#c7b6a0",
+    description:
+      "Doshi’s fashion identity unfolds in a warm neutral arrow with accessories and editorial imagery.",
+  },
+] as const;
+
+const projectNumber = (index: number) => String(index + 1).padStart(2, "0");
+
+type Selection = {
+  active: number;
+  previous: number | null;
+  direction: "forward" | "backward";
+  revision: number;
+};
+
+const artworkLayers = ["background", "object"] as const;
+type ArtworkLayer = (typeof artworkLayers)[number];
+const imageKey = (index: number, layer: ArtworkLayer) => `${index}:${layer}`;
+
+export function PortfolioSection() {
+  const [selection, setSelection] = useState<Selection>({
+    active: 0,
+    previous: null,
+    direction: "forward",
+    revision: 0,
+  });
+  const [requested, setRequested] = useState(0);
+  const [failedImages, setFailedImages] = useState<string[]>([]);
+  const [hasEntered, setHasEntered] = useState(false);
+  const [initialImagesReady, setInitialImagesReady] = useState(false);
+  const artworkRef = useRef<HTMLDivElement>(null);
+  const requestedRef = useRef(0);
+  const directionRef = useRef<Selection["direction"]>("forward");
+  const loadedImages = useRef(new Set<string>());
+  const activeProject = projects[selection.active];
+  const isLoading = requested !== selection.active;
+
+  // Keep the current artwork mounted until both incoming images have decoded.
+  // A new selection supersedes pending work, including rapid keyboard input.
+  function activate(index: number) {
+    const direction = directionRef.current;
+    setSelection((current) =>
+      current.active === index
+        ? current
+        : {
+            active: index,
+            previous: current.active,
+            direction,
+            revision: current.revision + 1,
+          },
+    );
+  }
+
+  function selectProject(index: number, direction?: Selection["direction"]) {
+    const next = (index + projects.length) % projects.length;
+    directionRef.current =
+      direction ?? (next < requestedRef.current ? "backward" : "forward");
+    requestedRef.current = next;
+    setRequested(next);
+    if (
+      artworkLayers.every((layer) =>
+        loadedImages.current.has(imageKey(next, layer)),
+      )
+    ) {
+      activate(next);
+    }
+  }
+
+  function finishLoading(index: number, layer: ArtworkLayer) {
+    loadedImages.current.add(imageKey(index, layer));
+    if (
+      !artworkLayers.every((part) =>
+        loadedImages.current.has(imageKey(index, part)),
+      )
+    )
+      return;
+    if (index === 0) setInitialImagesReady(true);
+    if (requestedRef.current === index) activate(index);
+  }
+
+  function handleKeyboard(event: KeyboardEvent<HTMLDivElement>) {
+    if (
+      !(event.target instanceof HTMLElement) ||
+      !event.target.closest("[data-project-switch]") ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey
+    ) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowRight":
+        event.preventDefault();
+        selectProject(requestedRef.current + 1, "forward");
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        selectProject(requestedRef.current - 1, "backward");
+        break;
+      case "Home":
+        event.preventDefault();
+        selectProject(0, "backward");
+        break;
+      case "End":
+        event.preventDefault();
+        selectProject(projects.length - 1, "forward");
+        break;
+    }
+  }
+
+  useEffect(() => {
+    const artwork = artworkRef.current;
+    if (
+      !artwork ||
+      !("IntersectionObserver" in window) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setHasEntered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+    );
+    observer.observe(artwork);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (selection.previous === null) return;
+    const revision = selection.revision;
+    const timeout = window.setTimeout(() => {
+      setSelection((current) =>
+        current.revision === revision
+          ? { ...current, previous: null }
+          : current,
+      );
+    }, 1100);
+    return () => window.clearTimeout(timeout);
+  }, [selection.previous, selection.revision]);
+
+  return (
+    <section
+      id="work"
+      aria-labelledby="work-title"
+      className={`${displayFont.variable} work-section py-18 min-[960px]:pt-18 min-[960px]:pb-12`}
+      style={{ "--project-accent": activeProject.accent } as CSSProperties}
+    >
+      <div className="work-frame studio-container min-[960px]:w-[calc(100%-112px)] min-[960px]:max-w-420">
+        <div className="border-t border-line pt-5">
+          <SectionLabel label="02 / Selected work">
+            <span className="hidden min-[600px]:inline">
+              TACTIC / Every move matters
+            </span>
+          </SectionLabel>
+        </div>
+
+        <div
+          role="group"
+          aria-roledescription="project showcase"
+          aria-label="Selected projects"
+          aria-describedby="work-keyboard-help"
+          onKeyDown={handleKeyboard}
+        >
+          <p id="work-keyboard-help" className="sr-only">
+            Use the project buttons to choose a project. When a project button
+            is focused, use the left and right arrow keys to switch projects, or
+            Home and End to select the first and last projects.
+          </p>
+
+          <div className="work-stage">
+            <div className="work-statement">
+              <h2 id="work-title" className="work-heading">
+                <span>Work that</span>
+                <span>Makes</span>
+                <span>Moves.</span>
+              </h2>
+              <p className="mt-5 max-w-72 text-[13px] leading-relaxed text-muted min-[600px]:max-w-none min-[960px]:mt-6 min-[960px]:text-[15px]">
+                Different worlds. One clear direction.
+              </p>
+            </div>
+
+            <div
+              ref={artworkRef}
+              className="work-artwork"
+              data-direction={selection.direction}
+              data-entered={hasEntered}
+              data-animate={
+                selection.revision > 0 || (hasEntered && initialImagesReady)
+              }
+              role="img"
+              aria-label={activeProject.description}
+            >
+              <div className="work-aura" aria-hidden="true" />
+              {projects.map((project, index) => {
+                const state =
+                  index === selection.active
+                    ? "active"
+                    : index === selection.previous
+                      ? "outgoing"
+                      : "idle";
+                return (
+                  <div
+                    key={project.name}
+                    className="work-artwork-layer"
+                    style={project.objectLayout as CSSProperties}
+                    data-state={state}
+                    data-project={project.name}
+                    aria-hidden="true"
+                  >
+                    <div
+                      key={state === "active" ? selection.revision : "resting"}
+                      className="work-artwork-motion"
+                    >
+                      {artworkLayers.map((layer) => {
+                        const key = imageKey(index, layer);
+                        const hasFailed = failedImages.includes(key);
+                        return (
+                          <div
+                            key={layer}
+                            className={
+                              layer === "object"
+                                ? "work-artwork-slot work-object-occlusion"
+                                : "work-artwork-slot"
+                            }
+                          >
+                            <div
+                              className={
+                                layer === "background"
+                                  ? "work-background-layer"
+                                  : "work-object-layer"
+                              }
+                              data-art-layer={layer}
+                            >
+                              <div
+                                className={
+                                  layer === "background"
+                                    ? "work-background-mask"
+                                    : "work-object-content"
+                                }
+                                style={
+                                  layer === "background"
+                                    ? { backgroundColor: project.accent }
+                                    : undefined
+                                }
+                              >
+                                {hasFailed ? (
+                                  layer === "background" && (
+                                    <div
+                                      className="work-artwork-fallback"
+                                      style={
+                                        {
+                                          "--fallback-accent": project.accent,
+                                        } as CSSProperties
+                                      }
+                                    >
+                                      <span>{project.name}</span>
+                                      <ArrowUpRight className="h-16 w-16" />
+                                    </div>
+                                  )
+                                ) : (
+                                  <Image
+                                    src={project[layer]}
+                                    alt=""
+                                    fill
+                                    unoptimized
+                                    sizes="(min-width: 1500px) 1040px, (min-width: 960px) 75vw, 100vw"
+                                    className={
+                                      layer === "background"
+                                        ? "work-background-image"
+                                        : "work-object-image"
+                                    }
+                                    loading={
+                                      index === requested ? "eager" : "lazy"
+                                    }
+                                    onLoad={() => finishLoading(index, layer)}
+                                    onError={() => {
+                                      setFailedImages((current) =>
+                                        current.includes(key)
+                                          ? current
+                                          : [...current, key],
+                                      );
+                                      finishLoading(index, layer);
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="work-project-rail">
+            <div id="work-active-project" className="min-w-0">
+              <div key={selection.revision} className="work-project-copy">
+                <p className="font-mono text-[9px] tracking-wider text-green uppercase min-[960px]:text-[10px]">
+                  {projectNumber(selection.active)} / {activeProject.category}
+                </p>
+                <h3 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.05] font-semibold tracking-[-0.055em]">
+                  {activeProject.name}
+                </h3>
+                <Link
+                  className="work-case-link mt-5 inline-flex min-h-12 items-center gap-2 border-b border-foreground/40 pb-1 text-[13px]"
+                  href={activeProject.href}
+                  aria-label={`Explore ${activeProject.name}`}
+                >
+                  Explore this world <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="work-next-moves">
+              <span className="work-next-label font-mono text-[9px] tracking-wider text-muted uppercase">
+                Next moves
+              </span>
+              <div className="grid min-w-0 grid-cols-3 gap-2.5 min-[960px]:gap-2">
+                {[1, 2, 3].map((offset) => {
+                  const index = (selection.active + offset) % projects.length;
+                  const project = projects[index];
+                  return (
+                    <button
+                      key={offset}
+                      type="button"
+                      data-project-switch
+                      className="work-thumbnail-button group min-w-0 bg-transparent text-left"
+                      aria-label={`Show ${project.name}`}
+                      aria-controls="work-active-project"
+                      onClick={() => selectProject(index, "forward")}
+                    >
+                      <span className="work-thumbnail">
+                        <Image
+                          src={project.thumbnail}
+                          alt=""
+                          fill
+                          unoptimized
+                          sizes="(min-width: 1500px) 200px, (min-width: 960px) 16vw, 30vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                        />
+                        <span className="work-thumbnail-arrow">
+                          <ArrowUpRight className="h-5 w-5" />
+                        </span>
+                      </span>
+                      <span className="mt-2 block font-mono text-[8px] leading-relaxed tracking-wider text-muted uppercase min-[600px]:text-[9px]">
+                        <span className="hidden min-[600px]:inline">
+                          {projectNumber(index)} /{" "}
+                        </span>
+                        {project.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                data-project-switch
+                className="work-next-button"
+                aria-label={`Next project: ${projects[(requested + 1) % projects.length].name}`}
+                aria-controls="work-active-project"
+                onClick={() =>
+                  selectProject(requestedRef.current + 1, "forward")
+                }
+              >
+                <ArrowUpRight className="h-7 w-7 min-[960px]:h-8 min-[960px]:w-8" />
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-9 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-line pt-4 min-[960px]:mt-10">
+            <div className="flex items-center gap-4">
+              <span
+                aria-hidden="true"
+                className="font-mono text-[9px] tracking-wider text-muted"
+              >
+                {projectNumber(selection.active)}{" "}
+                <span className="mx-1.5">—</span> 04
+              </span>
+              <div
+                className="flex items-center gap-0.5"
+                aria-label="Choose a project"
+              >
+                {projects.map((project, index) => (
+                  <button
+                    key={project.name}
+                    type="button"
+                    data-project-switch
+                    className="work-progress-button"
+                    aria-label={`Show ${project.name}`}
+                    aria-pressed={selection.active === index}
+                    aria-controls="work-active-project"
+                    onClick={() => selectProject(index)}
+                  >
+                    <span />
+                  </button>
+                ))}
+              </div>
+              {isLoading && (
+                <span className="work-loading-dot" aria-hidden="true" />
+              )}
+            </div>
+            <Link
+              href="/portfolio"
+              className="work-all-link inline-flex min-h-12 items-center gap-3 font-mono text-[9px] tracking-wide min-[600px]:text-[10px]"
+            >
+              Explore all projects <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <p
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {isLoading
+              ? `Loading ${projects[requested].name}.`
+              : `${activeProject.name}. ${activeProject.category}. Project ${selection.active + 1} of ${projects.length}.`}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}

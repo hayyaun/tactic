@@ -11,7 +11,7 @@ export function StudioSection() {
       aria-labelledby="studio-title"
     >
       <div className="studio-container">
-        <SectionLabel label="03 / The studio">
+        <SectionLabel label="04 / The studio">
           <TacticMark className="h-4.25 w-3 text-green" />
         </SectionLabel>
         <div className="mt-11.25 grid gap-9 min-[960px]:mt-14.25 min-[960px]:grid-cols-[1.15fr_1fr] min-[960px]:gap-27.5">

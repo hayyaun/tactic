@@ -5,6 +5,7 @@ import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
 import { StudyDialog } from "./components/dialogs/study-dialog";
 import { HeroSection } from "./components/home/hero-section";
+import { PortfolioSection } from "./components/home/portfolio-section";
 import { WorldSection } from "./components/home/world-section";
 import { StudioSection } from "./components/home/studio-section";
 import { ContactSection } from "./components/home/contact-section";
@@ -30,6 +31,7 @@ export default function Home() {
       <main id="main" tabIndex={-1}>
         <HeroSection />
         <Capabilities />
+        <PortfolioSection />
         <WorldSection />
         <StudioSection />
         <ContactSection />

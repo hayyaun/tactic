@@ -1,0 +1,642 @@
+@layer components {
+  .work-section {
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  .work-frame {
+    container-type: inline-size;
+  }
+
+  .work-stage {
+    position: relative;
+    margin-top: 36px;
+  }
+
+  .work-statement {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .work-heading {
+    font-family: var(--font-work-display), sans-serif;
+    font-size: clamp(58px, 13.7vw, 108px);
+    font-weight: 400;
+    line-height: 0.96;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .work-heading span {
+    display: block;
+    width: fit-content;
+  }
+
+  .work-artwork {
+    --arrow-top: 27%;
+    --arrow-height: 69%;
+    --arrow-floor: calc(var(--arrow-top) + var(--arrow-height) * 0.821);
+    position: relative;
+    z-index: 1;
+    margin: 4px -24px -12px;
+    height: auto;
+    aspect-ratio: 1.5;
+    pointer-events: none;
+  }
+
+  .work-aura {
+    position: absolute;
+    inset: 20% 10% 13% 19%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(
+      ellipse,
+      color-mix(in srgb, var(--project-accent) 6%, transparent),
+      transparent 70%
+    );
+    transition: background 700ms;
+  }
+
+  .work-artwork-layer {
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .work-artwork-layer[data-state="active"] {
+    z-index: 2;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .work-artwork-motion,
+  .work-artwork-slot,
+  .work-background-layer,
+  .work-object-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .work-artwork-motion {
+    perspective: 1000px;
+  }
+
+  /* The object tilts inside this stationary mask, so its foot stays inside
+     the shaft while its head can break above the arrow. */
+  .work-object-occlusion {
+    z-index: 2;
+    perspective: 1000px;
+    clip-path: polygon(
+      -100% -200%,
+      200% -200%,
+      200% var(--arrow-floor),
+      -100% var(--arrow-floor)
+    );
+  }
+
+  .work-background-layer {
+    inset: auto;
+    top: var(--arrow-top);
+    left: 0;
+    width: 100%;
+    height: var(--arrow-height);
+    z-index: 1;
+  }
+
+  .work-background-mask,
+  .work-object-content {
+    position: absolute;
+    inset: 0;
+  }
+
+  .work-background-mask {
+    overflow: clip;
+    clip-path: polygon(
+      0 25.2%,
+      76.4% 25.2%,
+      76.4% 0,
+      100% 50.8%,
+      76.4% 100%,
+      76.4% 82.1%,
+      0 82.1%
+    );
+  }
+
+  .work-background-image {
+    object-fit: cover;
+    object-position: center;
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .work-object-image {
+    object-fit: fill;
+    object-position: center;
+  }
+
+  .work-object-layer {
+    inset: auto;
+    top: -7%;
+    left: 35%;
+    z-index: 2;
+    width: 60%;
+    height: 90%;
+    overflow: clip;
+    transform-origin: bottom center;
+    backface-visibility: hidden;
+  }
+
+  [data-project="Prevaisor"] .work-object-layer {
+    top: -4%;
+    left: 44%;
+    width: 43%;
+    height: 85%;
+  }
+
+  [data-project="Social Puppy"] .work-object-layer {
+    top: -4%;
+    left: 28%;
+    width: 65%;
+    height: 88%;
+  }
+
+  [data-project="Doshi"] .work-object-layer {
+    top: -6%;
+    left: 37.5%;
+    width: 56%;
+    height: 90%;
+  }
+
+  .work-artwork[data-animate="true"]
+    .work-artwork-layer[data-state="active"]
+    .work-background-layer {
+    animation: work-move-in-forward 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .work-artwork[data-animate="true"][data-direction="backward"]
+    .work-artwork-layer[data-state="active"]
+    .work-background-layer {
+    animation-name: work-move-in-backward;
+  }
+
+  .work-artwork[data-animate="true"]
+    .work-artwork-layer[data-state="active"]
+    .work-object-layer {
+    animation: work-object-tilt-up 900ms cubic-bezier(0.22, 1, 0.36, 1) 100ms
+      both;
+  }
+
+  .work-artwork-layer[data-state="outgoing"] {
+    z-index: 1;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .work-artwork-layer[data-state="outgoing"] .work-background-layer {
+    animation: work-move-out-forward 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .work-artwork[data-direction="backward"]
+    .work-artwork-layer[data-state="outgoing"]
+    .work-background-layer {
+    animation-name: work-move-out-backward;
+  }
+
+  .work-artwork-layer[data-state="outgoing"] .work-object-layer {
+    animation: work-object-step-out 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .work-artwork-fallback {
+    position: absolute;
+    inset: 20% 3% 16%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 20px 14%;
+    clip-path: polygon(
+      0 24%,
+      72% 24%,
+      72% 0,
+      100% 50%,
+      72% 100%,
+      72% 76%,
+      0 76%
+    );
+    background: var(--fallback-accent);
+    color: #101211;
+    font-size: clamp(20px, 3vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+  }
+
+  .work-project-rail {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    gap: 34px;
+    margin-top: 12px;
+  }
+
+  .work-project-copy {
+    animation: work-copy-in 580ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .work-case-link svg,
+  .work-all-link svg {
+    transition: transform 250ms;
+  }
+
+  .work-case-link:hover svg,
+  .work-all-link:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  .work-next-moves {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    align-items: start;
+    gap: 14px 12px;
+  }
+
+  .work-next-label {
+    grid-column: 1 / -1;
+  }
+
+  .work-thumbnail-button {
+    min-height: 48px;
+    border-radius: 5px;
+  }
+
+  .work-section [data-project-switch]:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 5px;
+  }
+
+  .work-thumbnail {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 2.8;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: rgb(255 255 255 / 4%);
+  }
+
+  .work-thumbnail::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0%);
+    transition: box-shadow 250ms;
+  }
+
+  .work-thumbnail-button:hover .work-thumbnail::after,
+  .work-thumbnail-button:focus-visible .work-thumbnail::after {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 40%);
+  }
+
+  .work-thumbnail-arrow {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgb(16 18 17 / 30%);
+    opacity: 0;
+    transition: opacity 250ms;
+  }
+
+  .work-thumbnail-button:hover .work-thumbnail-arrow,
+  .work-thumbnail-button:focus-visible .work-thumbnail-arrow {
+    opacity: 1;
+  }
+
+  .work-next-button {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--coral);
+    color: var(--bg);
+    transition:
+      transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+      background 250ms;
+  }
+
+  .work-next-button:hover {
+    transform: rotate(45deg);
+    background: var(--text);
+  }
+
+  .work-progress-button {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    padding: 12px 4px;
+    background: transparent;
+  }
+
+  .work-progress-button span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: rgb(255 255 255 / 18%);
+    transform-origin: left center;
+    transition:
+      background 300ms,
+      transform 300ms;
+  }
+
+  .work-progress-button[aria-pressed="true"] span {
+    background: var(--green);
+    transform: scaleY(1.5);
+  }
+
+  .work-progress-button:hover span {
+    background: var(--text);
+  }
+
+  .work-loading-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: work-loading-pulse 700ms ease-in-out infinite alternate;
+  }
+
+  @media (width >= 600px) {
+    .work-stage {
+      margin-top: 48px;
+    }
+
+    .work-heading {
+      font-size: clamp(82px, 12vw, 110px);
+    }
+
+    .work-artwork {
+      --arrow-top: 0.13cqw;
+      --arrow-height: 33.1cqw;
+      margin: -90px -40px -12px 8%;
+    }
+
+    .work-next-moves {
+      grid-template-columns: 78px minmax(0, 1fr) 58px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .work-next-label {
+      grid-column: auto;
+      align-self: start;
+      padding-top: 12px;
+    }
+
+    .work-next-button {
+      align-self: start;
+      width: 58px;
+      height: 58px;
+      margin-top: 4px;
+    }
+  }
+
+  @media (width >= 960px) {
+    .work-frame {
+      width: calc(100% - 112px);
+      max-width: 1680px;
+    }
+
+    /* Shared geometry from the approved desktop artboard. Each object's
+       rectangle is authored separately in the project data. */
+    .work-stage {
+      height: 32cqw;
+      margin-top: 3.5cqw;
+    }
+
+    .work-heading {
+      font-size: 9.96cqw;
+      line-height: 0.91;
+      transform: scaleY(0.87);
+      transform-origin: top left;
+    }
+
+    .work-statement > p {
+      position: absolute;
+      top: 26.2cqw;
+      left: 0;
+      margin: 0;
+      font-size: 1.1cqw;
+    }
+
+    .work-artwork {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      aspect-ratio: auto;
+    }
+
+    .work-background-layer {
+      inset: auto;
+      left: 30.33%;
+      top: var(--arrow-top);
+      width: 72%;
+      height: var(--arrow-height);
+    }
+
+    .work-artwork-layer[data-project] .work-object-layer {
+      top: var(--object-top);
+      left: var(--object-left);
+      width: var(--object-width);
+      height: var(--object-height);
+    }
+
+    .work-project-rail {
+      grid-template-columns: minmax(0, 31.75%) minmax(0, 1fr);
+      align-items: start;
+      gap: 0;
+      margin-top: 0;
+    }
+
+    .work-project-copy h3 {
+      font-size: 3.85cqw;
+      font-weight: 600;
+      letter-spacing: -0.045em;
+    }
+
+    .work-next-moves {
+      grid-template-columns: 6.3cqw minmax(0, 1fr) 4.95cqw;
+      gap: 0.6cqw;
+      padding-top: 1.8cqw;
+      align-items: start;
+    }
+
+    .work-next-label {
+      grid-column: auto;
+      padding-top: 1.1cqw;
+      font-size: 0.66cqw;
+    }
+
+    .work-next-button {
+      width: 4.95cqw;
+      height: 4.95cqw;
+      margin-top: 0.6cqw;
+    }
+
+    .work-thumbnail {
+      aspect-ratio: 2.8;
+      border: 0;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .work-stage:hover
+      .work-artwork-layer[data-state="active"]
+      .work-background-image {
+      transform: scale(1.035) translateX(-0.3%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-artwork[data-animate="true"][data-direction]
+      .work-artwork-layer[data-state="active"]
+      .work-background-layer,
+    .work-artwork[data-animate="true"][data-direction]
+      .work-artwork-layer[data-state="active"]
+      .work-object-layer,
+    .work-artwork[data-direction]
+      .work-artwork-layer[data-state="outgoing"]
+      .work-background-layer,
+    .work-artwork[data-direction]
+      .work-artwork-layer[data-state="outgoing"]
+      .work-object-layer,
+    .work-project-copy,
+    .work-loading-dot {
+      animation: none;
+    }
+
+    .work-artwork-layer[data-state="outgoing"] {
+      visibility: hidden;
+    }
+
+    .work-aura,
+    .work-background-image,
+    .work-case-link svg,
+    .work-all-link svg,
+    .work-thumbnail::after,
+    .work-thumbnail-arrow,
+    .work-next-button,
+    .work-progress-button span {
+      transition: none;
+    }
+
+    .work-next-button:hover,
+    .work-case-link:hover svg,
+    .work-all-link:hover svg {
+      transform: none;
+    }
+  }
+}
+
+@keyframes work-move-in-forward {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    transform: translate(9%, 3%) scale(0.94) rotate(1.5deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform: translate(0, 0) scale(1) rotate(0);
+  }
+}
+
+@keyframes work-move-in-backward {
+  0% {
+    opacity: 0;
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    transform: translate(-9%, -3%) scale(0.94) rotate(-1.5deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform: translate(0, 0) scale(1) rotate(0);
+  }
+}
+
+@keyframes work-move-out-forward {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-8%, -2%) scale(0.96);
+  }
+}
+
+@keyframes work-move-out-backward {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(8%, 2%) scale(0.96);
+  }
+}
+
+@keyframes work-object-tilt-up {
+  0% {
+    opacity: 0;
+    transform: rotateX(16deg) translateY(36px) scale(0.94);
+  }
+  24% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg) translateY(0) scale(1);
+  }
+}
+
+@keyframes work-object-step-out {
+  from {
+    opacity: 1;
+    transform: rotateX(0deg) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: rotateX(8deg) translateY(20px) scale(0.97);
+  }
+}
+
+@keyframes work-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes work-loading-pulse {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}

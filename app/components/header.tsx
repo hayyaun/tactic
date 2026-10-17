@@ -5,8 +5,9 @@ import { ContactButton } from "./dialog-buttons";
 import { ArrowUpRight, DirectionArrow, TacticMark } from "./ui/icons";
 const navigation = [
   { href: "#capabilities", label: "What we do", number: "01" },
-  { href: "#world", label: "Our world", number: "02" },
-  { href: "#studio", label: "The studio", number: "03" },
+  { href: "#work", label: "Selected work", number: "02" },
+  { href: "#world", label: "Our world", number: "03" },
+  { href: "#studio", label: "The studio", number: "04" },
 ];
 
 export function Header() {
