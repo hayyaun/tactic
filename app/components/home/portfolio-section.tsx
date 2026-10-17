@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent } from "react";
 import { SectionLabel } from "../studio-content";
-import { ArrowUpRight } from "../ui/icons";
+import { ArrowUpRight, ChevronRight } from "../ui/icons";
 import "./portfolio-section.css";
 
 const displayFont = localFont({
@@ -429,10 +429,10 @@ export function PortfolioSection() {
                           fill
                           unoptimized
                           sizes="(min-width: 1500px) 200px, (min-width: 960px) 16vw, 30vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                          className="object-cover transition-transform duration-700 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         />
                         <span className="work-thumbnail-arrow">
-                          <ArrowUpRight className="h-5 w-5" />
+                          <ChevronRight className="h-5 w-5" />
                         </span>
                       </span>
                       <span className="mt-2 block font-mono text-[8px] leading-relaxed tracking-wider text-muted uppercase min-[600px]:text-[9px]">
@@ -455,7 +455,7 @@ export function PortfolioSection() {
                   selectProject(requestedRef.current + 1, "forward")
                 }
               >
-                <ArrowUpRight className="h-7 w-7 min-[960px]:h-8 min-[960px]:w-8" />
+                <ChevronRight className="h-7 w-7 min-[960px]:h-8 min-[960px]:w-8" />
               </button>
             </div>
           </div>

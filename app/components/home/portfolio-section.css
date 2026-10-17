@@ -127,7 +127,7 @@
   .work-background-image {
     object-fit: cover;
     object-position: center;
-    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 1400ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .work-object-image {
@@ -497,7 +497,7 @@
     .work-stage:hover
       .work-artwork-layer[data-state="active"]
       .work-background-image {
-      transform: scale(1.035) translateX(-0.3%);
+      transform: scale(1.01) translateX(-0.08%);
     }
   }
 

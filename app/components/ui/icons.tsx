@@ -33,6 +33,30 @@ export function ArrowUpRight({
   );
 }
 
+export function ChevronRight({
+  className = "",
+  ...props
+}: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      className={`shrink-0 ${className}`}
+      {...props}
+    >
+      <path
+        d="m9 5 7 7-7 7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function CloseIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
