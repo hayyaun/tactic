@@ -73,7 +73,6 @@ test("history navigation preserves scroll locking while the global contact dialo
 }) => {
   await page.goto("/services");
   await page.getByRole("link", { name: "TACTIC home" }).first().click();
-  await expect(page.locator("#study-dialog")).toHaveCount(1);
   await page.getByRole("button", { name: "Let’s talk" }).first().click();
   await expect(page.locator("#contact-dialog")).toBeVisible();
   await page.goBack();

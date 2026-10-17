@@ -1,6 +1,4 @@
-import type { Study } from "../studies";
-
-type DialogOpening = { opener: HTMLButtonElement; study?: Study };
+type DialogOpening = { opener: HTMLButtonElement };
 const openings = new WeakMap<HTMLDialogElement, DialogOpening>();
 
 export function openDialog(id: string, opening: DialogOpening) {

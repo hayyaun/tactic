@@ -3,10 +3,8 @@ import type { Metadata } from "next";
 import { site } from "./lib/site";
 import { Header } from "./components/header";
 import { Capabilities } from "./components/capabilities";
-import { StudyDialog } from "./components/dialogs/study-dialog";
 import { HeroSection } from "./components/home/hero-section";
 import { PortfolioSection } from "./components/home/portfolio-section";
-import { WorldSection } from "./components/home/world-section";
 import { StudioSection } from "./components/home/studio-section";
 import { JournalSection } from "./components/home/journal-section";
 import { ContactSection } from "./components/home/contact-section";
@@ -33,13 +31,11 @@ export default function Home() {
         <HeroSection />
         <Capabilities />
         <PortfolioSection />
-        <WorldSection />
         <StudioSection />
         <JournalSection />
         <ContactSection />
       </main>
       <HomeFooter />
-      <StudyDialog />
     </>
   );
 }

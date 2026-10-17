@@ -1,7 +1,35 @@
 import Link from "next/link";
 import { SectionHeading } from "../section-heading";
-import { SectionLabel, StudioPrinciples } from "../studio-content";
+import { SectionLabel } from "../studio-content";
+import { StudyCard } from "../study-card";
 import { DirectionArrow, TacticMark } from "../ui/icons";
+
+const studioCards = [
+  {
+    study: "pathways",
+    number: "01",
+    title: "Our perspective",
+    href: "/about#section-different-perspectives-one-clear-direction",
+    description:
+      "Find what matters. Give the idea a purpose before giving it a form.",
+  },
+  {
+    study: "strategy",
+    number: "02",
+    title: "Our approach",
+    href: "/about#section-how-we-approach-a-brief",
+    description:
+      "Keep the conversation open. Turn shared ambition into a clear next step.",
+  },
+  {
+    study: "architecture",
+    number: "03",
+    title: "What we bring",
+    href: "/about#section-four-ways-into-the-same-conversation",
+    description:
+      "Bring a fresh perspective. Build something that could only be yours.",
+  },
+] as const;
 
 export function StudioSection() {
   return (
@@ -11,7 +39,7 @@ export function StudioSection() {
       aria-labelledby="studio-title"
     >
       <div className="studio-container">
-        <SectionLabel label="04 / The studio">
+        <SectionLabel label="03 / The studio">
           <TacticMark className="h-4.25 w-3 text-green" />
         </SectionLabel>
         <div className="mt-11.25 grid gap-9 min-[960px]:mt-14.25 min-[960px]:grid-cols-[1.15fr_1fr] min-[960px]:gap-27.5">
@@ -33,17 +61,18 @@ export function StudioSection() {
             </p>
             <Link
               className="group/text-link mt-8 inline-flex items-center justify-between gap-7 bg-transparent p-0 text-[12px]"
-              href="#capabilities"
+              href="/about"
             >
-              Meet our approach{" "}
-              <DirectionArrow
-                direction="down-right"
-                className="inline-grid h-8.25 w-8.25 place-items-center rounded-full bg-[rgba(255,255,255,0.07)] text-[16px] [transition:background_0.3s,color_0.3s,transform_0.3s] group-hover/text-link:rotate-45 group-hover/text-link:bg-foreground group-hover/text-link:text-background motion-reduce:transition-none motion-reduce:group-hover/text-link:rotate-0"
-              />
+              Meet the studio{" "}
+              <DirectionArrow className="inline-grid h-8.25 w-8.25 place-items-center rounded-full bg-[rgba(255,255,255,0.07)] text-[16px] [transition:background_0.3s,color_0.3s] group-hover/text-link:bg-foreground group-hover/text-link:text-background motion-reduce:transition-none" />
             </Link>
           </div>
         </div>
-        <StudioPrinciples />
+        <div className="mt-16.25 grid gap-8.75 min-[600px]:grid-cols-[repeat(3,minmax(0px,1fr))] min-[600px]:gap-5.5 min-[960px]:mt-23 min-[960px]:gap-7.5">
+          {studioCards.map((card) => (
+            <StudyCard key={card.study} {...card} />
+          ))}
+        </div>
       </div>
     </section>
   );

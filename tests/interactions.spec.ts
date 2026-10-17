@@ -1,27 +1,39 @@
 import { expect, test } from "./scene-fixture";
-import { studies } from "../app/studies";
 import { BACKGROUND_DEFAULTS } from "../app/components/hero-background";
 
 test.use({ sceneBrowserGroup: "interactions" });
 
-test("study triggers preserve their identity and opener without moving focus", async ({
+test("studio cards navigate to the related About headings", async ({
   page,
 }) => {
-  await page.goto("/");
-  for (const [id, study] of Object.entries(studies)) {
-    const trigger = page.locator(`button[data-study="${id}"]`);
-    await trigger.evaluate((button) =>
-      button.addEventListener("mousedown", (event) => event.preventDefault()),
-    );
-    await trigger.click();
-    await expect(page.locator("#study-dialog")).toBeVisible();
-    await expect(page.locator("#study-dialog-title")).toHaveText(study.title);
-    await page.keyboard.press("Escape");
-    await expect(trigger).toBeFocused();
-    await trigger.press("Enter");
-    await expect(page.locator("#study-dialog-title")).toHaveText(study.title);
-    await page.keyboard.press("Escape");
-    await expect(trigger).toBeFocused();
+  for (const [title, fragment, heading] of [
+    [
+      "Our perspective",
+      "section-different-perspectives-one-clear-direction",
+      "Different perspectives. One clear direction.",
+    ],
+    [
+      "Our approach",
+      "section-how-we-approach-a-brief",
+      "How we approach a brief",
+    ],
+    [
+      "What we bring",
+      "section-four-ways-into-the-same-conversation",
+      "Four ways into the same conversation",
+    ],
+  ]) {
+    await page.goto("/");
+    const card = page.locator("#studio").getByRole("link", {
+      name: new RegExp(title),
+    });
+    await expect(card).toHaveAttribute("href", `/about#${fragment}`);
+    await card.focus();
+    await card.press("Enter");
+    await expect(page).toHaveURL(new RegExp(`/about#${fragment}$`));
+    const target = page.locator(`#${fragment}`);
+    await expect(target).toHaveText(heading);
+    await expect(target).toBeInViewport();
   }
 });
 

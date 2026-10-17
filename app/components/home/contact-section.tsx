@@ -10,7 +10,7 @@ export function ContactSection() {
       id="contact"
       aria-labelledby="contact-title"
     >
-      <SectionLabel label="06 / Your next move">
+      <SectionLabel label="05 / Your next move">
         <span className="hidden items-center gap-2 text-muted min-[960px]:inline">
           <span className="inline-block h-1 w-1 flex-[0_0_4px] rounded-full bg-green"></span>{" "}
           Let’s make something matter.
@@ -35,10 +35,20 @@ export function ContactSection() {
           <br />
           We’d love to hear what’s on your mind.
         </p>
-        <ContactButton preset="contact">
-          Tell us what you’re building <DirectionArrow />
-        </ContactButton>
+        <div className="flex flex-col items-start gap-3 min-[960px]:items-end">
+          <ContactButton preset="contact">
+            Tell us what you’re building <DirectionArrow />
+          </ContactButton>
+          <Link
+            className="inline-flex min-h-11 items-center gap-3 text-[12px] text-muted transition-colors hover:text-foreground motion-reduce:transition-none"
+            href="/contact"
+          >
+            Visit our contact page{" "}
+            <ArrowUpRight className="h-3.5 w-3.5 text-green" />
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
+import Link from "next/link";

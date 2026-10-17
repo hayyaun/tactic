@@ -84,7 +84,7 @@ test("selected work sits after services and every project opens its own case stu
       previous: section.previousElementSibling?.id,
       next: section.nextElementSibling?.id,
     })),
-  ).toEqual({ previous: "capabilities", next: "world" });
+  ).toEqual({ previous: "capabilities", next: "studio" });
 
   for (const [index, project] of projects.entries()) {
     await progressButton(work, project.name).click();

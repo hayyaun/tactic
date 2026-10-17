@@ -25,7 +25,7 @@ export async function JournalSection() {
       aria-labelledby="home-journal-title"
       className="studio-container pt-25 min-[960px]:pt-36.25"
     >
-      <SectionLabel label="05 / From the journal">
+      <SectionLabel label="04 / From the journal">
         <span className="hidden min-[600px]:inline">
           A few things on our mind.
         </span>
