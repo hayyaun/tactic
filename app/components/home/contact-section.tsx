@@ -10,7 +10,7 @@ export function ContactSection() {
       id="contact"
       aria-labelledby="contact-title"
     >
-      <SectionLabel label="05 / Your next move">
+      <SectionLabel label="06 / Your next move">
         <span className="hidden items-center gap-2 text-muted min-[960px]:inline">
           <span className="inline-block h-1 w-1 flex-[0_0_4px] rounded-full bg-green"></span>{" "}
           Let’s make something matter.

@@ -11,6 +11,7 @@ import type {
   ContentTextBlock,
 } from "../content/types";
 import { safeContentLink } from "../lib/content-link";
+import { contentHeadings } from "../lib/content-headings";
 import { ContactButton } from "./dialog-buttons";
 
 function RichTextLink({
@@ -33,7 +34,7 @@ function RichTextLink({
   );
 }
 
-const richTextComponents: PortableTextComponents<ContentTextBlock> = {
+const richTextComponents = {
   block: {
     normal: ({ children }) => (
       <p className="text-[15px] leading-[1.9] wrap-anywhere text-muted min-[600px]:text-[16px]">
@@ -86,22 +87,56 @@ const richTextComponents: PortableTextComponents<ContentTextBlock> = {
     bullet: ({ children }) => <li className="pl-1">{children}</li>,
     number: ({ children }) => <li className="pl-1">{children}</li>,
   },
-};
+} satisfies PortableTextComponents<ContentTextBlock>;
 
 export function ContentBlocks({ blocks }: { blocks: readonly ContentBlock[] }) {
+  const ids = new Map(contentHeadings(blocks).map(({ key, id }) => [key, id]));
+  const components: PortableTextComponents<ContentTextBlock> = {
+    ...richTextComponents,
+    block: {
+      ...richTextComponents.block,
+      h2: ({ children, value }) => (
+        <h2
+          id={ids.get(value._key ?? "")}
+          tabIndex={-1}
+          className="scroll-mt-6 pt-5 text-[26px] leading-[1.3] font-[400] wrap-anywhere min-[600px]:text-[32px]"
+        >
+          {children}
+        </h2>
+      ),
+      h3: ({ children, value }) => (
+        <h3
+          id={ids.get(value._key ?? "")}
+          tabIndex={-1}
+          className="scroll-mt-6 pt-3 text-[22px] leading-[1.4] font-[400] wrap-anywhere min-[600px]:text-[26px]"
+        >
+          {children}
+        </h3>
+      ),
+    },
+  };
   const elements: ReactNode[] = [];
   for (let index = 0; index < blocks.length; index++) {
     const block = blocks[index];
     if (block.type === "portableText") {
-      const value = [block.value];
+      const value = [
+        {
+          ...block.value,
+          _key: block.value._key ?? block.key ?? `block-${index}`,
+        },
+      ];
       // Adjacent text blocks must render together so list nesting is preserved.
       while (blocks[index + 1]?.type === "portableText") {
         const next = blocks[++index];
-        if (next.type === "portableText") value.push(next.value);
+        if (next.type === "portableText")
+          value.push({
+            ...next.value,
+            _key: next.value._key ?? next.key ?? `block-${index}`,
+          });
       }
       elements.push(
         <div key={block.key ?? block.value._key ?? index} className="space-y-7">
-          <PortableText value={value} components={richTextComponents} />
+          <PortableText value={value} components={components} />
         </div>,
       );
       continue;

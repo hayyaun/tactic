@@ -8,6 +8,7 @@ import { HeroSection } from "./components/home/hero-section";
 import { PortfolioSection } from "./components/home/portfolio-section";
 import { WorldSection } from "./components/home/world-section";
 import { StudioSection } from "./components/home/studio-section";
+import { JournalSection } from "./components/home/journal-section";
 import { ContactSection } from "./components/home/contact-section";
 import { HomeFooter } from "./components/home/home-footer";
 
@@ -34,6 +35,7 @@ export default function Home() {
         <PortfolioSection />
         <WorldSection />
         <StudioSection />
+        <JournalSection />
         <ContactSection />
       </main>
       <HomeFooter />

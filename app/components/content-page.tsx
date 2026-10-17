@@ -5,6 +5,8 @@ import { ContentBlocks } from "./content-blocks";
 import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
 import { Breadcrumbs } from "./breadcrumbs";
+import { ArticleToc } from "./article-toc";
+import { contentHeadings } from "../lib/content-headings";
 import {
   contentBreadcrumbs,
   type Breadcrumb,
@@ -27,6 +29,9 @@ export function ContentPage({
   breadcrumbs?: readonly Breadcrumb[];
 }) {
   const article = articleSchema(content);
+  const headings =
+    content.kind === "article" ? contentHeadings(content.blocks) : [];
+  const showToc = headings.length > 1;
   return (
     <>
       <script
@@ -80,8 +85,17 @@ export function ContentPage({
           />
         )}
         {content.blocks.length > 0 && (
-          <div className="mt-10 max-w-3xl space-y-7 min-[600px]:mt-12">
-            <ContentBlocks blocks={content.blocks} />
+          <div
+            className={`mt-10 min-[600px]:mt-12 ${showToc ? "grid items-start gap-8 min-[960px]:grid-cols-[minmax(0,3fr)_minmax(14rem,1fr)] min-[960px]:gap-16" : "max-w-3xl space-y-7"}`}
+          >
+            {showToc && (
+              <aside className="min-w-0 self-stretch min-[960px]:col-start-2 min-[960px]:row-start-1">
+                <ArticleToc headings={headings} />
+              </aside>
+            )}
+            <div className="max-w-3xl min-w-0 space-y-7 min-[960px]:col-start-1 min-[960px]:row-start-1">
+              <ContentBlocks blocks={content.blocks} />
+            </div>
           </div>
         )}
         {children}
