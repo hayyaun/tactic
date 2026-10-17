@@ -41,7 +41,7 @@ export function AboutPage({ content }: { content: PageContent }) {
           __html: serializeJsonLd(breadcrumbSchema(breadcrumbs)),
         }}
       />
-      <SiteHeader />
+      <SiteHeader path={content.path} />
       <main id="page-content" tabIndex={-1} className="pb-20 min-[960px]:pb-28">
         <section
           className="studio-container pt-12 min-[600px]:pt-20 min-[960px]:pt-24"

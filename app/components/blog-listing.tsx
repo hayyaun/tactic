@@ -128,7 +128,7 @@ export function BlogListing({
           __html: serializeJsonLd(breadcrumbSchema(breadcrumbs)),
         }}
       />
-      <SiteHeader active="journal" />
+      <SiteHeader path={content.path} />
       <main
         id="page-content"
         tabIndex={-1}

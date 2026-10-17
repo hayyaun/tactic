@@ -55,7 +55,7 @@ function expectSharedChrome(markup: string) {
   expect(markup).toContain("<footer");
   expect(markup).toContain('aria-label="Main navigation"');
   expect(markup).toContain('aria-label="TACTIC home"');
-  for (const href of ["/", "/#studio", "/#capabilities", "/blog", "/rss.xml"])
+  for (const href of ["/", "/services", "/portfolio", "/about", "/rss.xml"])
     expect(markup).toContain(`href="${href}"`);
   expect(markup).toContain('aria-controls="contact-dialog"');
   expect(markup).toContain('id="page-content"');
@@ -64,7 +64,7 @@ function expectSharedChrome(markup: string) {
   expect(markup).not.toContain("reveal-item");
 }
 
-test("editorial detail templates use the same static navigation and footer", () => {
+test("editorial detail templates use the same navigation and footer", () => {
   for (const [kind, path] of [
     ["about", "/about"],
     ["contact", "/contact"],
@@ -226,6 +226,20 @@ test.describe("shared editorial pages without JavaScript", () => {
       ]) {
         await page.setViewportSize(viewport);
         await expect(page.locator("main h1")).toBeVisible();
+        const navigation = page.getByRole("navigation", {
+          name: "Main navigation",
+          exact: true,
+        });
+        await expect(navigation).toBeVisible();
+        for (const [name, href] of [
+          ["What we do", "/services"],
+          ["Selected work", "/portfolio"],
+          ["The studio", "/about"],
+        ]) {
+          await expect(
+            navigation.getByRole("link", { name, exact: true }),
+          ).toHaveAttribute("href", href);
+        }
         const layout = await page.evaluate(() => ({
           width: document.documentElement.clientWidth,
           scrollWidth: document.documentElement.scrollWidth,

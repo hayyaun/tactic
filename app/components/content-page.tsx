@@ -46,9 +46,7 @@ export function ContentPage({
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(article) }}
         />
       )}
-      <SiteHeader
-        active={content.path.startsWith("/blog") ? "journal" : undefined}
-      />
+      <SiteHeader path={content.path} />
       <main
         id="page-content"
         tabIndex={-1}

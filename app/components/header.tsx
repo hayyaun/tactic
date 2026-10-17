@@ -4,12 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import { ContactButton } from "./dialog-buttons";
 import { ArrowUpRight, DirectionArrow, TacticMark } from "./ui/icons";
 const navigation = [
-  { href: "#capabilities", label: "What we do", number: "01" },
-  { href: "#work", label: "Selected work", number: "02" },
-  { href: "#studio", label: "The studio", number: "03" },
+  {
+    section: "#capabilities",
+    page: "/services",
+    label: "What we do",
+    number: "01",
+  },
+  {
+    section: "#work",
+    page: "/portfolio",
+    label: "Selected work",
+    number: "02",
+  },
+  { section: "#studio", page: "/about", label: "The studio", number: "03" },
 ];
 
-export function Header() {
+export function Header({
+  sectionLinks = true,
+  activePage,
+}: {
+  sectionLinks?: boolean;
+  activePage?: string;
+}) {
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -36,7 +52,7 @@ export function Header() {
       <header className="fixed top-4 left-1/2 z-20 mx-auto flex h-17 w-[calc(100%-48px)] max-w-7xl -translate-x-1/2 items-center justify-between gap-1.75 rounded-[18px] border border-line bg-[rgba(27,32,27,0.79)] py-0 pr-2 pl-3 shadow-[0_12px_35px_rgba(0,0,0,0.11)] backdrop-blur-[22px] min-[360px]:gap-3 min-[360px]:pr-3.75 min-[360px]:pl-5 min-[600px]:top-6 min-[600px]:h-18.5 min-[600px]:w-[calc(100%-80px)] min-[600px]:rounded-[20px] min-[600px]:px-4.5 min-[960px]:w-[calc(100%-112px)] min-[960px]:max-w-315 min-[960px]:pl-6">
         <Link
           className="flex items-center gap-1.75 text-[16px] font-[550] tracking-[-0.5px] min-[360px]:gap-2.25 min-[360px]:text-[18px] min-[960px]:gap-2.75 min-[960px]:text-[21px]"
-          href="#top"
+          href={sectionLinks ? "#top" : "/"}
           aria-label="TACTIC home"
         >
           <TacticMark
@@ -49,11 +65,12 @@ export function Header() {
           className="hidden gap-8.5 text-[12px] text-muted min-[960px]:flex"
           aria-label="Main navigation"
         >
-          {navigation.map(({ href, label }) => (
+          {navigation.map(({ section, page, label }) => (
             <Link
-              key={href}
-              className="[transition:color_0.2s] hover:text-foreground motion-reduce:transition-none"
-              href={href}
+              key={page}
+              className="[transition:color_0.2s] hover:text-foreground aria-[current=page]:text-green motion-reduce:transition-none"
+              href={sectionLinks ? section : page}
+              aria-current={activePage === page ? "page" : undefined}
             >
               {label}
             </Link>
@@ -82,11 +99,12 @@ export function Header() {
         aria-label="Mobile navigation"
         hidden={!open}
       >
-        {navigation.map(({ href, label, number }) => (
+        {navigation.map(({ section, page, label, number }) => (
           <Link
-            key={href}
-            className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350]"
-            href={href}
+            key={page}
+            className="flex justify-between bg-transparent px-0 py-4.25 text-left text-[23px] font-[350] aria-[current=page]:text-green"
+            href={sectionLinks ? section : page}
+            aria-current={activePage === page ? "page" : undefined}
           >
             {label}{" "}
             <span className="font-mono text-[10px] text-green">{number}</span>
@@ -98,6 +116,25 @@ export function Header() {
           <DirectionArrow className="font-mono text-[10px] text-inherit" />
         </ContactButton>
       </nav>
+      {!sectionLinks && (
+        <noscript>
+          <nav
+            aria-label="Main navigation"
+            className="studio-container flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-muted min-[960px]:hidden"
+          >
+            {navigation.map(({ page, label }) => (
+              <Link
+                key={page}
+                href={page}
+                aria-current={activePage === page ? "page" : undefined}
+                className="inline-flex min-h-11 items-center hover:text-foreground aria-[current=page]:text-green"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </noscript>
+      )}
     </>
   );
 }

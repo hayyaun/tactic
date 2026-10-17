@@ -14,8 +14,8 @@ for (const route of [
     await page.goto(route);
     await expect(page.locator("#contact-dialog")).toHaveCount(1);
     const opener = page
-      .getByRole("navigation", { name: "Main navigation", exact: true })
-      .getByRole("button", { name: "Let's talk" });
+      .locator("header")
+      .getByRole("button", { name: "Let’s talk", exact: true });
     await expect(opener).toHaveAttribute("aria-haspopup", "dialog");
     await opener.click();
     await expect(page).toHaveURL(new RegExp(`${route}$`));
@@ -53,16 +53,22 @@ test("contact details survive client navigation with one persistent dialog host"
   page,
 }) => {
   await page.goto("/services");
-  await page.getByRole("button", { name: "Let's talk" }).click();
+  await page
+    .locator("header")
+    .getByRole("button", { name: "Let’s talk", exact: true })
+    .click();
   await page.getByLabel("Your name", { exact: true }).fill("A saved enquiry");
   await page.keyboard.press("Escape");
   await page
     .getByRole("navigation", { name: "Main navigation", exact: true })
-    .getByRole("link", { name: "Journal" })
+    .getByRole("link", { name: "Selected work", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/blog$/);
+  await expect(page).toHaveURL(/\/portfolio$/);
   await expect(page.locator("#contact-dialog")).toHaveCount(1);
-  await page.getByRole("button", { name: "Let's talk" }).click();
+  await page
+    .locator("header")
+    .getByRole("button", { name: "Let’s talk", exact: true })
+    .click();
   await expect(page.getByLabel("Your name", { exact: true })).toHaveValue(
     "A saved enquiry",
   );
