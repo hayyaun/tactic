@@ -3,7 +3,6 @@ import Link from "next/link";
 import { cacheLife } from "next/cache";
 import { articleReadingMinutes, getBlogArticles } from "../../content/blog";
 import { loadPublishedPages } from "../../content/load-pages";
-import type { ContentImage } from "../../content/types";
 import { SectionHeading } from "../section-heading";
 import { SectionLabel } from "../studio-content";
 import { ArrowUpRight, DirectionArrow } from "../ui/icons";
@@ -14,20 +13,6 @@ const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
   timeZone: "UTC",
 });
-
-function thumbnailSource(image: ContentImage) {
-  if (image.src.startsWith("/")) return image.src;
-  const url = new URL(image.src);
-  // Size the CMS source before Next optimizes it, avoiding a full hero download.
-  url.searchParams.set("w", "432");
-  url.searchParams.set(
-    "h",
-    String(Math.max(1, Math.round((432 * image.height) / image.width))),
-  );
-  url.searchParams.set("fm", "webp");
-  url.searchParams.delete("auto");
-  return url.href;
-}
 
 export async function JournalSection() {
   "use cache";
@@ -79,7 +64,6 @@ export async function JournalSection() {
                       <div className="aspect-[4/3] w-22 shrink-0 overflow-hidden rounded-lg bg-foreground/3 min-[600px]:w-32 min-[960px]:w-36">
                         <Image
                           {...article.hero}
-                          src={thumbnailSource(article.hero)}
                           alt={article.hero.alt}
                           className="h-full w-full object-cover"
                           sizes="(min-width: 960px) 144px, (min-width: 600px) 128px, 88px"

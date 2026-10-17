@@ -252,7 +252,8 @@ test("Sanity images preserve alt text and crop while limiting output size", () =
   expect(url.searchParams.get("rect")).toBe("400,600,2800,2100");
   expect(url.searchParams.get("w")).toBe("1920");
   expect(url.searchParams.get("h")).toBe("1440");
-  expect(url.searchParams.get("auto")).toBe("format");
+  expect(url.searchParams.get("fm")).toBe("webp");
+  expect(url.searchParams.has("auto")).toBe(false);
 
   const smallImage: SanityImage = {
     ...image,

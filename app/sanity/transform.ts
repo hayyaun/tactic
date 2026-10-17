@@ -44,7 +44,9 @@ function toImage(image: SanityImage | null): ContentImage | undefined {
       .width(outputWidth)
       .height(outputHeight)
       .fit("crop")
-      .auto("format")
+      // Next's server fetch does not negotiate browser formats. Keep its source
+      // lightweight; next/image still generates and caches responsive variants.
+      .format("webp")
       .url(),
     alt: image.alt,
     width: outputWidth,
