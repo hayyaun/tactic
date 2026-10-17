@@ -46,14 +46,20 @@ async function expectActiveArtworkLoaded(work: Locator) {
       `[data-state="active"] [data-art-layer="${layer}"] img`,
     );
     await expect(image).toHaveCount(1);
-    await expect(image).toHaveAttribute(
-      "src",
+    const optimizedSource = new URL(
+      (await image.getAttribute("src"))!,
+      "http://localhost:3000",
+    );
+    expect(optimizedSource.pathname).toBe("/_next/image");
+    expect(optimizedSource.searchParams.get("q")).toBe("90");
+    expect(optimizedSource.searchParams.get("url")).toMatch(
       new RegExp(
         layer === "background"
           ? "-background-v3\\.webp$"
           : "-object-lossless\\.webp$",
       ),
     );
+    await expect(image).toHaveAttribute("srcset", /\/_next\/image\?/);
     await expect
       .poll(() =>
         image.evaluate((element) => {
@@ -97,6 +103,24 @@ test("thumbnail and next controls cycle through all four project worlds", async 
   const thumbnails = work
     .getByRole("button", { name: /^Show / })
     .and(work.locator("button:not([aria-pressed])"));
+  for (const image of await thumbnails.locator("img").all()) {
+    const source = new URL(
+      (await image.getAttribute("src"))!,
+      "http://localhost:3000",
+    );
+    expect(source.pathname).toBe("/_next/image");
+    expect(source.searchParams.get("url")).toMatch(/-card-v2\.webp$/);
+    expect(source.searchParams.get("q")).toBe("90");
+    await expect(image).toHaveAttribute("srcset", /\/_next\/image\?/);
+    await expect
+      .poll(() =>
+        image.evaluate((element) => {
+          const image = element as HTMLImageElement;
+          return image.complete && image.naturalWidth > 0;
+        }),
+      )
+      .toBe(true);
+  }
   // The same project is available in the persistent progress control and a
   // preview card. Choose the card by its absence of a pressed state.
   await work

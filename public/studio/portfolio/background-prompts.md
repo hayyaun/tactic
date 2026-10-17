@@ -2,7 +2,7 @@
 
 Created with the built-in ImageGen tool using the four approved desktop previews as references. These are full opaque rectangular plates; the arrow and the foreground's lower-edge mask are implemented in CSS. Foreground cutouts remain separate. Partial overlap is intentional.
 
-The PNG masters and lossless WebP delivery files share the `*-background-v3` names in this directory. No resizing, sharpening, smoothing, or other pixel editing was applied during WebP encoding. Actual native dimensions are 1850 × 850 for Radian, Prevaisor and Social Puppy, and 1848 × 851 for Doshi. Higher requested generation sizes were not returned; these are not 4K assets.
+The PNG masters and lossless WebP source files share the `*-background-v3` names in this directory. No resizing, sharpening, smoothing, or other pixel editing was applied during source WebP encoding. The site delivers all portfolio backgrounds, foreground objects, and thumbnails through Next.js image optimization at quality 90, with responsive sizes. Original source assets remain intact. Actual native background dimensions are 1850 × 850 for Radian, Prevaisor and Social Puppy, and 1848 × 851 for Doshi. Higher requested generation sizes were not returned; these are not 4K assets.
 
 ## Composition prompt set
 

@@ -23,6 +23,8 @@ const projects = [
     href: "/portfolio/radian-robots-branding",
     background: "/studio/portfolio/radian-background-v3.webp",
     object: "/studio/portfolio/radian-object-lossless.webp",
+    objectSizes:
+      "(min-width: 1792px) 664px, (min-width: 960px) calc(39.5vw - 44px), (min-width: 600px) calc(78vw - 62px), calc(78vw - 37px)",
     objectLayout: {
       "--object-left": "50.5%",
       "--object-width": "39.5%",
@@ -40,6 +42,8 @@ const projects = [
     href: "/portfolio/prevaisor-branding",
     background: "/studio/portfolio/prevaisor-background-v3.webp",
     object: "/studio/portfolio/prevaisor-object-lossless.webp",
+    objectSizes:
+      "(min-width: 1792px) 432px, (min-width: 960px) calc(25.7vw - 29px), (min-width: 600px) calc(50vw - 40px), calc(50vw - 24px)",
     objectLayout: {
       "--object-left": "58.7%",
       "--object-width": "25.7%",
@@ -57,6 +61,8 @@ const projects = [
     href: "/portfolio/social-puppy-website",
     background: "/studio/portfolio/social-puppy-background-v3.webp",
     object: "/studio/portfolio/social-puppy-object-lossless.webp",
+    objectSizes:
+      "(min-width: 1792px) 723px, (min-width: 960px) calc(43vw - 48px), (min-width: 600px) calc(98vw - 78px), calc(98vw - 47px)",
     objectLayout: {
       "--object-left": "45.7%",
       "--object-width": "43%",
@@ -74,6 +80,8 @@ const projects = [
     href: "/portfolio/doshi",
     background: "/studio/portfolio/doshi-background-v3.webp",
     object: "/studio/portfolio/doshi-object-lossless.webp",
+    objectSizes:
+      "(min-width: 1792px) 713px, (min-width: 960px) calc(42.4vw - 47px), (min-width: 600px) calc(82vw - 66px), calc(82vw - 39px)",
     objectLayout: {
       "--object-left": "45.8%",
       "--object-width": "42.4%",
@@ -352,8 +360,12 @@ export function PortfolioSection() {
                                     src={project[layer]}
                                     alt=""
                                     fill
-                                    unoptimized
-                                    sizes="(min-width: 1500px) 1040px, (min-width: 960px) 75vw, 100vw"
+                                    quality={90}
+                                    sizes={
+                                      layer === "background"
+                                        ? "(min-width: 1792px) 1210px, (min-width: 960px) calc(72vw - 81px), (min-width: 600px) calc(123vw - 98px), calc(145vw - 69px)"
+                                        : project.objectSizes
+                                    }
                                     className={
                                       layer === "background"
                                         ? "work-background-image"
@@ -428,8 +440,8 @@ export function PortfolioSection() {
                           src={project.thumbnail}
                           alt=""
                           fill
-                          unoptimized
-                          sizes="(min-width: 1500px) 200px, (min-width: 960px) 16vw, (min-width: 600px) 30vw, 96px"
+                          quality={90}
+                          sizes="(min-width: 1792px) 308px, (min-width: 960px) calc(18.6vw - 26px), (min-width: 600px) calc(33.333vw - 58px), 96px"
                           className="object-cover transition-transform duration-700 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         />
                         <span className="work-thumbnail-arrow">
