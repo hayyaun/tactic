@@ -240,7 +240,7 @@ test("keyboard selection works and reduced motion removes the project animation"
   );
 });
 
-for (const width of [320, 1440]) {
+for (const width of [320, 390, 768, 959, 960, 1440]) {
   test(`project controls fit the ${width}px viewport in every active state`, async ({
     page,
   }, testInfo) => {
@@ -264,6 +264,78 @@ for (const width of [320, 1440]) {
         expect(bounds).not.toBeNull();
         expect(bounds!.x).toBeGreaterThanOrEqual(-1);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
+        if (
+          width < 960 &&
+          (await control.getAttribute("data-project-switch")) !== null
+        ) {
+          expect(
+            bounds!.width,
+            "mobile switch targets remain easy to tap",
+          ).toBeGreaterThanOrEqual(44);
+          expect(
+            bounds!.height,
+            "mobile switch targets remain easy to tap",
+          ).toBeGreaterThanOrEqual(44);
+        }
+      }
+
+      if (width < 960) {
+        const artwork = await work.getByRole("img").boundingBox();
+        const statement = await work.locator(".work-statement").boundingBox();
+        const projectCopy = await work
+          .locator(".work-project-copy")
+          .boundingBox();
+        const caseLink = await work
+          .getByRole("link", {
+            name: `Explore ${project.name}`,
+            exact: true,
+          })
+          .boundingBox();
+        const nextMoves = await work.locator(".work-next-moves").boundingBox();
+        expect(artwork).not.toBeNull();
+        expect(statement).not.toBeNull();
+        expect(projectCopy).not.toBeNull();
+        expect(caseLink).not.toBeNull();
+        expect(nextMoves).not.toBeNull();
+        expect(
+          artwork!.x,
+          "the mobile artwork stays inside the viewport",
+        ).toBeGreaterThanOrEqual(0);
+        expect(artwork!.x + artwork!.width).toBeLessThanOrEqual(width);
+        expect(
+          artwork!.width / artwork!.height,
+          "the mobile artwork has room for its composition",
+        ).toBeCloseTo(width < 600 ? 1.5 : 16 / 9, 1);
+        expect(
+          artwork!.y - (statement!.y + statement!.height),
+          "the heading and artwork have a clear gap",
+        ).toBeGreaterThanOrEqual(16);
+        expect(
+          projectCopy!.y - (artwork!.y + artwork!.height),
+          "project details sit clearly below the artwork",
+        ).toBeGreaterThanOrEqual(16);
+        expect(
+          nextMoves!.y - (caseLink!.y + caseLink!.height),
+          "project previews have their own space below the case link",
+        ).toBeGreaterThanOrEqual(16);
+
+        const thumbnails = work.locator(".work-thumbnail-button");
+        await expect(thumbnails).toHaveCount(3);
+        for (const thumbnail of await thumbnails.all()) {
+          const label = thumbnail.locator(".work-thumbnail-name");
+          expect(
+            await label.evaluate((element) =>
+              Number.parseFloat(getComputedStyle(element).fontSize),
+            ),
+            "project preview labels remain readable",
+          ).toBeGreaterThanOrEqual(10);
+          expect(
+            await label.evaluate(
+              (element) => element.scrollWidth <= element.clientWidth,
+            ),
+            "project names are not clipped",
+          ).toBe(true);
+        }
       }
 
       const screenshotDirectory = process.env.PORTFOLIO_SCREENSHOT_DIR;

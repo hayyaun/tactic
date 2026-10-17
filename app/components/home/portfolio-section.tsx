@@ -32,7 +32,7 @@ const projects = [
     thumbnail: "/studio/portfolio/radian-card-v2.webp",
     accent: "#b8ef20",
     description:
-      "A Radian robot breaks out of a bright green arrow filled with its brand identity.",
+      "A Radian robot alongside bright green brand identity mockups.",
   },
   {
     name: "Prevaisor",
@@ -49,7 +49,7 @@ const projects = [
     thumbnail: "/studio/portfolio/prevaisor-card-v2.webp",
     accent: "#639aff",
     description:
-      "Prevaisor’s blue brand world takes shape in a directional arrow and dimensional product mockups.",
+      "Prevaisor’s blue brand world with dimensional product mockups and a hand-held phone.",
   },
   {
     name: "Social Puppy",
@@ -66,7 +66,7 @@ const projects = [
     thumbnail: "/studio/portfolio/social-puppy-card-v2.webp",
     accent: "#e9aaa9",
     description:
-      "Social Puppy’s playful pink world comes forward through a bold arrow and expressive campaign imagery.",
+      "Social Puppy’s playful pink brand world with expressive campaign imagery.",
   },
   {
     name: "Doshi",
@@ -83,7 +83,7 @@ const projects = [
     thumbnail: "/studio/portfolio/doshi-card-v2.webp",
     accent: "#c7b6a0",
     description:
-      "Doshi’s fashion identity unfolds in a warm neutral arrow with accessories and editorial imagery.",
+      "Doshi’s warm neutral fashion identity with accessories and editorial imagery.",
   },
 ] as const;
 
@@ -232,7 +232,7 @@ export function PortfolioSection() {
     <section
       id="work"
       aria-labelledby="work-title"
-      className={`${displayFont.variable} work-section py-18 min-[960px]:pt-18 min-[960px]:pb-12`}
+      className={`${displayFont.variable} work-section py-14 min-[600px]:py-16 min-[960px]:pt-18 min-[960px]:pb-12`}
       style={{ "--project-accent": activeProject.accent } as CSSProperties}
     >
       <div className="work-frame studio-container min-[960px]:w-[calc(100%-112px)] min-[960px]:max-w-420">
@@ -262,7 +262,7 @@ export function PortfolioSection() {
               <h2 id="work-title" className="work-heading">
                 <span>Work that</span>
                 <span>Makes</span>
-                <span>Moves.</span>
+                <span> Moves.</span>
               </h2>
               <p className="mt-5 max-w-72 text-[13px] leading-relaxed text-muted min-[600px]:max-w-none min-[960px]:mt-6 min-[960px]:text-[15px]">
                 Different worlds. One clear direction.
@@ -388,27 +388,28 @@ export function PortfolioSection() {
           <div className="work-project-rail">
             <div id="work-active-project" className="min-w-0">
               <div key={selection.revision} className="work-project-copy">
-                <p className="font-mono text-[9px] tracking-wider text-green uppercase min-[960px]:text-[10px]">
+                <p className="work-project-category font-mono text-[10px] tracking-wider text-green uppercase">
                   {projectNumber(selection.active)} / {activeProject.category}
                 </p>
-                <h3 className="mt-3 text-[clamp(32px,3.4vw,50px)] leading-[1.05] font-semibold tracking-[-0.055em]">
+                <h3 className="text-[clamp(28px,8.6vw,36px)] leading-[1.05] font-semibold tracking-[-0.055em] min-[960px]:mt-3 min-[960px]:text-[clamp(32px,3.4vw,50px)]">
                   {activeProject.name}
                 </h3>
                 <Link
-                  className="work-case-link mt-5 inline-flex min-h-12 items-center gap-2 border-b border-foreground/40 pb-1 text-[13px]"
+                  className="work-case-link inline-flex min-h-12 items-center justify-center gap-2 text-[13px] min-[960px]:mt-5 min-[960px]:border-b min-[960px]:border-foreground/40 min-[960px]:pb-1"
                   href={activeProject.href}
                   aria-label={`Explore ${activeProject.name}`}
                 >
-                  Explore this world <ArrowUpRight className="h-3.5 w-3.5" />
+                  <span className="work-case-label">Explore this world</span>
+                  <ArrowUpRight className="h-5 w-5 min-[960px]:h-3.5 min-[960px]:w-3.5" />
                 </Link>
               </div>
             </div>
 
             <div className="work-next-moves">
-              <span className="work-next-label font-mono text-[9px] tracking-wider text-muted uppercase">
+              <span className="work-next-label font-mono text-[10px] tracking-wider text-muted uppercase min-[960px]:text-[9px]">
                 Next moves
               </span>
-              <div className="grid min-w-0 grid-cols-3 gap-2.5 min-[960px]:gap-2">
+              <div className="work-thumbnail-list grid min-w-0 gap-2 min-[600px]:grid-cols-3">
                 {[1, 2, 3].map((offset) => {
                   const index = (selection.active + offset) % projects.length;
                   const project = projects[index];
@@ -417,7 +418,7 @@ export function PortfolioSection() {
                       key={offset}
                       type="button"
                       data-project-switch
-                      className="work-thumbnail-button group min-w-0 bg-transparent text-left"
+                      className="work-thumbnail-button group min-w-0 text-left min-[960px]:bg-transparent"
                       aria-label={`Show ${project.name}`}
                       aria-controls="work-active-project"
                       onClick={() => selectProject(index, "forward")}
@@ -428,19 +429,23 @@ export function PortfolioSection() {
                           alt=""
                           fill
                           unoptimized
-                          sizes="(min-width: 1500px) 200px, (min-width: 960px) 16vw, 30vw"
+                          sizes="(min-width: 1500px) 200px, (min-width: 960px) 16vw, (min-width: 600px) 30vw, 96px"
                           className="object-cover transition-transform duration-700 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         />
                         <span className="work-thumbnail-arrow">
                           <ChevronRight className="h-5 w-5" />
                         </span>
                       </span>
-                      <span className="mt-2 block font-mono text-[8px] leading-relaxed tracking-wider text-muted uppercase min-[600px]:text-[9px]">
-                        <span className="hidden min-[600px]:inline">
-                          {projectNumber(index)} /{" "}
+                      <span className="work-thumbnail-label min-[960px]:mt-2 min-[960px]:block min-[960px]:font-mono min-[960px]:text-[9px] min-[960px]:leading-relaxed min-[960px]:tracking-wider min-[960px]:text-muted min-[960px]:uppercase">
+                        <span className="work-thumbnail-number">
+                          {projectNumber(index)}
+                          <span className="hidden min-[960px]:inline"> / </span>
                         </span>
-                        {project.name}
+                        <span className="work-thumbnail-name">
+                          {project.name}
+                        </span>
                       </span>
+                      <ChevronRight className="work-thumbnail-chevron h-4 w-4 text-muted min-[960px]:hidden" />
                     </button>
                   );
                 })}
@@ -460,8 +465,8 @@ export function PortfolioSection() {
             </div>
           </div>
 
-          <div className="mt-9 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-line pt-4 min-[960px]:mt-10">
-            <div className="flex items-center gap-4">
+          <div className="work-footer mt-7 flex flex-col items-stretch justify-between gap-2 border-t border-line pt-3 min-[960px]:mt-10 min-[960px]:flex-row min-[960px]:flex-wrap min-[960px]:items-center min-[960px]:gap-x-6 min-[960px]:gap-y-4 min-[960px]:pt-4">
+            <div className="flex items-center justify-between gap-4 min-[960px]:justify-start">
               <span
                 aria-hidden="true"
                 className="font-mono text-[9px] tracking-wider text-muted"
@@ -470,7 +475,7 @@ export function PortfolioSection() {
                 <span className="mx-1.5">—</span> 04
               </span>
               <div
-                className="flex items-center gap-0.5"
+                className="flex min-w-0 flex-1 items-center gap-2 min-[960px]:flex-none min-[960px]:gap-0.5"
                 aria-label="Choose a project"
               >
                 {projects.map((project, index) => (
@@ -478,7 +483,7 @@ export function PortfolioSection() {
                     key={project.name}
                     type="button"
                     data-project-switch
-                    className="work-progress-button"
+                    className="work-progress-button flex-1 min-[960px]:flex-none"
                     aria-label={`Show ${project.name}`}
                     aria-pressed={selection.active === index}
                     aria-controls="work-active-project"
@@ -494,7 +499,7 @@ export function PortfolioSection() {
             </div>
             <Link
               href="/portfolio"
-              className="work-all-link inline-flex min-h-12 items-center gap-3 font-mono text-[9px] tracking-wide min-[600px]:text-[10px]"
+              className="work-all-link inline-flex min-h-12 items-center justify-between gap-3 font-mono text-[11px] tracking-wide min-[960px]:justify-start min-[960px]:text-[10px]"
             >
               Explore all projects <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>

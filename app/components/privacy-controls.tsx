@@ -1,12 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type MouseEvent,
+} from "react";
 import { ClarityRecorder } from "./privacy/clarity-recorder";
 import { PrivacySettingsPanel } from "./privacy/settings-panel";
 import { useRecordingConsent } from "./privacy/use-recording-consent";
 
+function subscribeToScroll(onChange: () => void) {
+  window.addEventListener("scroll", onChange, { passive: true });
+  return () => window.removeEventListener("scroll", onChange);
+}
+
+function isAtTop() {
+  return window.scrollY === 0;
+}
+
+function serverIsAtTop() {
+  return true;
+}
+
 export function PrivacyControls() {
+  const atTop = useSyncExternalStore(subscribeToScroll, isAtTop, serverIsAtTop);
   const {
     clarityId,
     choice,
@@ -62,6 +82,7 @@ export function PrivacyControls() {
       <button
         type="button"
         aria-label="Privacy choices"
+        hidden={!atTop}
         aria-expanded={open}
         aria-controls="privacy-settings"
         onClick={showSettings}
